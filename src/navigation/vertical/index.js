@@ -26,4 +26,11 @@ export default [
     action: 'read',
     resource: 'Ver roles',
   },
+  {
+    title: 'Contactos',
+    icon: 'UserIcon',
+    route: 'contacts',
+    action: 'read',
+    resource: 'Ver roles',
+  },
 ]
