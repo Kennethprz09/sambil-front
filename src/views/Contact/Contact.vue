@@ -207,7 +207,7 @@
         this.dataMeta.of = this.totalRows
       },
       newContact() {
-        this.$router.push('contacts/new-contact');
+        this.$router.push('/contacts/new-contact');
       }
     },
   }
