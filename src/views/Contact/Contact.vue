@@ -190,8 +190,9 @@
       },
     },
     created() {
-      this.fetchUsers()
-      this.fetchRoles()
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.initTrHeight)
     },
     methods: {
       fetchRoles() {

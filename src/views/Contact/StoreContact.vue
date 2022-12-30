@@ -169,11 +169,11 @@
                             placeholder="Plazo de pago" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="typeIdentification"
+                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice"
                             placeholder="Lista de precios" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="typeIdentification"
+                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="seller"
                             placeholder="Vendedor" />
                     </b-col>
                 </b-row>
@@ -188,11 +188,11 @@
                 </b-row>
                 <b-row class="mt-2 mb-5">
                     <b-col cols="12" md="6" class="align-items-center justify-content-center">
-                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="typeIdentification"
+                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="accountsReceivable"
                             placeholder="Cuenta por cobrar" />
                     </b-col>
                     <b-col cols="12" md="6" class="align-items-center justify-content-center">
-                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="typeIdentification"
+                        <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="debtsToPay"
                             placeholder="Cuenta por pagar" />
                     </b-col>
                 </b-row>
@@ -263,6 +263,19 @@ export default {
                 { title: '15 días', value: 3 },
                 { title: '30 días', value: 4 },
                 { title: '60 días', value: 5 },
+            ],
+            listPrice: [
+                { title: 'General', value: 1}
+            ],
+            seller: [
+                { title: 'Pele Que En Paz Descanse', value: 1}
+            ],
+            accountsReceivable: [
+                { title: 'Cuentas Por Cobrar', value: 1}
+            ],
+            
+            debtsToPay: [
+                { title: 'Cuentas Por Pagar', value: 1}
             ],
             selected: { title: 'Square' },
             items: [],

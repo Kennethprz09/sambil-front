@@ -29,8 +29,27 @@ export default [
   {
     title: 'Contactos',
     icon: 'UserIcon',
-    route: 'contacts',
     action: 'read',
     resource: 'Ver roles',
+    children: [
+      {
+        title: 'Todos',
+        route: { name: 'contactsAll', params: { id: 'all' } },
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Clientes',
+        route: { name: 'contactsClient', params: { id: 'clients' } },
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Proveedores',
+        route: { name: 'contactsProvider', params: { id: 'providers' } },
+        action: 'read',
+        resource: 'Ver roles'
+      }
+    ],
   },
 ]
