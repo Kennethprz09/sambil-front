@@ -25,31 +25,23 @@
             </b-col>
           </b-row>
         </div>
-        <b-table ref="refRoleListTable" class="position-relative" :items="dataTable" responsive :fields="tableColumns"
+        <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive :fields="tableColumns"
           primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty empty-text="No se encontraron datos"
           :sort-desc.sync="tableSettings.sortDesc">
-          <template #cell(role)="data">
-            <div v-for="(item, index) in data.item.role" :key="index">
-              <span>{{ item }}</span>
-            </div>
-          </template>
+      
           <!-- Column: Actions -->
           <template #cell(actions)="data">
-            <b-button @click="detail(data.item.id)" v-b-modal.modal-ver variant="primary"
-              class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Ver">
+            <b-button
+            variant="primary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Ver">
               <feather-icon icon="EyeIcon" />
             </b-button>
-            <b-button @click="editUser(data.item.id), update = true" v-b-modal.modal-editar variant="warning"
+            <b-button
               class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Editar">
               <feather-icon icon="EditIcon" />
             </b-button>
-            <b-button @click="user_delete(data.item.id)" variant="danger" class="btn-icon rounded-circle ml-2"
+            <b-button variant="danger" class="btn-icon rounded-circle ml-2"
               v-b-tooltip.hover.v-primary title="Eliminar">
               <feather-icon icon="Trash2Icon" />
-            </b-button>
-            <b-button @click="(id_password(data.item), modal_password = true, resetFormPassword())" variant="success"
-              class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Cambiar Contraseña">
-              <feather-icon icon="UnlockIcon" />
             </b-button>
           </template>
         </b-table>
@@ -94,7 +86,7 @@
   import vSelect from 'vue-select'
   import Ripple from 'vue-ripple-directive'
   export default {
-    name: 'Users',
+    name: 'Contacts',
     components: {
       BCard,
       BRow,
@@ -121,15 +113,14 @@
         update: false,
         modal_password: false,
         formDisabled: false,
-        isAddNewUserSidebarActive: false,
-        refRoleListTable: null,
+        refContactListTable: null,
         perPageOptions: [10, 25, 50, 100],
         searchQuery: '',
         tableColumns: [
           { key: 'id', label: 'Id', sortable: true },
-          { key: 'fullName', label: 'Nombre', sortable: true },
-          { key: 'email', label: 'Identificación' },
-          { key: 'role', label: 'Télefono' },
+          { key: 'fullname', label: 'Nombre', sortable: true },
+          { key: 'number_identification', label: 'Identificación' },
+          { key: 'phone', label: 'Télefono' },
           { key: 'actions', label: 'Acciones' },
         ],
         sortBy: 'id',
@@ -150,7 +141,7 @@
           sortDesc: true,
         },
         formDataEdit: {},
-        roles: [],
+        contact: [],
       }
     },
     directives: {
@@ -160,44 +151,37 @@
     watch: {
       "tableSettings.sortBy": {
         handler(val) {
-          this.fetchUsers()
-          this.fetchRoles()
+          this.fetchContacts()
         },
       },
       "tableSettings.sortDesc": {
         handler(val) {
-          this.fetchUsers()
-          this.fetchRoles()
+          this.fetchContacts()
         },
       },
       "tableSettings.perPage": {
         handler(val) {
-          this.fetchUsers()
-          this.fetchRoles()
+          this.fetchContacts()
         },
       },
       "tableSettings.searchQuery": {
         handler(val) {
-          this.fetchUsers()
-          this.fetchRoles()
+          this.fetchContacts()
         },
       },
       "tableSettings.page": {
         handler(val) {
-          this.fetchUsers()
-          this.fetchRoles()
+          this.fetchContacts()
         },
       },
     },
     created() {
-    },
-    destroyed() {
-        window.removeEventListener('resize', this.initTrHeight)
+      this.fetchContacts();
     },
     methods: {
-      fetchRoles() {
-        this.$http.get('roles/list').then((response) => {
-          this.roles = response.data.roles
+      fetchContacts() {
+        this.$http.get('contact/list').then((response) => {
+          this.contact = response.data.contacts
         })
       },
       dataMetaCounter() {
