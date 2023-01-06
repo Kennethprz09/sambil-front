@@ -31,13 +31,15 @@
 
         <!-- Column: Actions -->
         <template #cell(actions)="data">
-          <b-button @click="showContact(data.item.id)" variant="primary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Ver">
+          <b-button @click="showContact(data.item.id)" variant="primary" class="btn-icon rounded-circle ml-2"
+            v-b-tooltip.hover.v-primary title="Ver">
             <feather-icon icon="EyeIcon" />
           </b-button>
-          <b-button class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Editar">
+          <b-button class="btn-icon rounded-circle ml-2" @click="editContact(data.item.id)" v-b-tooltip.hover.v-primary
+            title="Editar">
             <feather-icon icon="EditIcon" />
           </b-button>
-          <b-button variant="danger" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Eliminar">
+          <b-button variant="danger" class="btn-icon rounded-circle ml-2" @click="deleteContact(data.item.id)" v-b-tooltip.hover.v-primary title="Eliminar">
             <feather-icon icon="Trash2Icon" />
           </b-button>
         </template>
@@ -139,6 +141,7 @@ export default {
       },
       formDataEdit: {},
       contact: [],
+      edit: true
     }
   },
   directives: {
@@ -191,11 +194,47 @@ export default {
       this.$router.push('/contacts/new-contact');
     },
     showContact(id) {
+      var showContacts = true;
       this.$router.push({
         name: 'contacts/new-contact',
-        params: { id: id }
+        params: { id: id, showContacts: showContacts }
       });
     },
+    editContact(id) {
+      this.$router.push({
+        name: 'contacts/new-contact',
+        params: { id: id, edit: this.edit }
+      });
+    },
+    deleteContact(id) {
+      this.$http.post('/contact/delete/' + id)
+        .then(response => {
+          if (response.data.code == 200) {
+            this.$swal({
+              title: response.data.message,
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+              buttonsStyling: false,
+            });
+            this.fetchContacts();
+          }
+          if (response.data.code == 500) {
+            this.$swal({
+              title: response.data.message,
+              icon: 'warning',
+              customClass: {
+                confirmButton: 'btn btn-warning',
+              },
+              buttonsStyling: false,
+            })
+          }
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
+        });
+    }
   },
 }
 </script>

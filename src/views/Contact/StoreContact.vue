@@ -35,20 +35,14 @@
                 </b-row>
                 <b-row class="mt-2">
                     <b-col cols="12" md="4" class="align-items-center justify-content-center">
-                        <v-select v-model="form.type_identification" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="typeIdentification" placeholder="Tipo de identificación" />
+                        <v-select v-model="form.type_identification" :disabled="disabled" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                            label="title" :options="listIdentification" :reduce="val => val.value" placeholder="Tipo de identificación" />
                     </b-col>
                     <b-col cols="12" md="4" class="d-flex align-items-center justify-content-center">
-                        <b-form-input v-model="form.number_identify" v-if="form.type_identification.title == 'RNC'"
-                            :disabled="disabled" placeholder="Numero RNC" />
-                        <b-form-input v-model="form.number_identify"
-                            v-else-if="form.type_identification.title == 'Cédula'" :disabled="disabled"
-                            placeholder="Numero Cédula" />
-                        <b-form-input v-model="form.number_identify"
-                            v-else-if="form.type_identification.title == 'Pasaporte (Identificador extranjero)'"
-                            :disabled="disabled" placeholder="Numero" />
-                        <b-form-input v-model="form.number_identify" v-else-if="form.type_identification == ''"
-                            placeholder="RNC o Cédula" :disabled="disabled" />
+                        <b-form-input v-model="form.number_identify" v-if="form.type_identification == 1" :disabled="disabled" placeholder="Numero RNC" />
+                        <b-form-input v-model="form.number_identify" v-else-if="form.type_identification == 2" :disabled="disabled" placeholder="Numero Cédula" />
+                        <b-form-input v-model="form.number_identify" v-else-if="form.type_identification == 3" :disabled="disabled" placeholder="Numero" />
+                        <b-form-input v-model="form.number_identify" v-else-if="form.type_identification == ''" placeholder="RNC o Cédula" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="4" class="d-flex align-items-center justify-content-center">
                         <b-form-input v-model="form.full_name" :disabled="disabled"
@@ -62,7 +56,7 @@
 
                     <b-col cols="12" md="6" class="align-items-center justify-content-center">
                         <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title"
-                            :options="municipalies" v-model="form.province" placeholder="Municipio / Provincia" />
+                            :options="municipalies" v-model="form.province"  :disabled="disabled" :reduce="val => val.value" placeholder="Municipio / Provincia" />
                     </b-col>
                 </b-row>
                 <b-row class="mt-2">
@@ -76,16 +70,16 @@
                 </b-row>
                 <b-row class="mt-2">
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <b-form-input placeholder="Correo electrónico" v-model="form.email_contact" />
+                        <b-form-input placeholder="Correo electrónico" v-model="form.email_contact" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <b-form-input placeholder="Celular" v-model="form.mobil_contact" />
+                        <b-form-input placeholder="Celular" v-model="form.mobil_contact" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <b-form-input placeholder="Teléfono 1" v-model="form.phone_one_contact" />
+                        <b-form-input placeholder="Teléfono 1" v-model="form.phone_one_contact" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
-                        <b-form-input placeholder="Teléfono 2" v-model="form.phone_two_contact" />
+                        <b-form-input placeholder="Teléfono 2" v-model="form.phone_two_contact" :disabled="disabled" />
                     </b-col>
                 </b-row>
                 <b-row class="mt-2">
@@ -97,7 +91,7 @@
                             notificaciones de vencimiento para tus clientes.</p>
                     </b-col>
                 </b-row>
-                <div class="mt-3 mb-2">
+                <div class="mt-3 mb-2" v-if="formItems">
                     <b-form ref="form" :style="{ height: trHeight }" class="repeater-form">
 
                         <!-- Row Loop -->
@@ -105,7 +99,7 @@
 
                             <b-col md="2">
                                 <b-form-group label="Nombre/Razón social" label-for="Nombre/Razón social">
-                                    <b-form-input v-model="form.items[index].bussiness_name" type="text"
+                                    <b-form-input v-model="form.items[index].bussiness_name" type="text" :disabled="disabled"
                                         placeholder="Nombre/Razón social" />
                                 </b-form-group>
                             </b-col>
@@ -113,32 +107,32 @@
 
                             <b-col md="2">
                                 <b-form-group label="Apellido" label-for="Apellido">
-                                    <b-form-input v-model="form.items[index].last_name" placeholder="Apellido" />
+                                    <b-form-input v-model="form.items[index].last_name" placeholder="Apellido" :disabled="disabled" />
                                 </b-form-group>
                             </b-col>
 
 
                             <b-col md="2">
                                 <b-form-group label="Correo electrónico" label-for="Correo electrónico">
-                                    <b-form-input v-model="form.items[index].email" placeholder="Correo electrónico" />
+                                    <b-form-input v-model="form.items[index].email" placeholder="Correo electrónico" :disabled="disabled"/>
                                 </b-form-group>
                             </b-col>
 
 
                             <b-col lg="2" md="2">
                                 <b-form-group label="Teléfono" label-for="Teléfono">
-                                    <b-form-input v-model="form.items[index].phone" placeholder="Teléfono" />
+                                    <b-form-input v-model="form.items[index].phone" placeholder="Teléfono" :disabled="disabled"/>
                                 </b-form-group>
                             </b-col>
                             <b-col lg="2" md="2">
                                 <b-form-group label="Celular" label-for="Celular">
-                                    <b-form-input v-model="form.items[index].mobil" placeholder="Celular" />
+                                    <b-form-input v-model="form.items[index].mobil" placeholder="Celular" :disabled="disabled"/>
                                 </b-form-group>
                             </b-col>
 
 
                             <b-col lg="2" md="2" class="mb-50">
-                                <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
+                                <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger" :disabled="disabled"
                                     class="mt-0 mt-md-2" @click="removeItem(index)">
                                     <feather-icon icon="XIcon" class="mr-25" />
                                     <span>Eliminar</span>
@@ -152,7 +146,7 @@
                     </b-form>
                 </div>
                 <b-col cols="12" md="12" class="align-items-center justify-content-center d-flex mt-2">
-                    <b-button class="text-center" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
+                    <b-button class="text-center" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" :disabled="disabled"
                         @click="repeateAgain">
                         <feather-icon icon="PlusIcon" class="mr-25" />
                         <span>Agregar nuevo</span>
@@ -170,19 +164,19 @@
                 <b-row class="mt-2">
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
                         <v-select v-model="form.type_ncf" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="typeNcf" placeholder="Tipo de NCF" />
+                            label="title" :options="listNfc" :reduce="val => val.value" placeholder="Tipo de NCF" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
                         <v-select v-model="form.payment_deadline" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="paymentDeadline" placeholder="Plazo de pago" />
+                            label="title" :options="listDeadline" :reduce="val => val.value" placeholder="Plazo de pago" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
                         <v-select v-model="form.list_price" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="listPrice" placeholder="Lista de precios" />
+                            label="title" :options="listPrice" :reduce="val => val.value" placeholder="Lista de precios" :disabled="disabled" />
                     </b-col>
                     <b-col cols="12" md="3" class="align-items-center justify-content-center">
                         <v-select v-model="form.seller" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="seller" placeholder="Vendedor" />
+                            label="title" :options="listsellers" :reduce="val => val.value" placeholder="Vendedor" :disabled="disabled"/>
                     </b-col>
                 </b-row>
                 <b-row class="mt-2">
@@ -197,16 +191,16 @@
                 <b-row class="mt-2 mb-5">
                     <b-col cols="12" md="6" class="align-items-center justify-content-center">
                         <v-select v-model="form.receivable" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="accountsReceivable" placeholder="Cuenta por cobrar" />
+                            label="title" :options="accountsReceivable" :reduce="val => val.value" placeholder="Cuenta por cobrar" :disabled="disabled"/>
                     </b-col>
                     <b-col cols="12" md="6" class="align-items-center justify-content-center">
                         <v-select v-model="form.bill_to_pay" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            label="title" :options="debtsToPay" placeholder="Cuenta por pagar" />
+                            label="title" :options="debtsToPay" :reduce="val => val.value" placeholder="Cuenta por pagar" :disabled="disabled"/>
                     </b-col>
                 </b-row>
                 <b-row>
                     <b-col cols="12" md="12" class="d-flex align-items-center justify-content-center">
-                        <b-button class="text-center" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
+                        <b-button class="text-center" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" :disabled="disabled"
                             @click="formStore()">
                             <span>Guardar</span>
                         </b-button>
@@ -251,15 +245,7 @@ export default {
                 type_ncf: '',
                 checked1: false,
                 checked2: false,
-                items: [
-                    {
-                        bussiness_name: '',
-                        last_name: '',
-                        email: '',
-                        phone: '',
-                        mobil: ''
-                    }
-                ],
+                items: [],
                 number_identify: '',
                 full_name: '',
                 address: '',
@@ -267,45 +253,27 @@ export default {
                 email_contact: '',
                 mobil_contact: '',
                 phone_one_contact: '',
-                phone_two_contact: ''
+                phone_two_contact: '',
+                list_price: '',
+                seller: '',
+                receivable: '',
+                bill_to_pay: '',
             },
             id: this.$route.params.id,
             indeterminate1: true,
             indeterminate2: true,
-            typeIdentification: [
-                { title: 'RNC', value: 1 },
-                { title: 'Cédula', value: 2 },
-                { title: 'Pasaporte (Identificador extranjero)', value: 3 },
-            ],
-            typeNcf: [
-                { title: 'Crédito fiscal (01)', value: 1 },
-                { title: 'Consumo (02)', value: 2 },
-                { title: 'Régimen especial de tributación (14)', value: 3 },
-                { title: 'Gubernamentales (15)', value: 4 },
-                { title: 'Comprobante para exportación (16)', value: 5 },
-            ],
-            paymentDeadline: [
-                { title: 'De contado', value: 1 },
-                { title: '8 días', value: 2 },
-                { title: '15 días', value: 3 },
-                { title: '30 días', value: 4 },
-                { title: '60 días', value: 5 },
-            ],
-            listPrice: [
-                { title: 'General', value: 1 }
-            ],
-            seller: [
-                { title: 'Pele Que En Paz Descanse', value: 1 }
-            ],
-            accountsReceivable: [
-                { title: 'Cuentas Por Cobrar', value: 1 }
-            ],
-
-            debtsToPay: [
-                { title: 'Cuentas Por Pagar', value: 1 }
-            ],
+            listIdentification: [],
+            listNfc: [],
+            listDeadline: [],
+            listPrice: [],
+            listsellers: [],
+            accountsReceivable: [],
+            debtsToPay: [],
             disabled: false,
-            municipalies: []
+            municipalies: [],
+            showContacts: this.$route.params.showContacts,
+            edit: this.$route.params.edit,
+            formItems: false
         }
     },
     mounted() {
@@ -319,8 +287,16 @@ export default {
     },
     created() {
         window.addEventListener('resize', this.initTrHeight)
-        this.showContact()
         this.fetchMunicipalies()
+        this.typeIdentification()
+        this.typeNfc()
+        this.listdeadline()
+        this.listprice()
+        this.listSellers()
+        this.listaAcountsReceivable()
+        this.listDebtsToPay()
+        this.showContact()
+        this.showContactEnabled()
     },
     destroyed() {
         window.removeEventListener('resize', this.initTrHeight)
@@ -356,10 +332,9 @@ export default {
                 });
         },
         showContact() {
-            if (this.id) {
+            if (this.id && this.showContacts) {
                 this.$http.get('/contact/show/' + this.id).then((response) => {
                     this.disabled = true;
-                    // this.form.type_identification = 'hacer select';
                     if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
                         this.form.checked1 = true;
                         this.form.checked2 = false;
@@ -376,17 +351,108 @@ export default {
                         this.form.checked2 = true;
                         this.form.checked1 = true;
                     }
+                    this.form.type_identification = response.data.contact.type_identification;
                     this.form.number_identify = response.data.contact.number_identification;
                     this.form.full_name = response.data.contact.reason;
                     this.form.address = response.data.contact.address;
+                    this.form.province = response.data.contact.municipaly;
+                    this.form.email_contact = response.data.contact.email;
+                    this.form.mobil_contact = response.data.contact.mobil;
+                    this.form.phone_one_contact = response.data.contact.phone1;
+                    this.form.phone_two_contact = response.data.contact.phone2;
+                    this.form.items = response.data.contact.associatePersons;
+                    this.form.type_ncf = response.data.contact.type_nfc;
+                    this.form.list_price = response.data.contact.price_list;
+                    this.form.seller = response.data.contact.seller;
+                    this.form.receivable = response.data.contact.receivable;
+                    this.form.bill_to_pay = response.data.contact.bill_to_pay;
+                    this.formItems = true;
                 })
             } else {
                 this.disabled = false;
+                this.formItems = true;
+            }
+        },
+        showContactEnabled() {
+            if (this.id && this.edit) {
+                this.$http.get('/contact/show/' + this.id).then((response) => {
+                    this.disabled = false;
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
+                        this.form.checked1 = true;
+                        this.form.checked2 = false;
+                    }
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider') {
+                        this.form.checked2 = true;
+                        this.form.checked1 = false;
+                    }
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client' || response.data.contact.client_of_provider[1].client_of_provider == 'Provider') {
+                        this.form.checked2 = true;
+                        this.form.checked1 = true;
+                    }
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider' || response.data.contact.client_of_provider[1].client_of_provider == 'Client') {
+                        this.form.checked2 = true;
+                        this.form.checked1 = true;
+                    }
+                    this.form.type_identification = response.data.contact.type_identification;
+                    this.form.number_identify = response.data.contact.number_identification;
+                    this.form.full_name = response.data.contact.reason;
+                    this.form.address = response.data.contact.address;
+                    this.form.province = response.data.contact.municipaly;
+                    this.form.email_contact = response.data.contact.email;
+                    this.form.mobil_contact = response.data.contact.mobil;
+                    this.form.phone_one_contact = response.data.contact.phone1;
+                    this.form.phone_two_contact = response.data.contact.phone2;
+                    this.form.items = response.data.contact.associatePersons;
+                    this.form.type_ncf = response.data.contact.type_nfc;
+                    this.form.list_price = response.data.contact.price_list;
+                    this.form.seller = response.data.contact.seller;
+                    this.form.receivable = response.data.contact.receivable;
+                    this.form.bill_to_pay = response.data.contact.bill_to_pay;
+                    this.formItems = true;
+                })
+            } else {
+                this.disabled = false;
+                this.formItems = true;
             }
         },
         fetchMunicipalies() {
             this.$http.get('municipaly/list').then((response) => {
                 this.municipalies = response.data.municipalies
+            })
+        },
+        typeIdentification() {
+            this.$http.get('identification/list').then((response) => {
+                this.listIdentification = response.data.listIdentification
+            })
+        },
+        typeNfc() {
+            this.$http.get('identification/listNfc').then((response) => {
+                this.listNfc = response.data.listNfc
+            })
+        },
+        listdeadline() {
+            this.$http.get('identification/listDeadline').then((response) => {
+                this.listDeadline = response.data.listDeadline
+            })
+        },
+        listprice() {
+            this.$http.get('identification/listPrice').then((response) => {
+                this.listPrice = response.data.listPrice
+            })
+        },
+        listSellers() {
+            this.$http.get('identification/listSeller').then((response) => {
+                this.listsellers = response.data.listSellers
+            })
+        },
+        listaAcountsReceivable() {
+            this.$http.get('identification/listAccountsReceivable').then((response) => {
+                this.accountsReceivable = response.data.listAccountsReceivable
+            })
+        },
+        listDebtsToPay() {
+            this.$http.get('identification/listDebtsToPay').then((response) => {
+                this.debtsToPay = response.data.debtsToPay
             })
         },
         toggleIndeterminate() {
