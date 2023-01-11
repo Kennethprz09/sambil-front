@@ -8,6 +8,7 @@ import authentication from './routes/authentication'
 import users from './routes/users'
 import roles from './routes/roles'
 import contacts from './routes/contacts'
+import invoice from './routes/invoice'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,7 @@ const router = new VueRouter({
     ...users,
     ...roles,
     ...contacts,
+    ...invoice,
     {
       path: '/',
       name: 'home',

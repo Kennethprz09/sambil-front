@@ -21,12 +21,6 @@ export default [
     resource: 'Ver roles',
   },
   {
-    title: 'Ingresos',
-    icon: 'CreditCardIcon',
-    action: 'read',
-    resource: 'Ver roles',
-  },
-  {
     title: 'Contactos',
     icon: 'UserIcon',
     action: 'read',
@@ -47,6 +41,20 @@ export default [
       {
         title: 'Proveedores',
         route: { name: 'contactsProvider', params: { id: 'providers' } },
+        action: 'read',
+        resource: 'Ver roles'
+      }
+    ],
+  },
+  {
+    title: 'Ingresos',
+    icon: 'CreditCardIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Facturas de venta',
+        route: 'invoice',
         action: 'read',
         resource: 'Ver roles'
       }

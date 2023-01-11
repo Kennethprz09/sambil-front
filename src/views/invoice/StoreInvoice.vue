@@ -1,0 +1,485 @@
+<template>
+    <div>
+        <h3 class="mt-2 mb-2">Nueva factura</h3>
+        <b-card no-body class="mb-0">
+            <b-row>
+                <b-col md="6" xl="4" class=" mt-2 mb-3 ml-3">
+                    <label for="Lista de precios">Lista de precios</label>
+                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice"
+                        placeholder="Seleccione" />
+                </b-col>
+            </b-row>
+        </b-card>
+        <b-card no-body class="mt-2 mb-0">
+            <b-row>
+                <b-col md="4" xl="4" class="mb-3 p-3">
+                    <b-img class="imgLogo" src="https://picsum.photos/1024/400/?image=41" fluid
+                        alt="Responsive image" />
+                </b-col>
+                <b-col md="4" xl="4" class="mb-3 p-3">
+                    <h4>Nombre De la Persona Logueada</h4>
+                </b-col>
+                <b-col md="4" xl="4" class="mb-3 p-3">
+                    <v-select v-model="form.credit" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title"
+                        :options="credits" placeholder="Seleccionar" />
+                    <h2 class="mt-2" v-if="form.credit.value == 1">NCF B1600000001</h2>
+                    <h2 class="mt-2" v-else-if="form.credit.value == 2">NCF B0200000001</h2>
+                    <h2 class="mt-2" v-else-if="form.credit.value == 3">NCF B0100000004</h2>
+                    <h2 class="mt-2" v-else-if="form.credit.value == 4">NCF B1500000001</h2>
+                    <h2 class="mt-2" v-else-if="form.credit.value == 5">NCF B1400000001</h2>
+                    <h2 class="mt-2" v-else-if="form.credit.value == null">NCF B1400000001</h2>
+                </b-col>
+            </b-row>
+            <hr>
+            <b-row>
+                <b-col md="6" xl="6" class="mb-3 p-3">
+                    <label for="">Contacto</label>
+                    <v-select v-model="form.contact" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                        label="title" :options="contacts" placeholder="Seleccionar" :reduce="val => val.value" />
+                    <label for="">RNC o Cédula</label>
+                    <b-form-input v-model="form.rnc" disabled />
+                    <label class="mt-2" for="">Teléfono</label>
+                    <b-form-input v-model="form.phone" disabled />
+                </b-col>
+                <b-col md="6" xl="6" class="mb-3 p-3">
+                    <label for="">Fecha</label>
+                    <b-form-datepicker v-model="form.date" class="mb-1" />
+                    <label for="">Plazo de pago</label>
+                    <v-select v-model="form.payment_deadline" class="mb-1"
+                        :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="payment_deadline"
+                        placeholder="Seleccionar" :reduce="val => val.value" />
+                    <label for="">Vencimiento</label>
+                    <b-form-datepicker v-model="form.expiration" class="mb-1" />
+                </b-col>
+            </b-row>
+            <b-form ref="form" :style="{ height: trHeight }" class="repeater-form ml-2" @submit.prevent="repeateAgain">
+                <b-row>
+                    <b-col>
+                        <h6>Producto/servicio</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Referencia</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Precio</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Desc %</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Impuesto</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Descripción</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Cantidad</h6>
+                    </b-col>
+                    <b-col>
+                        <h6>Total</h6>
+                    </b-col>
+                    <b-col>
+                        <h6></h6>
+                    </b-col>
+                </b-row>
+                <hr class="line">
+                <!-- Row Loop -->
+                <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
+                    <b-col>
+                        <v-select v-model="form.products[index].name" class="mb-1"
+                            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="products"
+                            placeholder="Buscar un producto/servicio..." :reduce="val => val.value"
+                            style="position: absolute !important; width: 95%;" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].price" placeholder="Precio unitario" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].percentage" placeholder="%" />
+                    </b-col>
+                    <b-col>
+                        <v-select v-model="form.products[index].tax" class="mb-1"
+                            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="tax"
+                            placeholder="Impuesto" :reduce="val => val.value"
+                            style="position: absolute !important; width: 95%;" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].quantity" placeholder="Cantidad" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].total" placeholder="0.00" />
+                    </b-col>
+
+                    <!-- Remove Button -->
+                    <b-col>
+                        <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
+                            @click="removeItem(index)">
+                            <feather-icon icon="XIcon" class="mr-25" />
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </b-form>
+            <b-col cols="12" class="text-center mt-3">
+                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
+                    @click="repeateAgain">
+                    <feather-icon icon="PlusIcon" class="mr-25" />
+                    <span>Agregar Linea</span>
+                </b-button>
+            </b-col>
+        </b-card>
+        <b-card no-body class="mt-1">
+            <b-row>
+                <b-col md="5" class=" mt-2 p-3 mt-0">
+                    <label for="Lista de precios">Retención</label>
+                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice" />
+                </b-col>
+                <b-col md="5" class=" mt-2 p-3 mt-0">
+                    <label for="Lista de precios">Valor</label>
+                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice" />
+                </b-col>
+                <b-col md="2" class=" mt-2 p-3 mt-3">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary">
+                        <feather-icon icon="XIcon" />
+                    </b-button>
+                </b-col>
+            </b-row>
+        </b-card>
+        <b-card no-body class="mt-1">
+            <b-row>
+                <b-col md="4" xl="4" class="mb-3 p-3">
+                    <b-img class="imgLogo" src="https://picsum.photos/1024/400/?image=41" fluid
+                        alt="Responsive image" />
+                </b-col>
+                <b-col md="2" class="mb-3 p-3"></b-col>
+                <b-col md="3" class="mb-3 p-3">
+                    <p class="text-primary">
+                        <feather-icon icon="PlusIcon" />
+                        Agregar retención
+                    </p>
+                    <b-row class="ml-5 mt-3 d-flex">
+                        <b-col md="12" class="ml-5 d-flex">
+                            <strong>
+                                <p class="ml-3 d-flex">Subtotal</p>
+                            </strong>
+                        </b-col>
+                        <b-col md="12" class="ml-5 d-flex">
+                            <strong>
+                                <p class="ml-3 d-flex">Descuento</p>
+                            </strong>
+                        </b-col>
+                        <b-col md="12" class="ml-5 d-flex">
+                            <strong>
+                                <p class="ml-3 d-flex">Subtotal</p>
+                            </strong>
+                        </b-col>
+                        <b-col md="12" class="d-flex ml-5">
+                            <strong>
+                                <p class="ml-3">ITBIS 16% (16%)</p>
+                            </strong>
+                        </b-col>
+                    </b-row>
+                </b-col>
+                <b-col md="3" class="mb-3 p-3">
+                    <p class="text-primary">
+                        <feather-icon icon="PlusIcon" />
+                        Agregar Conduce
+                    </p>
+                    <b-row class="ml-1 mt-3 d-flex">
+                        <b-col md="12">
+                            <p>RD$1,100,000.00</p>
+                        </b-col>
+                        <b-col md="12">
+                            <p>-RD$220,000.00</p>
+                        </b-col>
+                        <b-col md="12">
+                            <p>RD$880,000.00</p>
+                        </b-col>
+                        <b-col md="12">
+                            <p>RD$140,800.00</p>
+                        </b-col>
+                    </b-row>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="6" class="pl-3 pr-3">
+                    <label for="textarea-default">Términos y condiciones</label>
+                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                        rows="3" />
+                </b-col>
+                <b-col md="6" class="pl-3 pr-3">
+                    <label for="textarea-default">Notas</label>
+                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                        rows="3" />
+                </b-col>
+                <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
+                    <label for="textarea-default">Pie de factura</label>
+                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                        rows="3" />
+                </b-col>
+                <b-col md="12" class="text-center mb-3">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary">
+                        Guardar
+                    </b-button>
+                </b-col>
+            </b-row>
+        </b-card><br>
+    </div>
+</template>
+<script>
+extend('required', {
+    ...required,
+    message: 'El campo {_field_} es obligatorio'
+});
+import { extend } from 'vee-validate'
+import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
+import { required } from '@validations'
+import vSelect from 'vue-select'
+import { heightTransition } from '@core/mixins/ui/transition'
+import Ripple from 'vue-ripple-directive'
+import moment from 'moment'
+import {
+    BCard,
+    BRow,
+    BCol,
+    BImg,
+    BForm,
+    BButton,
+    BFormGroup,
+    BFormInput,
+    BFormTextarea,
+    BFormDatepicker
+} from 'bootstrap-vue'
+export default {
+    mixins: [heightTransition],
+    name: 'Facturas',
+    components: {
+        vSelect,
+        BCard,
+        BRow,
+        BCol,
+        BImg,
+        BForm,
+        BButton,
+        BFormGroup,
+        BFormInput,
+        BFormTextarea,
+        BFormDatepicker
+    },
+    data() {
+        return {
+            listPrice: [],
+            nextTodoId: 2,
+            credits: [
+                { title: 'Comprobante para exportación (16)', value: 1 },
+                { title: 'Consumo (02)', value: 2 },
+                { title: 'Crédito fiscal (01)', value: 3 },
+                { title: 'Gubernamentales (15)', value: 4 },
+                { title: 'Régimen especial de tributación (14)', value: 5 },
+            ],
+            form: {
+                credit: '',
+                contact: '',
+                rnc: '',
+                phone: '',
+                date: '',
+                payment_deadline: '',
+                expiration: '',
+                products: [{
+                    id: null,
+                    name: '',
+                    ref: '',
+                    price: '',
+                    percentage: '',
+                    tax: '',
+                    description: '',
+                    quantity: '',
+                    total: ''
+                },
+                {
+                    id: null,
+                    name: '',
+                    ref: '',
+                    price: '',
+                    percentage: '',
+                    tax: '',
+                    description: '',
+                    quantity: '',
+                    total: ''
+                },
+                {
+                    id: null,
+                    name: '',
+                    ref: '',
+                    price: '',
+                    percentage: '',
+                    tax: '',
+                    description: '',
+                    quantity: '',
+                    total: ''
+                }
+            ]
+            },
+            contacts: [],
+            payment_deadline: [],
+            products: [],
+            tax: [],
+            idDeadline: ''
+        }
+    },
+    mounted() {
+        this.initTrHeight()
+    },
+    directives: {
+        Ripple,
+    },
+    watch: {
+        "form.contact"(val) {
+            if (val) {
+                this.showContactId(val)
+            } else {
+                this.resetContact()
+            }
+        },
+        "form.payment_deadline"(val) {
+            if (val) {
+                this.deadLineId(val)
+            } else {
+                this.form.expiration = new Date();
+            }
+        },
+        "form.date"(val) {
+            this.change(val)
+        },
+        "form.payment_deadline"(val) {
+            this.deadLineId(val)
+        },
+        // "form.name"(val) {
+
+        // }
+    },
+    created() {
+        this.listprice()
+        this.showContacts()
+        this.deadLine()
+        this.fetchProducts()
+        this.discounts()
+        window.addEventListener('resize', this.initTrHeight)
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.initTrHeight)
+    },
+    methods: {
+        discounts() {
+            this.$http.get('identification/listDiscounts').then((response) => {
+                this.tax = response.data.discounts
+            })
+        },
+        change(val) {
+            this.form.expiration = moment(val).add(this.idDeadline, 'days').format('YYYY-MM-DD')
+        },
+        resetContact() {
+            this.form = {
+                credit: '',
+                contact: '',
+                rnc: '',
+                phone: '',
+                date: '',
+                payment_deadline: '',
+                expiration: ''
+            }
+        },
+        listprice() {
+            this.$http.get('identification/listPrice').then((response) => {
+                this.listPrice = response.data.listPrice
+            })
+        },
+        showContacts() {
+            this.$http.get('contact/showContacts').then((response) => {
+                this.contacts = response.data.contacts
+            })
+        },
+        showContactId(id) {
+            this.$http.get('contact/showContact/' + id).then((response) => {
+                this.form.rnc = response.data.contact.number_identification;
+                this.form.phone = response.data.contact.mobil;
+                this.form.date = new Date();
+                this.form.payment_deadline = response.data.contact.payment_deadline;
+            })
+        },
+        deadLine() {
+            this.$http.get('identification/listDeadline').then((response) => {
+                this.payment_deadline = response.data.listDeadline;
+            })
+        },
+        fetchProducts() {
+            this.$http.get('identification/listProducts').then((response) => {
+                this.products = response.data.products;
+            })
+        },
+        deadLineId(id) {
+            this.$http.get('identification/listDeadline/' + id).then((response) => {
+                this.idDeadline = response.data.listDeadlineId.days;
+                this.form.expiration = moment(this.form.date).add(this.idDeadline, 'days').format('YYYY-MM-DD')
+            })
+        },
+        repeateAgain() {
+            this.form.products.push({
+                id: null,
+                name: '',
+                ref: '',
+                price: '',
+                percentage: '',
+                tax: '',
+                description: '',
+                quantity: '',
+                total: ''
+            })
+
+            this.$nextTick(() => {
+                this.trAddHeight(this.$refs.row[0].offsetHeight)
+            })
+        },
+        removeItem(index) {
+            this.form.products.splice(index, 1)
+            this.trTrimHeight(this.$refs.row[0].offsetHeight)
+        },
+        initTrHeight() {
+            this.trSetHeight(null)
+            this.$nextTick(() => {
+                this.trSetHeight(this.$refs.form.scrollHeight)
+            })
+        }
+    },
+}
+</script>
+
+<style lang="scss" scoped>
+.per-page-selector {
+    width: 90px;
+}
+
+.imgLogo {
+    width: 400px;
+    height: 200px;
+}
+
+.repeater-form {
+    overflow: hidden;
+    transition: .35s height;
+}
+
+.line {
+    border: 1px solid black;
+    background: black;
+    margin: 10px 45px 10px 0px;
+}
+</style>
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-select.scss';
+</style>
