@@ -53,3 +53,47 @@
 2023-01-12T15:08:35.180Z [18972:17168] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
 2023-01-12T15:08:35.350Z [10048: 1884] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
 2023-01-12T15:08:39.971Z [17768: 3772] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:40.177Z [10260:12636] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:40.212Z [ 6532:15840] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:40.245Z [ 2268:16200] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:40.356Z [19336:16192] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:48.992Z [ 9616:11748] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:49.420Z [ 6400: 3416] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:08:49.685Z [ 1264:13476] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:08:49.876Z [14652:17200] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:08:49.905Z [ 8492: 8176] A Logging started for process: C:\Program Files\Git\usr\bin\grep.exe
+2023-01-12T15:08:50.367Z [ 6768:15912] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:08:50.539Z [13296:12388] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:50.572Z [10456: 1816] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:50.605Z [ 2708: 7768] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:08:50.713Z [13108: 2780] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:05.392Z [ 6380: 6464] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:10.812Z [11808:17224] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:10.844Z [16892:12628] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:10.874Z [ 4864:12892] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:10.988Z [ 8888:17028] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:18.496Z [ 5900: 3508] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:21.375Z [ 8368:19408] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:09:21.405Z [17652:19304] A Logging started for process: C:\Program Files\Git\usr\bin\grep.exe
+2023-01-12T15:09:21.591Z [10180:12552] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:21.624Z [11656: 6264] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:21.657Z [ 1852: 1068] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:21.773Z [12384: 8924] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:31.023Z [18424:17168] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:34.493Z [ 6004: 4268] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:34.528Z [13468: 8544] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:34.570Z [ 4064:18996] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:34.692Z [15840: 1468] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:46.831Z [19452: 8872] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:49.572Z [12048:19392] A Logging started for process: C:\Program Files\Git\usr\bin\cat.exe
+2023-01-12T15:09:49.600Z [ 2024:11016] A Logging started for process: C:\Program Files\Git\usr\bin\grep.exe
+2023-01-12T15:09:49.690Z [11312:13392] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:49.721Z [10920: 9700] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:49.754Z [10220: 1804] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:09:49.854Z [13900:19164] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:05.549Z [ 8028: 6464] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:05.753Z [16892: 5888] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:05.782Z [15584:17028] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:05.812Z [13088:17224] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:05.909Z [ 5864:13992] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
+2023-01-12T15:11:09.653Z [16188: 7300] A Logging started for process: C:\Program Files\Git\usr\bin\bash.exe
