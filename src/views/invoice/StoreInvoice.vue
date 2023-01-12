@@ -86,31 +86,29 @@
                 <!-- Row Loop -->
                 <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
                     <b-col>
-                        <v-select v-model="form.products[index].name" class="mb-1"
-                            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="products"
-                            placeholder="Buscar un producto/servicio..." :reduce="val => val.value"
-                            style="position: absolute !important; width: 95%;" />
+                        <b-form-select v-model="form.products[index].name" :options="products"
+                            @change="searchProduct(index, form.products[index].name)" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].price" placeholder="Precio unitario" />
+                        <b-form-input v-model="form.products[index].price" type="number" placeholder="Precio unitario"
+                            @keyup="changePrice(index)" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].percentage" placeholder="%" />
+                        <b-form-input v-model="form.products[index].percentage" type="number" placeholder="%"
+                            @keyup="changePercentage(index)" />
                     </b-col>
                     <b-col>
-                        <v-select v-model="form.products[index].tax" class="mb-1"
-                            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="tax"
-                            placeholder="Impuesto" :reduce="val => val.value"
-                            style="position: absolute !important; width: 95%;" />
+                        <b-form-select v-model="form.products[index].tax" :options="tax" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].quantity" placeholder="Cantidad" />
+                        <b-form-input v-model="form.products[index].quantity" type="number" placeholder="Cantidad"
+                            @keyup="changeQuantity(index)" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].total" placeholder="0.00" />
@@ -133,18 +131,20 @@
                 </b-button>
             </b-col>
         </b-card>
-        <b-card no-body class="mt-1">
+        <b-card no-body class="mt-1" v-for="(item, index) in form.retentions" :id="item.id" :key="index">
             <b-row>
                 <b-col md="5" class=" mt-2 p-3 mt-0">
                     <label for="Lista de precios">Retención</label>
-                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice" />
+                        <b-form-select v-model="form.retentions[index].retention" :options="retentions"
+                            @change="changeValueRetention(index)" />
                 </b-col>
                 <b-col md="5" class=" mt-2 p-3 mt-0">
                     <label for="Lista de precios">Valor</label>
-                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice" />
+                    <b-form-input type="number" v-model="form.retentions[index].value" />
                 </b-col>
                 <b-col md="2" class=" mt-2 p-3 mt-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
+                        @click="deleteRetention(index)">
                         <feather-icon icon="XIcon" />
                     </b-button>
                 </b-col>
@@ -158,12 +158,12 @@
                 </b-col>
                 <b-col md="2" class="mb-3 p-3"></b-col>
                 <b-col md="3" class="mb-3 p-3">
-                    <p class="text-primary">
+                    <p class="text-primary retention" @click="addRetention()">
                         <feather-icon icon="PlusIcon" />
                         Agregar retención
                     </p>
-                    <b-row class="ml-5 mt-3 d-flex">
-                        <b-col md="12" class="ml-5 d-flex">
+                    <b-row class="ml-5 mt-4 d-flex">
+                        <b-col md="12" class="ml-5 mt-1 d-flex">
                             <strong>
                                 <p class="ml-3 d-flex">Subtotal</p>
                             </strong>
@@ -175,7 +175,7 @@
                         </b-col>
                         <b-col md="12" class="ml-5 d-flex">
                             <strong>
-                                <p class="ml-3 d-flex">Subtotal</p>
+                                <p class="ml-3 d-flex">Total</p>
                             </strong>
                         </b-col>
                         <b-col md="12" class="d-flex ml-5">
@@ -192,7 +192,7 @@
                     </p>
                     <b-row class="ml-1 mt-3 d-flex">
                         <b-col md="12">
-                            <p>RD$1,100,000.00</p>
+                            <p>RD${{ form.totals.subtotal }}</p>
                         </b-col>
                         <b-col md="12">
                             <p>-RD$220,000.00</p>
@@ -253,7 +253,8 @@ import {
     BFormGroup,
     BFormInput,
     BFormTextarea,
-    BFormDatepicker
+    BFormDatepicker,
+    BFormSelect
 } from 'bootstrap-vue'
 export default {
     mixins: [heightTransition],
@@ -269,7 +270,8 @@ export default {
         BFormGroup,
         BFormInput,
         BFormTextarea,
-        BFormDatepicker
+        BFormDatepicker,
+        BFormSelect
     },
     data() {
         return {
@@ -292,44 +294,28 @@ export default {
                 expiration: '',
                 products: [{
                     id: null,
-                    name: '',
+                    name: null,
                     ref: '',
-                    price: '',
-                    percentage: '',
-                    tax: '',
+                    price: 0,
+                    percentage: 0,
+                    tax: null,
                     description: '',
                     quantity: '',
                     total: ''
-                },
-                {
-                    id: null,
-                    name: '',
-                    ref: '',
-                    price: '',
-                    percentage: '',
-                    tax: '',
-                    description: '',
-                    quantity: '',
-                    total: ''
-                },
-                {
-                    id: null,
-                    name: '',
-                    ref: '',
-                    price: '',
-                    percentage: '',
-                    tax: '',
-                    description: '',
-                    quantity: '',
-                    total: ''
+                }],
+                retentions: [],
+                totals: {
+                    subtotal: 0,
+                    discount: 0,
+                    total: 0
                 }
-            ]
             },
             contacts: [],
             payment_deadline: [],
             products: [],
             tax: [],
-            idDeadline: ''
+            idDeadline: '',
+            retentions: []
         }
     },
     mounted() {
@@ -359,9 +345,6 @@ export default {
         "form.payment_deadline"(val) {
             this.deadLineId(val)
         },
-        // "form.name"(val) {
-
-        // }
     },
     created() {
         this.listprice()
@@ -369,15 +352,75 @@ export default {
         this.deadLine()
         this.fetchProducts()
         this.discounts()
+        this.fetchRetention()
         window.addEventListener('resize', this.initTrHeight)
     },
     destroyed() {
         window.removeEventListener('resize', this.initTrHeight)
     },
     methods: {
+        calculateTotals() {
+            var sum = 0;
+            for (let index = 0; index < this.form.products.length; index++) {
+                sum += +this.form.products[index].price;                
+            }
+            this.form.totals.subtotal = new Intl.NumberFormat('es-RD', { maximumSignificantDigits: 6 }).format(sum);            
+        },
+        changeValueRetention(val) {
+            if (val == '') {
+                this.form.retentions[va].value = '';
+            }
+        },
+        addRetention() {
+            this.form.retentions.push({
+                id: '',
+                retention: '',
+                value: ''
+            })
+        },
+        deleteRetention(index) {
+            this.form.retentions.splice(index, 1)
+        },
+        changePrice(index) {
+            if (this.form.products[index].price == '') {
+                this.form.products[index].total = 0;
+            } else {
+                this.changePercentage(index);
+                this.calculateTotals();
+            }
+        },
+        changePercentage(index) {
+            if (this.form.products[index].percentage == '') {
+                let valuePercent = (this.form.products[index].quantity * this.form.products[index].price) * (0 / 100)
+                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - valuePercent;
+            } else {
+                let valuePercent = (this.form.products[index].quantity * this.form.products[index].price) * (this.form.products[index].percentage / 100)
+                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - valuePercent;
+            }
+        },
+        changeQuantity(index) {
+            if (this.form.products[index].quantity == '') {
+                this.form.products[index].total = 0;
+            } else {
+                this.changePercentage(index);
+            }
+        },
+        searchProduct(index, id) {
+            this.$http.get('identification/product/' + id).then((response) => {
+                this.form.products[index].price = response.data.product.price;
+                this.form.products[index].quantity = 1;
+                this.form.products[index].total = response.data.product.price;
+                this.form.products[index].percentage = 0;
+                this.calculateTotals();
+            })
+        },
         discounts() {
             this.$http.get('identification/listDiscounts').then((response) => {
-                this.tax = response.data.discounts
+                this.tax = response.data.discounts;
+                this.tax.push({
+                    text: 'Seleccione',
+                    value: null
+                })
             })
         },
         change(val) {
@@ -397,6 +440,11 @@ export default {
         listprice() {
             this.$http.get('identification/listPrice').then((response) => {
                 this.listPrice = response.data.listPrice
+            })
+        },
+        fetchRetention() {
+            this.$http.get('identification/listRetention').then((response) => {
+                this.retentions = response.data.retentions
             })
         },
         showContacts() {
@@ -420,6 +468,10 @@ export default {
         fetchProducts() {
             this.$http.get('identification/listProducts').then((response) => {
                 this.products = response.data.products;
+                this.products.push({
+                    text: 'Seleccione',
+                    value: null
+                })
             })
         },
         deadLineId(id) {
@@ -431,7 +483,7 @@ export default {
         repeateAgain() {
             this.form.products.push({
                 id: null,
-                name: '',
+                name: null,
                 ref: '',
                 price: '',
                 percentage: '',
@@ -478,6 +530,12 @@ export default {
     border: 1px solid black;
     background: black;
     margin: 10px 45px 10px 0px;
+}
+
+.retention {
+    cursor: pointer;
+    margin-left: 118px;
+    position: absolute;
 }
 </style>
 <style lang="scss">
