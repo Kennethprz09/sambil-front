@@ -387,6 +387,7 @@ export default {
             } else {
                 this.changePercentage(index);
                 this.calculateTotals();
+                
             }
         },
         changePercentage(index) {
