@@ -5,7 +5,8 @@
             <b-row>
                 <b-col md="6" xl="4" class=" mt-2 mb-3 ml-3">
                     <label for="Lista de precios">Lista de precios</label>
-                    <v-select :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice"
+                    <v-select v-model="form.list_price" :reduce="val => val.value"
+                        :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="listPrice"
                         placeholder="Seleccione" />
                 </b-col>
             </b-row>
@@ -21,7 +22,7 @@
                 </b-col>
                 <b-col md="4" xl="4" class="mb-3 p-3">
                     <v-select v-model="form.credit" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title"
-                        :options="credits" placeholder="Seleccionar" />
+                        :options="credits" placeholder="Seleccionar" :reduce="val => val.value" />
                     <h2 class="mt-2" v-if="form.credit.value == 1">NCF B1600000001</h2>
                     <h2 class="mt-2" v-else-if="form.credit.value == 2">NCF B0200000001</h2>
                     <h2 class="mt-2" v-else-if="form.credit.value == 3">NCF B0100000004</h2>
@@ -87,7 +88,7 @@
                 <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
                     <b-col>
                         <b-form-select v-model="form.products[index].name" :options="products"
-                            @change="searchProduct(index, form.products[index].name)" />
+                            @change="searchProduct(index, form.products[index].name)"  :reduce="val => val.value" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
@@ -135,8 +136,8 @@
             <b-row>
                 <b-col md="5" class=" mt-2 p-3 mt-0">
                     <label for="Lista de precios">Retención</label>
-                        <b-form-select v-model="form.retentions[index].retention" :options="retentions"
-                            @change="changeValueRetention(index)" />
+                    <b-form-select v-model="form.retentions[index].retention" :options="retentions"
+                        @change="changeValueRetention(index)" />
                 </b-col>
                 <b-col md="5" class=" mt-2 p-3 mt-0">
                     <label for="Lista de precios">Valor</label>
@@ -209,21 +210,21 @@
             <b-row>
                 <b-col md="6" class="pl-3 pr-3">
                     <label for="textarea-default">Términos y condiciones</label>
-                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                    <b-form-textarea v-model="form.terms" placeholder="Visible en la impresión del documento"
                         rows="3" />
                 </b-col>
                 <b-col md="6" class="pl-3 pr-3">
                     <label for="textarea-default">Notas</label>
-                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento"
                         rows="3" />
                 </b-col>
                 <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
                     <label for="textarea-default">Pie de factura</label>
-                    <b-form-textarea id="textarea-default" placeholder="Visible en la impresión del documento"
+                    <b-form-textarea v-model="form.footer" placeholder="Visible en la impresión del documento"
                         rows="3" />
                 </b-col>
                 <b-col md="12" class="text-center mb-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="storeInvoice()">
                         Guardar
                     </b-button>
                 </b-col>
@@ -285,6 +286,7 @@ export default {
                 { title: 'Régimen especial de tributación (14)', value: 5 },
             ],
             form: {
+                list_price: '',
                 credit: '',
                 contact: '',
                 rnc: '',
@@ -308,7 +310,10 @@ export default {
                     subtotal: 0,
                     discount: 0,
                     total: 0
-                }
+                },
+                terms: '',
+                note: '',
+                footer: ''
             },
             contacts: [],
             payment_deadline: [],
@@ -359,12 +364,41 @@ export default {
         window.removeEventListener('resize', this.initTrHeight)
     },
     methods: {
+        storeInvoice() {
+            this.$http.post('/invoice/store', this.form)
+                .then(response => {
+                    if (response.data.code == 200) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                            },
+                            buttonsStyling: false,
+                        });
+                        this.$router.push('/invoice');
+                    }
+                    if (response.data.code == 500) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'warning',
+                            customClass: {
+                                confirmButton: 'btn btn-warning',
+                            },
+                            buttonsStyling: false,
+                        })
+                    }
+                })
+                .catch((error) => {
+                    this.errors = error.response.data.errors;
+                });
+        },
         calculateTotals() {
             var sum = 0;
             for (let index = 0; index < this.form.products.length; index++) {
-                sum += +this.form.products[index].price;                
+                sum += +this.form.products[index].price;
             }
-            this.form.totals.subtotal = new Intl.NumberFormat('es-RD', { maximumSignificantDigits: 6 }).format(sum);            
+            this.form.totals.subtotal = new Intl.NumberFormat('es-RD', { maximumSignificantDigits: 6 }).format(sum);
         },
         changeValueRetention(val) {
             if (val == '') {
@@ -387,7 +421,7 @@ export default {
             } else {
                 this.changePercentage(index);
                 this.calculateTotals();
-                
+
             }
         },
         changePercentage(index) {

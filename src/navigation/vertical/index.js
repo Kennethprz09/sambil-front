@@ -57,7 +57,37 @@ export default [
         route: 'invoice',
         action: 'read',
         resource: 'Ver roles'
-      }
+      },
+      {
+        title: 'Facturas de venta recurrentes',
+        route: 'invoice-sale',
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Pagos recibidos',
+        route: 'invoice-received',
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Notas de Crédito',
+        route: 'invoice-credit',
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Cotizaciones',
+        route: 'invoice-cotization',
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Conduces',
+        route: 'invoice-drive',
+        action: 'read',
+        resource: 'Ver roles'
+      },
     ],
   },
 ]
