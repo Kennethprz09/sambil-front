@@ -145,7 +145,7 @@ import {
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
 export default {
-  name: 'Contacts',
+  name: 'ContactClients',
   components: {
     BCard,
     BRow,
@@ -170,7 +170,6 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params && this.$route.params.id,
       update: false,
       modal_password: false,
       formDisabled: false,
@@ -208,13 +207,12 @@ export default {
       dataTable: [],
       showLoadingTable: false,
       tableSettings: {
-        filter: this.$route.params && this.$route.params.id,
         searchQuery: '',
         input: '',
         typeSearch: '',
         perPage: 10,
         page: 1,
-        sortBy: 'id',
+        sortBy: 'reason',
         sortDesc: true,
       },
       formDataEdit: {},
@@ -247,22 +245,16 @@ export default {
         this.fetchList()
       },
     },
-    "tableSettings.filter": {
-      handler(val) {
-        this.fetchList()
-      },
-    },
   },
   created() {
     this.fetchList();
   },
   methods: {
     fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
+      this.$http.get('contact/clients', { params: this.tableSettings }).then((response) => {
         this.contact = response.data.contacts
         this.totalRows = response.data.total
         this.dataMetaCounter()
-
       })
     },
     dataMetaCounter() {
@@ -288,7 +280,7 @@ export default {
       });
     },
     deleteContact(id) {
-      this.$http.post('/contact/delete/' + id)
+      this.$http.post('/contact/client/delete/' + id)
         .then(response => {
           if (response.data.code == 200) {
             this.$swal({

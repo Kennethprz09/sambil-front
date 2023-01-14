@@ -34,7 +34,7 @@ export default [
     {
         path: '/contacts/clients',
         name: 'contactsClient',
-        component: () => import('@/views/Contact/Contact.vue'),
+        component: () => import('@/views/Contact/ContactClients.vue'),
         meta: {
             resource: 'Ver roles',
             action: 'read',
@@ -50,7 +50,7 @@ export default [
     {
         path: '/contacts/providers',
         name: 'contactsProvider',
-        component: () => import('@/views/Contact/Contact.vue'),
+        component: () => import('@/views/Contact/ContactProviders.vue'),
         meta: {
             resource: 'Ver roles',
             action: 'read',

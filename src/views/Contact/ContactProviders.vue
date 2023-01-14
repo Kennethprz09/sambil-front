@@ -145,7 +145,7 @@ import {
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
 export default {
-  name: 'Contacts',
+  name: 'ContactProviders',
   components: {
     BCard,
     BRow,
@@ -214,7 +214,7 @@ export default {
         typeSearch: '',
         perPage: 10,
         page: 1,
-        sortBy: 'id',
+        sortBy: 'reason',
         sortDesc: true,
       },
       formDataEdit: {},
@@ -258,11 +258,10 @@ export default {
   },
   methods: {
     fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
+      this.$http.get('contact/providers', { params: this.tableSettings }).then((response) => {
         this.contact = response.data.contacts
         this.totalRows = response.data.total
         this.dataMetaCounter()
-
       })
     },
     dataMetaCounter() {
@@ -288,7 +287,7 @@ export default {
       });
     },
     deleteContact(id) {
-      this.$http.post('/contact/delete/' + id)
+      this.$http.post('/contact/provider/delete/' + id)
         .then(response => {
           if (response.data.code == 200) {
             this.$swal({

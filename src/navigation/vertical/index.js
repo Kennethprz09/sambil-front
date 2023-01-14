@@ -28,19 +28,19 @@ export default [
     children: [
       {
         title: 'Todos',
-        route: { name: 'contactsAll', params: { id: 'all' } },
+        route: { name: 'contactsAll'},
         action: 'read',
         resource: 'Ver roles'
       },
       {
         title: 'Clientes',
-        route: { name: 'contactsClient', params: { id: 'clients' } },
+        route: { name: 'contactsClient' },
         action: 'read',
         resource: 'Ver roles'
       },
       {
         title: 'Proveedores',
-        route: { name: 'contactsProvider', params: { id: 'providers' } },
+        route: { name: 'contactsProvider' },
         action: 'read',
         resource: 'Ver roles'
       }
