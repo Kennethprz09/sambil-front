@@ -22,10 +22,10 @@ export default [
         meta: {
             resource: 'Ver roles',
             action: 'read',
-            pageTitle: 'Clientes',
+            pageTitle: 'Contactos',
             breadcrumb: [
                 {
-                    text: 'Clientes',
+                    text: 'Todos',
                     active: true,
                 },
             ],
@@ -54,10 +54,10 @@ export default [
         meta: {
             resource: 'Ver roles',
             action: 'read',
-            pageTitle: 'Clientes',
+            pageTitle: 'Proveedores',
             breadcrumb: [
                 {
-                    text: 'Clientes',
+                    text: 'Proveedores',
                     active: true,
                 },
             ],

@@ -335,7 +335,7 @@ export default {
             if (this.id && this.showContacts) {
                 this.$http.get('/contact/show/' + this.id).then((response) => {
                     this.disabled = true;
-                    /*if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
                         this.form.checked1 = true;
                         this.form.checked2 = false;
                     }
@@ -350,7 +350,7 @@ export default {
                     if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider' || response.data.contact.client_of_provider[1].client_of_provider == 'Client') {
                         this.form.checked2 = true;
                         this.form.checked1 = true;
-                    }*/
+                    }
                     this.form.type_identification = response.data.contact.type_identification;
                     this.form.number_identify = response.data.contact.number_identification;
                     this.form.full_name = response.data.contact.reason;
@@ -377,7 +377,7 @@ export default {
             if (this.id && this.edit) {
                 this.$http.get('/contact/show/' + this.id).then((response) => {
                     this.disabled = false;
-                    /*if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
+                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
                         this.form.checked1 = true;
                         this.form.checked2 = false;
                     }
@@ -392,7 +392,7 @@ export default {
                     if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider' || response.data.contact.client_of_provider[1].client_of_provider == 'Client') {
                         this.form.checked2 = true;
                         this.form.checked1 = true;
-                    }*/
+                    }
                     this.form.type_identification = response.data.contact.type_identification;
                     this.form.number_identify = response.data.contact.number_identification;
                     this.form.full_name = response.data.contact.reason;

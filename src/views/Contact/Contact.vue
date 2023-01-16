@@ -9,42 +9,41 @@
         <!-- Table Top -->
         <b-row>
           <!-- Per Page -->
-          <b-col cols="12" md="2" class="">
+          <b-col cols="12" md="3" class="">
             <label>Mostrar</label>
             <v-select v-model="tableSettings.perPage" :options="perPageOptions" :clearable="false"
               class="per-page-selector d-inline-block mx-50" />
             <label>registros</label>
           </b-col>
           
-          <b-col md="3">
+          <b-col md="2">
             <b-form-group>
               <v-select class="d-inline" v-model="tableSettings.input"
-                label="title" :options="inputs" :reduce="val => val.value" placeholder="Titulo" />
+                label="title" :options="inputs" :reduce="val => val.value" placeholder="Título" />
             </b-form-group>
           </b-col>
           <b-col md="3">
             <b-form-group>
               <v-select class="d-inline" v-model="tableSettings.typeSearch"
-                label="title" :options="typeSearch" :reduce="val => val.value" placeholder="Tipo de busqueda"/>
+                label="title" :options="typeSearch" :reduce="val => val.value" placeholder="Tipo de búsqueda"
+              />
             </b-form-group>
           </b-col>
           <b-col md="3">
-            <div class="d-flex align-items-center justify-content-end">
-              <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1" placeholder="Buscar..." />
-              <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle mr-1">
-                <feather-icon icon="SearchIcon" />
-              </b-button>
-            </div>
-            
+            <b-form-group>  
+              <b-form-input v-model="tableSettings.searchQuery" class="d-inline" style="width: 90%" placeholder="Buscar..." />
+            </b-form-group>
           </b-col>
 
 
           <!-- Search -->
           <b-col cols="12" md="1">
             <div class="d-flex align-items-center justify-content-end">
-              
-              <b-button variant="primary" @click="newContact()">
-                <span class="text-nowrap">Nuevo contacto</span>
+              <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle mr-1">
+                <feather-icon icon="SearchIcon" />
+              </b-button>
+              <b-button variant="primary" class="btn-icon rounded-circle mr-1" @click="newContact()">
+                <feather-icon icon="PlusIcon" />
               </b-button>
             </div>
           </b-col>
@@ -185,7 +184,6 @@ export default {
       ],
       typeSearch: [
         { value: 'LIKE', title: 'Igual' },
-        { value: 'LIKE', title: 'Contiene' },
         { value: 'NOT LIKE', title: 'No es igual' },
         { value: '>', title: 'Mayor que' },
         { value: '<', title: 'Menor que' }
