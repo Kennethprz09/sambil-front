@@ -37,7 +37,7 @@
                     </b-col>
                     <b-col md="3">
                         <b-form-group>
-                            <b-form-datepicker class="mb-1"  placeholder="Creacion" />
+                            <b-form-datepicker class="mb-1" placeholder="Creacion" />
                         </b-form-group>
                     </b-col>
                     <b-col md="1" class="text-left">
@@ -47,7 +47,7 @@
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive
+            <b-table ref="refContactListTable" class="position-relative" :items="cotizations" responsive
                 :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
                 empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
 
@@ -179,11 +179,11 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'id', label: 'Número', sortable: true },
-                { key: 'fullname', label: 'Cliente', sortable: true },
-                { key: 'number_identification', label: 'Creación' },
-                { key: 'phone', label: 'Estado' },
-                { key: '7', label: 'Total' },
+                { key: 'Número', label: 'Número', sortable: true },
+                { key: 'Cliente', label: 'Cliente', sortable: true },
+                { key: 'Creación', label: 'Creación' },
+                { key: 'Estado', label: 'Estado' },
+                { key: 'Total', label: 'Total' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -207,7 +207,7 @@ export default {
                 sortDesc: true,
             },
             formDataEdit: {},
-            contact: [],
+            cotizations: [],
             edit: true
         }
     },
@@ -243,17 +243,16 @@ export default {
         },
     },
     created() {
-        //   this.fetchList();
+        this.fetchList();
     },
     methods: {
-        //   fetchList() {
-        //     this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
-        //       this.contact = response.data.contacts
-        //       this.totalRows = response.data.total
-        //       this.dataMetaCounter()
-
-        //     })
-        //   },
+        fetchList() {
+            this.$http.get('identification/listCotizations', { params: this.tableSettings }).then((response) => {
+                this.cotizations = response.data.cotizations
+                this.totalRows = response.data.total
+                this.dataMetaCounter()
+            })
+        },
         dataMetaCounter() {
             const localItemsCount = this.dataTable.length
             this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)

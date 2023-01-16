@@ -77,7 +77,7 @@
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive
+            <b-table ref="refContactListTable" class="position-relative" :items="receiveds" responsive
                 :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
                 empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
 
@@ -209,14 +209,14 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'id', label: 'Número', sortable: true },
-                { key: 'fullname', label: 'Cliente', sortable: true },
-                { key: 'number_identification', label: 'Detalle' },
-                { key: 'phone', label: 'Creación' },
-                { key: '7', label: 'Cuenta' },
-                { key: '1', label: 'Conciliado' },
-                { key: '2', label: 'Estado' },
-                { key: '0', label: 'Monto' },
+                { key: 'Número', label: 'Número', sortable: true },
+                { key: 'Cliente', label: 'Cliente', sortable: true },
+                { key: 'Detalle', label: 'Detalle' },
+                { key: 'Creación', label: 'Creación' },
+                { key: 'Cuenta', label: 'Cuenta' },
+                { key: 'Conciliado', label: 'Conciliado' },
+                { key: 'Estado', label: 'Estado' },
+                { key: 'Monto', label: 'Monto' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -240,7 +240,7 @@ export default {
                 sortDesc: true,
             },
             formDataEdit: {},
-            contact: [],
+            receiveds: [],
             edit: true
         }
     },
@@ -276,17 +276,16 @@ export default {
         },
     },
     created() {
-        //   this.fetchList();
+        this.fetchList();
     },
     methods: {
-        //   fetchList() {
-        //     this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
-        //       this.contact = response.data.contacts
-        //       this.totalRows = response.data.total
-        //       this.dataMetaCounter()
-
-        //     })
-        //   },
+        fetchList() {
+            this.$http.get('identification/listReceived', { params: this.tableSettings }).then((response) => {
+                this.receiveds = response.data.receiveds
+                this.totalRows = response.data.total
+                this.dataMetaCounter()
+            })
+        },
         dataMetaCounter() {
             const localItemsCount = this.dataTable.length
             this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)

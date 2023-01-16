@@ -57,7 +57,7 @@
             </b-col>
           </b-row>
         </div>
-        <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive :fields="tableColumns"
+        <b-table ref="refContactListTable" class="position-relative" :items="sales" responsive :fields="tableColumns"
           primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty empty-text="No se encontraron datos"
           :sort-desc.sync="tableSettings.sortDesc">
   
@@ -198,12 +198,12 @@
           { value: '<', title: 'Menor que' }
         ],
         tableColumns: [
-          { key: 'id', label: 'Cliente', sortable: true },
-          { key: 'fullname', label: 'Fecha de inicio', sortable: true },
-          { key: 'number_identification', label: 'Vigencia hasta' },
-          { key: 'phone', label: 'Total' },
-          { key: '7', label: 'Frecuencia (meses)' },
-          { key: '0', label: 'Término (días)' },
+          { key: 'Cliente', label: 'Cliente', sortable: true },
+          { key: 'Fecha de inicio', label: 'Fecha de inicio', sortable: true },
+          { key: 'Vigencia hasta', label: 'Vigencia hasta' },
+          { key: 'Total', label: 'Total' },
+          { key: 'Frecuencia (meses)', label: 'Frecuencia (meses)' },
+          { key: 'Término (días)', label: 'Término (días)' },
           { key: 'actions', label: 'Acciones' },
         ],
         sortBy: 'id',
@@ -227,7 +227,7 @@
           sortDesc: true,
         },
         formDataEdit: {},
-        contact: [],
+        sales: [],
         edit: true
       }
     },
@@ -263,17 +263,16 @@
       },
     },
     created() {
-    //   this.fetchList();
+      this.fetchList();
     },
     methods: {
-    //   fetchList() {
-    //     this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
-    //       this.contact = response.data.contacts
-    //       this.totalRows = response.data.total
-    //       this.dataMetaCounter()
+      fetchList() {
+        this.$http.get('identification/listSales', { params: this.tableSettings }).then((response) => {
+          this.sales = response.data.sales
+          this.dataMetaCounter()
   
-    //     })
-    //   },
+        })
+      },
       dataMetaCounter() {
         const localItemsCount = this.dataTable.length
         this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)

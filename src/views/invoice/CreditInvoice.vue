@@ -48,7 +48,7 @@
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive
+            <b-table ref="refContactListTable" class="position-relative" :items="credits" responsive
                 :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
                 empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
 
@@ -180,11 +180,11 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'id', label: 'Número', sortable: true },
-                { key: 'fullname', label: 'Cliente', sortable: true },
-                { key: 'number_identification', label: 'Fecha' },
-                { key: 'phone', label: 'Total' },
-                { key: '7', label: 'Por Aplicar' },
+                { key: 'Número', label: 'Número', sortable: true },
+                { key: 'Cliente', label: 'Cliente', sortable: true },
+                { key: 'Fecha', label: 'Fecha' },
+                { key: 'Total', label: 'Total' },
+                { key: 'Aplicar', label: 'Por Aplicar' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -208,7 +208,7 @@ export default {
                 sortDesc: true,
             },
             formDataEdit: {},
-            contact: [],
+            credits: [],
             edit: true
         }
     },
@@ -244,17 +244,17 @@ export default {
         },
     },
     created() {
-        //   this.fetchList();
+          this.fetchList();
     },
     methods: {
-        //   fetchList() {
-        //     this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
-        //       this.contact = response.data.contacts
-        //       this.totalRows = response.data.total
-        //       this.dataMetaCounter()
+          fetchList() {
+            this.$http.get('identification/listCredits', { params: this.tableSettings }).then((response) => {
+              this.credits = response.data.credits
+              this.totalRows = response.data.total
+              this.dataMetaCounter()
 
-        //     })
-        //   },
+            })
+          },
         dataMetaCounter() {
             const localItemsCount = this.dataTable.length
             this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
