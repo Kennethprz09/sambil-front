@@ -7,6 +7,8 @@ import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth
 import authentication from './routes/authentication'
 import users from './routes/users'
 import roles from './routes/roles'
+import contacts from './routes/contacts'
+import invoice from './routes/invoice'
 
 Vue.use(VueRouter)
 
@@ -20,6 +22,8 @@ const router = new VueRouter({
     ...authentication,
     ...users,
     ...roles,
+    ...contacts,
+    ...invoice,
     {
       path: '/',
       name: 'home',
