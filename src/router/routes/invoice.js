@@ -111,5 +111,21 @@ export default [
         ],
       },
     },
+    {
+      path: '/invoice/sales',
+      name: 'invoice-sales',
+      component: () => import('@/views/invoice/NewSalesInvoice.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Nueva factura de venta recurrente',
+        breadcrumb: [
+          {
+            text: 'Nueva factura de venta recurrente',
+            active: true,
+          },
+        ],
+      },
+    },
   ]
   

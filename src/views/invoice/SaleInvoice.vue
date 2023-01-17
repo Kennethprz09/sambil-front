@@ -12,7 +12,7 @@
             <b-col class="mb-2" cols="12" md="12">
               <div class="d-flex align-items-center justify-content-end">
                 
-                <b-button variant="primary" @click="newContact()">
+                <b-button variant="primary" @click="newInvoiceSale()">
                   <span class="text-nowrap">Nueva factura recurrente</span>
                 </b-button>
               </div>
@@ -279,8 +279,8 @@
         this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
         this.dataMeta.of = this.totalRows
       },
-      newContact() {
-        this.$router.push('/contacts/new-contact');
+      newInvoiceSale() {
+        this.$router.push('/invoice/sales');
       },
       showContact(id) {
         var showContacts = true;
