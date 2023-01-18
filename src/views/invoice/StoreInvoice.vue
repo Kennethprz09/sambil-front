@@ -14,7 +14,7 @@
         <b-card no-body class="mt-2 mb-0">
             <b-row>
                 <b-col md="4" xl="4" class="mb-3 p-3">
-                    <b-img class="imgLogo" src="https://picsum.photos/1024/400/?image=41" fluid
+                    <b-img class="imgLogo" :src="require('@/assets/images/logo/sambil-logo.png')" fluid
                         alt="Responsive image" />
                 </b-col>
                 <b-col md="4" xl="4" class="mb-3 p-3">
@@ -154,7 +154,7 @@
         <b-card no-body class="mt-1">
             <b-row>
                 <b-col md="4" xl="4" class="mb-3 p-3">
-                    <b-img class="imgLogo" src="https://picsum.photos/1024/400/?image=41" fluid
+                    <b-img class="imgLogo" :src="require('@/assets/images/logo/firma.png')" fluid
                         alt="Responsive image" />
                 </b-col>
                 <b-col md="2" class="mb-3 p-3"></b-col>
@@ -552,8 +552,7 @@ export default {
 }
 
 .imgLogo {
-    width: 400px;
-    height: 200px;
+    width: 90%;
 }
 
 .repeater-form {

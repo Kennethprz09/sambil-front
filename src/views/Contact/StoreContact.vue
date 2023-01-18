@@ -91,11 +91,11 @@
                             notificaciones de vencimiento para tus clientes.</p>
                     </b-col>
                 </b-row>
-                <div class="mt-3 mb-2" v-if="formItems">
-                    <b-form ref="form" :style="{ height: trHeight }" class="repeater-form">
+                <div class="mt-3 mb-2">
+                    <b-form ref="form" class="repeater-form">
 
                         <!-- Row Loop -->
-                        <b-row v-for="(item, index) in form.items" :id="item.id" :key="item.id" ref="row">
+                        <b-row v-for="(item, index) in form.items" :key="index" ref="row">
 
                             <b-col md="2">
                                 <b-form-group label="Nombre/Razón social" label-for="Nombre/Razón social">
@@ -258,6 +258,8 @@ export default {
                 seller: '',
                 receivable: '',
                 bill_to_pay: '',
+                payment_deadline: '',
+                itemsDelete: [],
             },
             id: this.$route.params.id,
             indeterminate1: true,
@@ -303,54 +305,70 @@ export default {
     },
     methods: {
         formStore() {
-            this.$http.post('/contact/store', this.form)
-                .then(response => {
-                    if (response.data.code == 200) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: 'success',
-                            customClass: {
-                                confirmButton: 'btn btn-success',
-                            },
-                            buttonsStyling: false,
-                        });
-                        this.$router.push('/contacts/all');
-                    }
-                    if (response.data.code == 500) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: 'warning',
-                            customClass: {
-                                confirmButton: 'btn btn-warning',
-                            },
-                            buttonsStyling: false,
-                        })
-                    }
-                })
-                .catch((error) => {
-                    this.errors = error.response.data.errors;
-                });
+            if(this.edit){
+                this.$http.post('/contact/edit/' + this.id, this.form)
+                    .then(response => {
+                        if (response.data.code == 200) {
+                            this.$swal({
+                                title: response.data.message,
+                                icon: 'success',
+                                customClass: {
+                                    confirmButton: 'btn btn-success',
+                                },
+                                buttonsStyling: false,
+                            });
+                            this.$router.push('/contacts/all');
+                        }
+                        if (response.data.code == 500) {
+                            this.$swal({
+                                title: response.data.message,
+                                icon: 'warning',
+                                customClass: {
+                                    confirmButton: 'btn btn-warning',
+                                },
+                                buttonsStyling: false,
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        this.errors = error.response.data.errors;
+                    });
+            }else{
+                this.$http.post('/contact/store', this.form)
+                    .then(response => {
+                        if (response.data.code == 200) {
+                            this.$swal({
+                                title: response.data.message,
+                                icon: 'success',
+                                customClass: {
+                                    confirmButton: 'btn btn-success',
+                                },
+                                buttonsStyling: false,
+                            });
+                            this.$router.push('/contacts/all');
+                        }
+                        if (response.data.code == 500) {
+                            this.$swal({
+                                title: response.data.message,
+                                icon: 'warning',
+                                customClass: {
+                                    confirmButton: 'btn btn-warning',
+                                },
+                                buttonsStyling: false,
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        this.errors = error.response.data.errors;
+                    });
+            }
         },
         showContact() {
             if (this.id && this.showContacts) {
                 this.$http.get('/contact/show/' + this.id).then((response) => {
                     this.disabled = true;
-                    /*if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
-                        this.form.checked1 = true;
-                        this.form.checked2 = false;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = false;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client' || response.data.contact.client_of_provider[1].client_of_provider == 'Provider') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = true;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider' || response.data.contact.client_of_provider[1].client_of_provider == 'Client') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = true;
-                    }*/
+                    this.form.checked1 = response.data.contact.checked1;
+                    this.form.checked2 = response.data.contact.checked2;
                     this.form.type_identification = response.data.contact.type_identification;
                     this.form.number_identify = response.data.contact.number_identification;
                     this.form.full_name = response.data.contact.reason;
@@ -360,12 +378,13 @@ export default {
                     this.form.mobil_contact = response.data.contact.mobil;
                     this.form.phone_one_contact = response.data.contact.phone1;
                     this.form.phone_two_contact = response.data.contact.phone2;
-                    this.form.items = response.data.contact.associatePersons;
                     this.form.type_ncf = response.data.contact.type_nfc;
                     this.form.list_price = response.data.contact.price_list;
                     this.form.seller = response.data.contact.seller;
                     this.form.receivable = response.data.contact.receivable;
                     this.form.bill_to_pay = response.data.contact.bill_to_pay;
+                    this.form.payment_deadline = response.data.contact.payment_deadline;
+                    this.form.items = response.data.contact.associatePersons;
                     this.formItems = true;
                 })
             } else {
@@ -377,22 +396,8 @@ export default {
             if (this.id && this.edit) {
                 this.$http.get('/contact/show/' + this.id).then((response) => {
                     this.disabled = false;
-                    /*if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
-                        this.form.checked1 = true;
-                        this.form.checked2 = false;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = false;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Client' || response.data.contact.client_of_provider[1].client_of_provider == 'Provider') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = true;
-                    }
-                    if (response.data.contact.client_of_provider[0].client_of_provider == 'Provider' || response.data.contact.client_of_provider[1].client_of_provider == 'Client') {
-                        this.form.checked2 = true;
-                        this.form.checked1 = true;
-                    }*/
+                    this.form.checked1 = response.data.contact.checked1;
+                    this.form.checked2 = response.data.contact.checked2;
                     this.form.type_identification = response.data.contact.type_identification;
                     this.form.number_identify = response.data.contact.number_identification;
                     this.form.full_name = response.data.contact.reason;
@@ -408,6 +413,7 @@ export default {
                     this.form.seller = response.data.contact.seller;
                     this.form.receivable = response.data.contact.receivable;
                     this.form.bill_to_pay = response.data.contact.bill_to_pay;
+                    this.form.payment_deadline = response.data.contact.payment_deadline
                     this.formItems = true;
                 })
             } else {
@@ -465,6 +471,7 @@ export default {
         },
         repeateAgain() {
             this.form.items.push({
+                id: null,
                 bussiness_name: '',
                 last_name: '',
                 email: '',
@@ -477,7 +484,8 @@ export default {
             })
         },
         removeItem(index) {
-            this.form.items.splice(index, 1)
+            this.form.itemsDelete.push(this.form.items[index])
+            this.form.items.splice(index)
             this.trTrimHeight(this.$refs.row[0].offsetHeight)
         },
         initTrHeight() {
