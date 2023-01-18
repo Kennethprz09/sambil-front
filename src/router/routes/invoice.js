@@ -127,5 +127,21 @@ export default [
         ],
       },
     },
+    {
+      path: '/invoice/newReceived',
+      name: 'invoice-newReceived',
+      component: () => import('@/views/invoice/NewReceivedInvoice.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Nuevo ingreso',
+        breadcrumb: [
+          {
+            text: 'Nuevo ingreso',
+            active: true,
+          },
+        ],
+      },
+    },
   ]
   

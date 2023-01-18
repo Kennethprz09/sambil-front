@@ -17,7 +17,7 @@
                     <b-col class="mb-2" md="6">
                         <div class="d-flex align-items-center justify-content-end">
 
-                            <b-button variant="primary" @click="newContact()">
+                            <b-button variant="primary" @click="newReceived()">
                                 <span class="text-nowrap">Nuevo Ingreso</span>
                             </b-button>
                         </div>
@@ -292,8 +292,8 @@ export default {
             this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
             this.dataMeta.of = this.totalRows
         },
-        newContact() {
-            this.$router.push('/contacts/new-contact');
+        newReceived() {
+            this.$router.push('/invoice/newReceived');
         },
         showContact(id) {
             var showContacts = true;
