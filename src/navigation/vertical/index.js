@@ -28,22 +28,22 @@ export default [
     children: [
       {
         title: 'Todos',
-        route: { name: 'contactsAll'},
+        route: { name: 'contactsAll' },
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Clientes',
         route: { name: 'contactsClient' },
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Proveedores',
         route: { name: 'contactsProvider' },
         action: 'read',
-        resource: 'Ver roles'
-      }
+        resource: 'Ver roles',
+      },
     ],
   },
   {
@@ -56,37 +56,51 @@ export default [
         title: 'Facturas de venta',
         route: 'invoice',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Facturas de venta recurrentes',
         route: 'invoice-sale',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Pagos recibidos',
         route: 'invoice-received',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Notas de Crédito',
         route: 'invoice-credit',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Cotizaciones',
         route: 'invoice-cotization',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Conduces',
         route: 'invoice-drive',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
+      },
+    ],
+  },
+  {
+    title: 'Compras',
+    icon: 'CreditCardIcon',
+    action: 'read',
+    resource: 'Ver Compras',
+    children: [
+      {
+        title: 'Pagos / Gastos',
+        route: 'pay',
+        action: 'read',
+        resource: 'Ver Pagos',
       },
     ],
   },
