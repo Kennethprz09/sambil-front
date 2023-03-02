@@ -95,8 +95,12 @@
               variant="info"
               class="btn-icon rounded-circle ml-2"
               title="Ver"
+              @click="showPay(data)"
             >
-              <feather-icon icon="EyeIcon" />
+              <feather-icon
+                icon="EyeIcon"
+              />
+
             </b-button>
 
             <b-button
@@ -104,6 +108,7 @@
               variant="success"
               class="btn-icon rounded-circle ml-2"
               title="Editar"
+              @click="editPay(data)"
             >
               <feather-icon icon="EditIcon" />
             </b-button>
@@ -111,15 +116,17 @@
               v-b-tooltip.hover.v-primary
               variant="warning"
               class="btn-icon rounded-circle ml-2"
-              title="Imprimir"
+              title="anular"
+              @click="cancelPay(data)"
             >
-              <feather-icon icon="PrinterIcon" />
+              <feather-icon icon="XIcon" />
             </b-button>
             <b-button
               v-b-tooltip.hover.v-primary
               variant="danger"
               class="btn-icon rounded-circle ml-2"
               title="Eliminar"
+              @click="deletePay(data)"
             >
               <feather-icon icon="Trash2Icon" />
             </b-button>
@@ -418,6 +425,18 @@ export default {
     },
     newInvoice() {
       this.$router.push('/pay/store')
+    },
+    showPay(data) {
+      this.$router.push(`/pay/show/${data.index}`)
+    },
+    editPay(data) {
+      this.$router.push(`/pay/edit/${data.index}`)
+    },
+    cancelPay(data) {
+      console.log(`cancel Pay ${data.index}`)
+    },
+    deletePay(data) {
+      console.log(`delete Pay ${data.index}`)
     },
     dataMetaCounter() {
       const localItemsCount = this.dataTable.length

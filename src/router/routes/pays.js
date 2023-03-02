@@ -32,7 +32,7 @@ export default [
     },
   },
   {
-    path: '/pay/edit',
+    path: '/pay/edit/:id',
     name: 'pay-edit',
     component: () => import('@/views/pays/SaleInvoice.vue'),
     meta: {
@@ -48,8 +48,8 @@ export default [
     },
   },
   {
-    path: '/pay/showOne',
-    name: 'pay-showOne',
+    path: '/pay/show/:id',
+    name: 'pay-show',
     component: () => import('@/views/pays/ReceivedInvoice.vue'),
     meta: {
       resource: 'Ver pagos',
