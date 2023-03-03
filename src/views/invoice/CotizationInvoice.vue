@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <!-- Table Container Card -->
         <b-card no-body class="mb-0">
@@ -17,7 +16,7 @@
                     <b-col class="mb-2" md="6">
                         <div class="d-flex align-items-center justify-content-end">
 
-                            <b-button variant="primary" @click="newContact()">
+                            <b-button variant="primary" @click="newCotizacion()">
                                 <span class="text-nowrap">Nueva Cotización</span>
                             </b-button>
                         </div>
@@ -97,12 +96,11 @@
                             registros</span>
                     </b-col>
                     <!-- Pagination -->
-                    <b-col cols="12" sm="6"
-                        class="d-flex align-items-center justify-content-center justify-content-sm-end">
+                    <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">
 
-                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows"
-                            :per-page="tableSettings.perPage" first-number last-number class="mb-0 mt-1 mt-sm-0"
-                            prev-class="prev-item" next-class="next-item">
+                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows" :per-page="tableSettings.perPage"
+                            first-number last-number class="mb-0 mt-1 mt-sm-0" prev-class="prev-item"
+                            next-class="next-item">
                             <template #prev-text>
                                 <feather-icon icon="ChevronLeftIcon" size="18" />
                             </template>
@@ -179,11 +177,11 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'Número', label: 'Número', sortable: true },
-                { key: 'Cliente', label: 'Cliente', sortable: true },
-                { key: 'Creación', label: 'Creación' },
-                { key: 'Estado', label: 'Estado' },
-                { key: 'Total', label: 'Total' },
+                { key: 'id', label: 'Número', sortable: true },
+                { key: 'contact', label: 'Cliente', sortable: true },
+                { key: 'created_at', label: 'Creación' },
+                { key: 'status', label: 'Estado' },
+                { key: 'total', label: 'Total' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -259,13 +257,13 @@ export default {
             this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
             this.dataMeta.of = this.totalRows
         },
-        newContact() {
-            this.$router.push('/contacts/new-contact');
+        newCotizacion() {
+            this.$router.push('/invoice/newinvoice');
         },
         showContact(id) {
             var showContacts = true;
             this.$router.push({
-                name: 'contacts/new-contact',
+                name: 'invoice-show-invoice',
                 params: { id: id, showContacts: showContacts }
             });
         },

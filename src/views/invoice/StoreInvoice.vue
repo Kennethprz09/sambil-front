@@ -88,7 +88,7 @@
                 <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
                     <b-col>
                         <b-form-select v-model="form.products[index].name" :options="products"
-                            @change="searchProduct(index, form.products[index].name)"  :reduce="val => val.value" />
+                            @change="searchProduct(index, form.products[index].name)" :reduce="val => val.value" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
@@ -125,8 +125,7 @@
                 </b-row>
             </b-form>
             <b-col cols="12" class="text-center mt-3">
-                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
-                    @click="repeateAgain">
+                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="repeateAgain">
                     <feather-icon icon="PlusIcon" class="mr-25" />
                     <span>Agregar Linea</span>
                 </b-button>
@@ -144,8 +143,7 @@
                     <b-form-input type="number" v-model="form.retentions[index].value" />
                 </b-col>
                 <b-col md="2" class=" mt-2 p-3 mt-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"
-                        @click="deleteRetention(index)">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="deleteRetention(index)">
                         <feather-icon icon="XIcon" />
                     </b-button>
                 </b-col>
@@ -154,8 +152,7 @@
         <b-card no-body class="mt-1">
             <b-row>
                 <b-col md="4" xl="4" class="mb-3 p-3">
-                    <b-img class="imgLogo" :src="require('@/assets/images/logo/firma.png')" fluid
-                        alt="Responsive image" />
+                    <b-img class="imgLogo" :src="require('@/assets/images/logo/firma.png')" fluid alt="Responsive image" />
                 </b-col>
                 <b-col md="2" class="mb-3 p-3"></b-col>
                 <b-col md="3" class="mb-3 p-3">
@@ -210,18 +207,15 @@
             <b-row>
                 <b-col md="6" class="pl-3 pr-3">
                     <label for="textarea-default">Términos y condiciones</label>
-                    <b-form-textarea v-model="form.terms" placeholder="Visible en la impresión del documento"
-                        rows="3" />
+                    <b-form-textarea v-model="form.terms" placeholder="Visible en la impresión del documento" rows="3" />
                 </b-col>
                 <b-col md="6" class="pl-3 pr-3">
                     <label for="textarea-default">Notas</label>
-                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento"
-                        rows="3" />
+                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" />
                 </b-col>
                 <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
                     <label for="textarea-default">Pie de factura</label>
-                    <b-form-textarea v-model="form.footer" placeholder="Visible en la impresión del documento"
-                        rows="3" />
+                    <b-form-textarea v-model="form.footer" placeholder="Visible en la impresión del documento" rows="3" />
                 </b-col>
                 <b-col md="12" class="text-center mb-3">
                     <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="storeInvoice()">

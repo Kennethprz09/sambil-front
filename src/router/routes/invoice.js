@@ -143,5 +143,37 @@ export default [
         ],
       },
     },
+    {
+      path: '/invoice/newinvoice',
+      name: 'newInvoice',
+      component: () => import('@/views/cotizacion/crearCotizacion.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Nueva cotización',
+        breadcrumb: [
+          {
+            text: 'Nueva cotización',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/invoice/showInvoice',
+      name: 'invoice-show-invoice',
+      component: () => import('@/views/cotizacion/showInvoice.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Ver Cotización',
+        breadcrumb: [
+          {
+            text: 'Ver Cotización',
+            active: true,
+          },
+        ],
+      },
+    },
   ]
   
