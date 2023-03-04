@@ -20,7 +20,7 @@ export default [
     name: 'pay-store',
     component: () => import('@/views/pays/StoreInvoice.vue'),
     meta: {
-      resource: 'Ver pagos',
+      resource: 'Crear pagos',
       action: 'read',
       pageTitle: 'Crear Pago',
       breadcrumb: [

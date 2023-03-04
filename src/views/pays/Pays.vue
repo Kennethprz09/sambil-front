@@ -8,7 +8,7 @@
       no-body
       class="mb-0"
     >
-
+      <!-- Filter -->
       <div class="m-2">
 
         <!-- Table Top -->
@@ -16,8 +16,8 @@
           <!-- Per Page -->
           <b-col
             cols="12"
-            md="6"
-            class="d-flex align-items-center justify-content-start mb-1 mb-md-0"
+            md="3"
+            class=""
           >
             <label>Mostrar</label>
             <v-select
@@ -28,22 +28,67 @@
             />
             <label>registros</label>
           </b-col>
+
+          <b-col md="2">
+            <b-form-group>
+              <v-select
+                v-model="tableSettings.input"
+                class="d-inline"
+                label="title"
+                :options="inputs"
+                :reduce="val => val.value"
+                placeholder="Título"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col md="3">
+            <b-form-group>
+              <v-select
+                v-model="tableSettings.typeSearch"
+                class="d-inline"
+                label="title"
+                :options="typeSearch"
+                :reduce="val => val.value"
+                placeholder="Tipo de búsqueda"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col md="3">
+            <b-form-group>
+              <b-form-input
+                v-model="tableSettings.searchQuery"
+                class="d-inline"
+                style="width: 90%"
+                placeholder="Buscar..."
+              />
+            </b-form-group>
+          </b-col>
+
           <!-- Search -->
           <b-col
             cols="12"
-            md="6"
+            md="1"
           >
             <div class="d-flex align-items-center justify-content-end">
-              <b-button variant="primary">
-                <span
-                  class="text-nowrap"
-                  @click="newInvoice()"
-                >Nuevo Pago</span>
+              <b-button
+                variant="primary"
+                class="btn-icon rounded-circle mr-1"
+              >
+                <feather-icon icon="SearchIcon" />
+              </b-button>
+
+              <b-button
+                variant="primary"
+                class="btn-icon rounded-circle mr-1"
+                @click="newPay()"
+              >
+                <feather-icon icon="PlusIcon" />
               </b-button>
             </div>
           </b-col>
         </b-row>
       </div>
+      <!-- table -->
       <b-table
         ref="refContactListTable"
         class="position-relative"
@@ -69,21 +114,6 @@
             variant="success"
           >
             {{ data.item.expiration }}
-          </b-badge>
-        </template>
-
-        <template #cell(status)="data">
-          <b-badge
-            v-if="(data.item.status == 'Por cobrar')"
-            variant="danger"
-          >
-            {{ data.item.status }}
-          </b-badge>
-          <b-badge
-            v-else-if="(data.item.status == 'Cobrado')"
-            variant="success"
-          >
-            {{ data.item.status }}
           </b-badge>
         </template>
 
@@ -185,12 +215,12 @@
 
 <script>
 import {
-  extend, ValidationProvider, ValidationObserver, localize,
+  extend,
 } from 'vee-validate'
 import { required } from '@validations'
 import {
-  BCard, BRow, BCol, BFormInput, BButton, BTable, BMedia, BAvatar, BLink,
-  BBadge, BDropdown, BDropdownItem, BPagination, BFormGroup, BForm, VBTooltip,
+  BCard, BRow, BCol, BFormInput, BButton, BTable,
+  BBadge, BPagination, BFormGroup, VBTooltip,
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
@@ -209,19 +239,13 @@ export default {
     BFormInput,
     BButton,
     BTable,
-    BMedia,
-    BAvatar,
-    BLink,
+
     BBadge,
-    BDropdown,
-    BDropdownItem,
+
     BPagination,
     vSelect,
     BFormGroup,
-    BForm,
-    ValidationProvider,
-    ValidationObserver,
-    VBTooltip,
+
   },
   directives: {
     Ripple,
@@ -232,12 +256,27 @@ export default {
       refContactListTable: null,
       perPageOptions: [10, 25, 50, 100],
       searchQuery: '',
+      inputs: [
+        { value: 'id', title: 'Id' },
+        { value: 'client', title: 'Cliente' },
+        { value: 'detail', title: 'Detalle' },
+        { value: 'created', title: 'Creacion' },
+        { value: 'account', title: 'Cuenta' },
+        { value: 'status', title: 'Estado' },
+        { value: 'amount', title: 'Monto' },
+      ],
+      typeSearch: [
+        { value: 'LIKE', title: 'Igual' },
+        { value: 'NOT LIKE', title: 'No es igual' },
+        { value: '>', title: 'Mayor que' },
+        { value: '<', title: 'Menor que' },
+      ],
       tableColumns: [
         { key: 'id', label: 'Numero', sortable: true },
-        { key: 'client', label: 'Cliente' },
+        { key: 'client_name', label: 'Cliente' },
         { key: 'detail', label: 'Detalle', sortable: true },
         { key: 'created', label: 'Creación' },
-        { key: 'account', label: 'Cuenta' },
+        { key: 'account_name', label: 'Cuenta' },
         { key: 'status', label: 'Estado' },
         { key: 'amount', label: 'Monto' },
         { key: 'actions', label: 'Acciones' },
@@ -254,176 +293,64 @@ export default {
       dataTable: [],
       showLoadingTable: false,
       tableSettings: {
+        filter: this.$route.params && this.$route.params.id,
         searchQuery: '',
-        perPage: 10,
+        input: '',
+        typeSearch: '',
+        perPage: 1,
         page: 1,
         sortBy: 'id',
         sortDesc: true,
       },
+
       pays: [],
     }
   },
   watch: {
     'tableSettings.sortBy': {
 
-      handler(val) {
+      handler() {
         this.fetchPays()
       },
     },
     'tableSettings.sortDesc': {
-      handler(val) {
+      handler() {
         this.fetchPays()
       },
     },
     'tableSettings.perPage': {
-      handler(val) {
+      handler() {
         this.fetchPays()
       },
     },
     'tableSettings.searchQuery': {
-      handler(val) {
+      handler() {
         this.fetchPays()
       },
     },
     'tableSettings.page': {
-      handler(val) {
+      handler() {
         this.fetchPays()
       },
     },
+
   },
   created() {
     this.fetchPays()
   },
   methods: {
-    fetchPays() {
-      // this.$http.get('invoice/list').then(response => {
-      // this.invoices = response.data.invoices
 
-      // })
-      this.pays = [{
-        id: '1',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'payable',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '2',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '3',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'done',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '4',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '5',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '6',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '7',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '8',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '9',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '10',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '11',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'paid',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-      {
-        id: '12',
-        client: 'Carlos Montes',
-        detail: 'Iphone PRo',
-        created: '21/09/1998',
-        account: 'Banco 1',
-        status: 'done',
-        amount: '$ 4.500.000',
-        actions: 'Acciones',
-      },
-
-      ]
+    async fetchPays() {
+      try {
+        const payList = await this.$http.get('pays/list', { params: this.tableSettings })
+        const objRes = payList.data
+        this.totalRows = objRes.total
+        this.pays = objRes.pays
+      } catch (error) {
+        console.error(error)
+      }
     },
-    newInvoice() {
+    newPay() {
       this.$router.push('/pay/store')
     },
     showPay(data) {

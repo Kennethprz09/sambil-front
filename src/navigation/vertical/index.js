@@ -94,14 +94,16 @@ export default [
     title: 'Compras',
     icon: 'CreditCardIcon',
     action: 'read',
-    resource: 'Ver Compras',
+    resource: 'Ver pagos',
     children: [
+
       {
         title: 'Pagos / Gastos',
         route: 'pay',
         action: 'read',
-        resource: 'Ver Pagos',
+        resource: 'Ver pagos',
       },
     ],
   },
+
 ]

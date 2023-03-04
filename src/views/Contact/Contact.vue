@@ -2,69 +2,128 @@
 
   <div>
     <!-- Table Container Card -->
-    <b-card no-body class="mb-0">
+    <b-card
+      no-body
+      class="mb-0"
+    >
 
       <div class="m-2">
 
         <!-- Table Top -->
         <b-row>
           <!-- Per Page -->
-          <b-col cols="12" md="3" class="">
+          <b-col
+            cols="12"
+            md="3"
+            class=""
+          >
             <label>Mostrar</label>
-            <v-select v-model="tableSettings.perPage" :options="perPageOptions" :clearable="false"
-              class="per-page-selector d-inline-block mx-50" />
+            <v-select
+              v-model="tableSettings.perPage"
+              :options="perPageOptions"
+              :clearable="false"
+              class="per-page-selector d-inline-block mx-50"
+            />
             <label>registros</label>
           </b-col>
-          
+
           <b-col md="2">
             <b-form-group>
-              <v-select class="d-inline" v-model="tableSettings.input"
-                label="title" :options="inputs" :reduce="val => val.value" placeholder="Título" />
-            </b-form-group>
-          </b-col>
-          <b-col md="3">
-            <b-form-group>
-              <v-select class="d-inline" v-model="tableSettings.typeSearch"
-                label="title" :options="typeSearch" :reduce="val => val.value" placeholder="Tipo de búsqueda"
+              <v-select
+                v-model="tableSettings.input"
+                class="d-inline"
+                label="title"
+                :options="inputs"
+                :reduce="val => val.value"
+                placeholder="Título"
               />
             </b-form-group>
           </b-col>
           <b-col md="3">
-            <b-form-group>  
-              <b-form-input v-model="tableSettings.searchQuery" class="d-inline" style="width: 90%" placeholder="Buscar..." />
+            <b-form-group>
+              <v-select
+                v-model="tableSettings.typeSearch"
+                class="d-inline"
+                label="title"
+                :options="typeSearch"
+                :reduce="val => val.value"
+                placeholder="Tipo de búsqueda"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col md="3">
+            <b-form-group>
+              <b-form-input
+                v-model="tableSettings.searchQuery"
+                class="d-inline"
+                style="width: 90%"
+                placeholder="Buscar..."
+              />
             </b-form-group>
           </b-col>
 
-
           <!-- Search -->
-          <b-col cols="12" md="1">
+          <b-col
+            cols="12"
+            md="1"
+          >
             <div class="d-flex align-items-center justify-content-end">
-              <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle mr-1">
+              <b-button
+                variant="primary"
+                class="btn-icon rounded-circle mr-1"
+                @click="searchData"
+              >
                 <feather-icon icon="SearchIcon" />
               </b-button>
-              <b-button variant="primary" class="btn-icon rounded-circle mr-1" @click="newContact()">
+              <b-button
+                variant="primary"
+                class="btn-icon rounded-circle mr-1"
+                @click="newContact()"
+              >
                 <feather-icon icon="PlusIcon" />
               </b-button>
             </div>
           </b-col>
         </b-row>
       </div>
-      <b-table ref="refContactListTable" class="position-relative" :items="contact" responsive :fields="tableColumns"
-        primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty empty-text="No se encontraron datos"
-        :sort-desc.sync="tableSettings.sortDesc">
+      <b-table
+        ref="refContactListTable"
+        class="position-relative"
+        :items="contact"
+        responsive
+        :fields="tableColumns"
+        primary-key="id"
+        :sort-by.sync="tableSettings.sortBy"
+        show-empty
+        empty-text="No se encontraron datos"
+        :sort-desc.sync="tableSettings.sortDesc"
+      >
 
         <!-- Column: Actions -->
         <template #cell(actions)="data">
-          <b-button @click="showContact(data.item.id)" variant="primary" class="btn-icon rounded-circle ml-2"
-            v-b-tooltip.hover.v-primary title="Ver">
+          <b-button
+            v-b-tooltip.hover.v-primary
+            variant="primary"
+            class="btn-icon rounded-circle ml-2"
+            title="Ver"
+            @click="showContact(data.item.id)"
+          >
             <feather-icon icon="EyeIcon" />
           </b-button>
-          <b-button class="btn-icon rounded-circle ml-2" @click="editContact(data.item.id)" v-b-tooltip.hover.v-primary
-            title="Editar">
+          <b-button
+            v-b-tooltip.hover.v-primary
+            class="btn-icon rounded-circle ml-2"
+            title="Editar"
+            @click="editContact(data.item.id)"
+          >
             <feather-icon icon="EditIcon" />
           </b-button>
-          <b-button variant="danger" class="btn-icon rounded-circle ml-2" :id="`form-item-settings-icon-${data.item.id}`">
-            <feather-icon  
+          <b-button
+            :id="`form-item-settings-icon-${data.item.id}`"
+            variant="danger"
+            class="btn-icon rounded-circle ml-2"
+          >
+            <feather-icon
               size="16"
               icon="TrashIcon"
               class="cursor-pointer"
@@ -106,20 +165,42 @@
       <div class="mx-2 mb-2">
         <b-row>
 
-          <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-start">
+          <b-col
+            cols="12"
+            sm="6"
+            class="d-flex align-items-center justify-content-center justify-content-sm-start"
+          >
             <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{ dataMeta.of }}
               registros</span>
           </b-col>
           <!-- Pagination -->
-          <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">
+          <b-col
+            cols="12"
+            sm="6"
+            class="d-flex align-items-center justify-content-center justify-content-sm-end"
+          >
 
-            <b-pagination v-model="tableSettings.page" :total-rows="totalRows" :per-page="tableSettings.perPage"
-              first-number last-number class="mb-0 mt-1 mt-sm-0" prev-class="prev-item" next-class="next-item">
+            <b-pagination
+              v-model="tableSettings.page"
+              :total-rows="totalRows"
+              :per-page="tableSettings.perPage"
+              first-number
+              last-number
+              class="mb-0 mt-1 mt-sm-0"
+              prev-class="prev-item"
+              next-class="next-item"
+            >
               <template #prev-text>
-                <feather-icon icon="ChevronLeftIcon" size="18" />
+                <feather-icon
+                  icon="ChevronLeftIcon"
+                  size="18"
+                />
               </template>
               <template #next-text>
-                <feather-icon icon="ChevronRightIcon" size="18" />
+                <feather-icon
+                  icon="ChevronRightIcon"
+                  size="18"
+                />
               </template>
             </b-pagination>
           </b-col>
@@ -130,12 +211,9 @@
 </template>
 
 <script>
-extend('required', {
-  ...required,
-  message: 'El campo {_field_} es obligatorio'
-});
-import { extend } from 'vee-validate'
-import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
+import {
+  extend, ValidationProvider, ValidationObserver, localize,
+} from 'vee-validate'
 import { required } from '@validations'
 import {
   BCard, BRow, BCol, BFormInput, BButton, BTable, BMedia, BAvatar, BLink,
@@ -143,6 +221,12 @@ import {
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
+
+extend('required', {
+  ...required,
+  message: 'El campo {_field_} es obligatorio',
+})
+
 export default {
   name: 'Contacts',
   components: {
@@ -167,6 +251,10 @@ export default {
     VBTooltip,
     BPopover,
   },
+  directives: {
+    Ripple,
+    'b-tooltip': VBTooltip,
+  },
   data() {
     return {
       id: this.$route.params && this.$route.params.id,
@@ -186,7 +274,7 @@ export default {
         { value: 'LIKE', title: 'Igual' },
         { value: 'NOT LIKE', title: 'No es igual' },
         { value: '>', title: 'Mayor que' },
-        { value: '<', title: 'Menor que' }
+        { value: '<', title: 'Menor que' },
       ],
       tableColumns: [
         { key: 'id', label: 'Id', sortable: true },
@@ -217,50 +305,45 @@ export default {
       },
       formDataEdit: {},
       contact: [],
-      edit: true
+      edit: true,
     }
   },
-  directives: {
-    Ripple,
-    'b-tooltip': VBTooltip,
-  },
   watch: {
-    "tableSettings.sortBy": {
+    'tableSettings.sortBy': {
       handler(val) {
         this.fetchList()
       },
     },
-    "tableSettings.sortDesc": {
+    'tableSettings.sortDesc': {
       handler(val) {
         this.fetchList()
       },
     },
-    "tableSettings.perPage": {
+    'tableSettings.perPage': {
       handler(val) {
         this.fetchList()
       },
     },
-    "tableSettings.page": {
+    'tableSettings.page': {
       handler(val) {
         this.fetchList()
       },
     },
-    "tableSettings.filter": {
+    'tableSettings.filter': {
       handler(val) {
         this.fetchList()
       },
     },
   },
   created() {
-    this.fetchList();
+    this.fetchList()
   },
   methods: {
     fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then((response) => {
+      this.$http.get('contact/list', { params: this.tableSettings }).then(response => {
         this.contact = response.data.contacts
         this.totalRows = response.data.total
         this.dataMetaCounter()
-
       })
     },
     dataMetaCounter() {
@@ -270,23 +353,23 @@ export default {
       this.dataMeta.of = this.totalRows
     },
     newContact() {
-      this.$router.push('/contacts/new-contact');
+      this.$router.push('/contacts/new-contact')
     },
     showContact(id) {
-      var showContacts = true;
+      const showContacts = true
       this.$router.push({
         name: 'contacts/new-contact',
-        params: { id: id, showContacts: showContacts }
-      });
+        params: { id, showContacts },
+      })
     },
     editContact(id) {
       this.$router.push({
         name: 'contacts/new-contact',
-        params: { id: id, edit: this.edit }
-      });
+        params: { id, edit: this.edit },
+      })
     },
     deleteContact(id) {
-      this.$http.post('/contact/delete/' + id)
+      this.$http.post(`/contact/delete/${id}`)
         .then(response => {
           if (response.data.code == 200) {
             this.$swal({
@@ -296,8 +379,8 @@ export default {
                 confirmButton: 'btn btn-success',
               },
               buttonsStyling: false,
-            });
-            this.fetchList();
+            })
+            this.fetchList()
           }
           if (response.data.code == 500) {
             this.$swal({
@@ -310,9 +393,9 @@ export default {
             })
           }
         })
-        .catch((error) => {
-          this.errors = error.response.data.errors;
-        });
+        .catch(error => {
+          this.errors = error.response.data.errors
+        })
     },
     searchData() {
       this.fetchList()
