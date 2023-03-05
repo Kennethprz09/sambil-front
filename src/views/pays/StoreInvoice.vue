@@ -3,104 +3,158 @@
     <h3 class="mt-2 mb-2">
       Nuevo Pago
     </h3>
-    <b-card
-      no-body
-      class="mb-0"
-    >
-      <b-row>
-        <b-col
-          md="6"
-          xl="4"
-          class=" mt-2 mb-3 ml-3"
-        >
-          <label for="Lista de precios">Lista de precios</label>
-          <v-select
-            v-model="form.list_price"
-            :reduce="val => val.value"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="listPrice"
-            placeholder="Seleccione"
-          />
-        </b-col>
-      </b-row>
-    </b-card>
+    <!-- general -->
     <b-card
       no-body
       class="mt-2 mb-0"
     >
       <b-row>
         <b-col
-          md="4"
-          xl="4"
-          class="mb-3 p-3"
+          md="6"
+          xl="8"
+          class="px-3 py-1 pb-0"
         >
-          <b-img
-            class="imgLogo"
-            :src="require('@/assets/images/logo/sambil-logo.png')"
-            fluid
-            alt="Responsive image"
-          />
-        </b-col>
-        <b-col
-          md="4"
-          xl="4"
-          class="mb-3 p-3"
-        >
-          <h4>Nombre De la Persona Logueada</h4>
-        </b-col>
-        <b-col
-          md="4"
-          xl="4"
-          class="mb-3 p-3"
-        >
-          <v-select
-            v-model="form.credit"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="credits"
-            placeholder="Seleccionar"
-            :reduce="val => val.value"
-          />
-          <h2
-            v-if="form.credit.value == 1"
-            class="mt-2"
-          >
-            NCF B1600000001
-          </h2>
-          <h2
-            v-else-if="form.credit.value == 2"
-            class="mt-2"
-          >
-            NCF B0200000001
-          </h2>
-          <h2
-            v-else-if="form.credit.value == 3"
-            class="mt-2"
-          >
-            NCF B0100000004
-          </h2>
-          <h2
-            v-else-if="form.credit.value == 4"
-            class="mt-2"
-          >
-            NCF B1500000001
-          </h2>
-          <h2
-            v-else-if="form.credit.value == 5"
-            class="mt-2"
-          >
-            NCF B1400000001
-          </h2>
-          <h2
-            v-else-if="form.credit.value == null"
-            class="mt-2"
-          >
-            NCF B1400000001
-          </h2>
+          <h6 class="mb-0">
+            INFORMACIÓN GENERAL DEL PAGO
+          </h6>
         </b-col>
       </b-row>
-      <hr>
+      <hr class="m-0">
+      <b-row>
+        <b-col
+          md="6"
+          xl="6"
+          class="mb-3 p-3"
+        >
+          <label for="">Contacto</label>
+          <v-select
+            v-model="form.contact"
+            class="mb-1"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="title"
+            :options="contacts"
+            placeholder="Seleccionar"
+            :reduce="(val) => val.value"
+          />
+          <label for="">Cuenta bancaria</label>
+          <v-select
+            v-model="form.bank_account"
+            class="mb-1"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="title"
+            :options="bank_accounts"
+            placeholder="Seleccionar"
+            :reduce="(val) => val.id"
+          />
+          <label for="">Forma de pago</label>
+          <v-select
+            v-model="form.payment_method"
+            class="mb-1"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="title"
+            :options="payment_method"
+            placeholder="Seleccionar"
+          />
+        </b-col>
+        <b-col
+          md="6"
+          xl="6"
+          class="mb-3 p-3"
+        >
+          <label for="">Fecha</label>
+          <b-form-datepicker
+            v-model="form.date"
+            class="mb-1"
+          />
+
+          <label for="">Nota del gasto</label>
+          <b-form-textarea
+            v-model="form.note"
+            class="mb-1"
+          />
+        </b-col>
+      </b-row>
+    </b-card>
+    <!-- asociar? -->
+    <b-card
+      no-body
+      class="mt-2 mb-0"
+    >
+      <b-row>
+        <b-col
+          md="6"
+          xl="8"
+          class="px-3 py-1 pb-0"
+        >
+          <h6 class="mb-0">
+            TIPO DE TRANSACCIÓN
+          </h6>
+        </b-col>
+      </b-row>
+      <hr class="m-0">
+      <b-row>
+        <b-col
+          md="12"
+          xl="12"
+          class="mb-3 p-3 d-flex flex-column align-items-center"
+        >
+          <h4>
+            ¿Asociar este gasto a una factura de proveedor existente en Sambil?
+          </h4>
+          <h6>
+            Recuerda que puedes registrar un gasto sin necesidad de que esté
+            asociado una factura de proveedor
+          </h6>
+
+          <form class="d-flex flex-row mt-2">
+            <div class="b-form-group mr-2">
+              <input
+                v-model="payAsociateToProvider"
+                name="payAsociateToProvider"
+                type="radio"
+                value="TRUE"
+              >
+              <label
+                class="px-1"
+                for="payAsociateToProvider"
+              >Si</label>
+            </div>
+            <div class="b-form-group">
+              <input
+                v-model="payAsociateToProvider"
+                name="payNotAsociateToProvider"
+                type="radio"
+                value="FALSE"
+              >
+              <label
+                class="px-1"
+                for="payNotAsociateToProvider"
+              >No</label>
+            </div>
+          </form>
+        </b-col>
+      </b-row>
+    </b-card>
+    <!--  -->
+    <!-- <b-card
+      v-if="payAsociateToProvider == 'FALSE'"
+      no-body
+      class="mt-2 mb-0"
+    >
+      <b-row>
+
+        <b-col
+          md="6"
+          xl="8"
+          class=" px-3 py-1 pb-0"
+        >
+          <h6 class="mb-0">
+            ¿ A QUÉ CUENTAS CONTABLES PERTENECE ESTE GASTO?
+          </h6>
+        </b-col>
+
+      </b-row>
+      <hr class="m-0">
       <b-row>
         <b-col
           md="6"
@@ -117,18 +171,24 @@
             placeholder="Seleccionar"
             :reduce="val => val.value"
           />
-          <label for="">RNC o Cédula</label>
-          <b-form-input
-            v-model="form.rnc"
-            disabled
+          <label for="">Cuenta bancaria</label>
+          <v-select
+            v-model="form.bank_account"
+            class="mb-1"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="title"
+            :options="bank_accounts"
+            placeholder="Seleccionar"
+            :reduce="val => val.name"
           />
-          <label
-            class="mt-2"
-            for=""
-          >Teléfono</label>
-          <b-form-input
-            v-model="form.phone"
-            disabled
+          <label for="">Forma de pago</label>
+          <v-select
+            v-model="form.payment_method"
+            class="mb-1"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="title"
+            :options="payment_method"
+            placeholder="Seleccionar"
           />
         </b-col>
         <b-col
@@ -141,23 +201,34 @@
             v-model="form.date"
             class="mb-1"
           />
-          <label for="">Plazo de pago</label>
-          <v-select
-            v-model="form.payment_deadline"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="payment_deadline"
-            placeholder="Seleccionar"
-            :reduce="val => val.value"
-          />
-          <label for="">Vencimiento</label>
-          <b-form-datepicker
-            v-model="form.expiration"
+
+          <label for="">Nota del gasto</label>
+          <b-form-textarea
+            v-model="form.note"
             class="mb-1"
           />
         </b-col>
       </b-row>
+
+    </b-card> -->
+    <b-card
+      v-if="payAsociateToProvider == 'FALSE'"
+      no-body
+      class="mt-2 mb-0"
+    >
+      <b-row>
+        <b-col
+          md="6"
+          xl="8"
+          class="px-3 py-1 pb-0"
+        >
+          <h6 class="mb-0">
+            ¿ A QUÉ CUENTAS CONTABLES PERTENECE ESTE GASTO?
+          </h6>
+        </b-col>
+      </b-row>
+      <hr class="m-0 mb-3">
+
       <b-form
         ref="form"
         :style="{ height: trHeight }"
@@ -166,26 +237,22 @@
       >
         <b-row>
           <b-col>
-            <h6>Producto/servicio</h6>
+            <h6>Concepto</h6>
           </b-col>
           <b-col>
-            <h6>Referencia</h6>
-          </b-col>
-          <b-col>
-            <h6>Precio</h6>
-          </b-col>
-          <b-col>
-            <h6>Desc %</h6>
+            <h6>Valor</h6>
           </b-col>
           <b-col>
             <h6>Impuesto</h6>
           </b-col>
           <b-col>
-            <h6>Descripción</h6>
-          </b-col>
-          <b-col>
             <h6>Cantidad</h6>
           </b-col>
+
+          <b-col>
+            <h6>Observaciones</h6>
+          </b-col>
+
           <b-col>
             <h6>Total</h6>
           </b-col>
@@ -196,65 +263,65 @@
         <hr class="line">
         <!-- Row Loop -->
         <b-row
-          v-for="(item, index) in form.products"
+          v-for="(item, index) in form.ledger_accounts"
           :id="item.id"
           :key="index"
           ref="row"
           class="mb-2"
         >
           <b-col>
-            <b-form-select
-              v-model="form.products[index].name"
-              :options="products"
-              :reduce="val => val.value"
-              @change="searchProduct(index, form.products[index].name)"
-            />
+            <b-form-select v-model="form.ledger_accounts[index].concept">
+              <option
+                :value="null"
+                disabled
+              >
+                Seleccionar
+              </option>
+
+              <option
+                v-for="(concept, ind) in concepts"
+                :key="ind"
+                :value="concept.id"
+              >
+                {{ concept.text }}
+              </option></b-form-select>
           </b-col>
           <b-col>
             <b-form-input
-              v-model="form.products[index].ref"
-              placeholder="Referencia"
-            />
-          </b-col>
-          <b-col>
-            <b-form-input
-              v-model="form.products[index].price"
+              v-model="form.ledger_accounts[index].price"
               type="number"
-              placeholder="Precio unitario"
+              min="0"
               @keyup="changePrice(index)"
             />
           </b-col>
           <b-col>
-            <b-form-input
-              v-model="form.products[index].percentage"
-              type="number"
-              placeholder="%"
-              @keyup="changePercentage(index)"
-            />
-          </b-col>
-          <b-col>
             <b-form-select
-              v-model="form.products[index].tax"
+              v-model="form.ledger_accounts[index].tax"
               :options="tax"
+              @change="calculateTotals()"
             />
           </b-col>
           <b-col>
             <b-form-input
-              v-model="form.products[index].description"
-              placeholder="Descripción"
-            />
-          </b-col>
-          <b-col>
-            <b-form-input
-              v-model="form.products[index].quantity"
+              v-model="form.ledger_accounts[index].quantity"
               type="number"
+              min="0"
               placeholder="Cantidad"
               @keyup="changeQuantity(index)"
             />
           </b-col>
+
           <b-col>
             <b-form-input
-              v-model="form.products[index].total"
+              v-model="form.ledger_accounts[index].description"
+              placeholder="Descripción"
+            />
+          </b-col>
+
+          <b-col>
+            <b-form-input
+              v-model="form.ledger_accounts[index].total"
+              disabled
               placeholder="0.00"
             />
           </b-col>
@@ -292,174 +359,62 @@
         </b-button>
       </b-col>
     </b-card>
+    <!--  -->
     <b-card
-      v-for="(item, index) in form.retentions"
-      :id="item.id"
-      :key="index"
+      v-if="payAsociateToProvider == 'FALSE'"
       no-body
       class="mt-1"
     >
-      <b-row>
-        <b-col
-          md="5"
-          class=" mt-2 p-3 mt-0"
-        >
-          <label for="Lista de precios">Retención</label>
-          <b-form-select
-            v-model="form.retentions[index].retention"
-            :options="retentions"
-            @change="changeValueRetention(index)"
-          />
-        </b-col>
-        <b-col
-          md="5"
-          class=" mt-2 p-3 mt-0"
-        >
-          <label for="Lista de precios">Valor</label>
-          <b-form-input
-            v-model="form.retentions[index].value"
-            type="number"
-          />
-        </b-col>
-        <b-col
-          md="2"
-          class=" mt-2 p-3 mt-3"
-        >
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            @click="deleteRetention(index)"
-          >
-            <feather-icon icon="XIcon" />
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-card>
-    <b-card
-      no-body
-      class="mt-1"
-    >
-      <b-row>
+      <b-row class="ml-5 mt-0 d-flex">
         <b-col
           md="4"
-          xl="4"
-          class="mb-3 p-3"
+          class="mb-3 p-3 ml-auto"
         >
-          <b-img
-            class="imgLogo"
-            :src="require('@/assets/images/logo/firma.png')"
-            fluid
-            alt="Responsive image"
-          />
-        </b-col>
-        <b-col
-          md="2"
-          class="mb-3 p-3"
-        />
-        <b-col
-          md="3"
-          class="mb-3 p-3"
-        >
-          <p
-            class="text-primary retention"
-            @click="addRetention()"
-          >
-            <feather-icon icon="PlusIcon" />
-            Agregar retención
-          </p>
-          <b-row class="ml-5 mt-4 d-flex">
-            <b-col
-              md="12"
-              class="ml-5 mt-1 d-flex"
-            >
-              <strong>
-                <p class="ml-3 d-flex">Subtotal</p>
-              </strong>
-            </b-col>
-            <b-col
-              md="12"
-              class="ml-5 d-flex"
-            >
-              <strong>
-                <p class="ml-3 d-flex">Descuento</p>
-              </strong>
-            </b-col>
-            <b-col
-              md="12"
-              class="ml-5 d-flex"
-            >
-              <strong>
-                <p class="ml-3 d-flex">Total</p>
-              </strong>
-            </b-col>
-            <b-col
-              md="12"
-              class="d-flex ml-5"
-            >
-              <strong>
-                <p class="ml-3">ITBIS 16% (16%)</p>
-              </strong>
-            </b-col>
-          </b-row>
-        </b-col>
-        <b-col
-          md="3"
-          class="mb-3 p-3"
-        >
-          <p class="text-primary">
-            <feather-icon icon="PlusIcon" />
-            Agregar Conduce
-          </p>
-          <b-row class="ml-1 mt-3 d-flex">
-            <b-col md="12">
-              <p>RD${{ form.totals.subtotal }}</p>
-            </b-col>
-            <b-col md="12">
-              <p>-RD$220,000.00</p>
-            </b-col>
-            <b-col md="12">
-              <p>RD$880,000.00</p>
-            </b-col>
-            <b-col md="12">
-              <p>RD$140,800.00</p>
-            </b-col>
+          <b-row class="ml-1 mt-3 d-flex flex-column">
+            <b-row class="ml-1 mt-1 d-flex">
+              <b-col md="6">
+                <strong>SubTotal:</strong>
+              </b-col>
+              <b-col md="6">
+                <p v-if="form.totals.subtotal">
+                  RD$ {{ form.totals.subtotal }}
+                </p>
+                <p v-if="!form.totals.subtotal">
+                  ?
+                </p>
+              </b-col>
+            </b-row>
+            <b-row class="ml-1 mt-1 d-flex">
+              <b-col md="6">
+                <strong>Impuestos:</strong>
+              </b-col>
+              <b-col md="6">
+                <p v-if="form.totals.taxes">
+                  RD$ {{ form.totals.taxes }}
+                </p>
+                <p v-if="!form.totals.taxes">
+                  ?
+                </p>
+              </b-col>
+            </b-row>
+            <b-row class="ml-1 mt-1 d-flex">
+              <b-col md="6">
+                <strong>Total:</strong>
+              </b-col>
+              <b-col md="6">
+                <p v-if="form.totals.total">
+                  RD$ {{ form.totals.total }}
+                </p>
+                <p v-if="!form.totals.total">
+                  ?
+                </p>
+              </b-col>
+            </b-row>
           </b-row>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col
-          md="6"
-          class="pl-3 pr-3"
-        >
-          <label for="textarea-default">Términos y condiciones</label>
-          <b-form-textarea
-            v-model="form.terms"
-            placeholder="Visible en la impresión del documento"
-            rows="3"
-          />
-        </b-col>
-        <b-col
-          md="6"
-          class="pl-3 pr-3"
-        >
-          <label for="textarea-default">Notas</label>
-          <b-form-textarea
-            v-model="form.note"
-            placeholder="Visible en la impresión del documento"
-            rows="3"
-          />
-        </b-col>
-        <b-col
-          md="12"
-          class="mt-0 mb-3 pl-3 pr-3 pt-1"
-        >
-          <label for="textarea-default">Pie de factura</label>
-          <b-form-textarea
-            v-model="form.footer"
-            placeholder="Visible en la impresión del documento"
-            rows="3"
-          />
-        </b-col>
+
+      <b-row v-if="form.totals.total">
         <b-col
           md="12"
           class="text-center mb-3"
@@ -472,14 +427,11 @@
             Guardar
           </b-button>
         </b-col>
-      </b-row>
-    </b-card><br>
+      </b-row> </b-card><br>
   </div>
 </template>
 <script>
-import {
-  extend, ValidationProvider, ValidationObserver, localize,
-} from 'vee-validate'
+import { extend } from 'vee-validate'
 import { required } from '@validations'
 import vSelect from 'vue-select'
 import { heightTransition } from '@core/mixins/ui/transition'
@@ -489,10 +441,8 @@ import {
   BCard,
   BRow,
   BCol,
-  BImg,
   BForm,
   BButton,
-  BFormGroup,
   BFormInput,
   BFormTextarea,
   BFormDatepicker,
@@ -505,16 +455,14 @@ extend('required', {
 })
 
 export default {
-  name: 'Facturas',
+  name: 'Pagos',
   components: {
     vSelect,
     BCard,
     BRow,
     BCol,
-    BImg,
     BForm,
     BButton,
-    BFormGroup,
     BFormInput,
     BFormTextarea,
     BFormDatepicker,
@@ -526,173 +474,187 @@ export default {
   mixins: [heightTransition],
   data() {
     return {
-      listPrice: [],
       nextTodoId: 2,
-      credits: [
-        { title: 'Comprobante para exportación (16)', value: 1 },
-        { title: 'Consumo (02)', value: 2 },
-        { title: 'Crédito fiscal (01)', value: 3 },
-        { title: 'Gubernamentales (15)', value: 4 },
-        { title: 'Régimen especial de tributación (14)', value: 5 },
-      ],
       form: {
-        list_price: '',
-        credit: '',
         contact: '',
-        rnc: '',
-        phone: '',
         date: '',
-        payment_deadline: '',
-        expiration: '',
-        products: [{
-          id: null,
-          name: null,
-          ref: '',
-          price: 0,
-          percentage: 0,
-          tax: null,
-          description: '',
-          quantity: '',
-          total: '',
-        }],
-        retentions: [],
+        payment_method: '',
+        bank_account: '',
+        ledger_accounts: [
+          {
+            id: 1,
+            concept: null,
+            price: 0,
+            tax: null,
+            quantity: 0,
+            description: '',
+            total: null,
+          },
+        ],
         totals: {
-          subtotal: 0,
-          discount: 0,
-          total: 0,
+          subtotal: null,
+          taxes: null,
+          total: null,
         },
-        terms: '',
         note: '',
-        footer: '',
       },
+      payAsociateToProvider: '',
       contacts: [],
-      payment_deadline: [],
+      payment_method: [
+        'Efectivo',
+        'Cheque',
+        'Transferencia',
+        'Depósito',
+        'Tarjeta débito',
+        'Tarjeta crédito',
+        'Permuta',
+        'Mixto',
+      ],
       products: [],
+      concepts: [],
       tax: [],
-      idDeadline: '',
-      retentions: [],
+      bank_accounts: [],
     }
   },
   watch: {
-    'form.contact': function (val) {
-      if (val) {
-        this.showContactId(val)
-      } else {
-        this.resetContact()
-      }
+
+    'form.ledger_accounts': {
+      // eslint-disable-next-line no-unused-vars
+      handler(val) {
+        // console.log(this.form.ledger_accounts)
+      },
     },
-    'form.payment_deadline': function (val) {
-      if (val) {
-        this.deadLineId(val)
-      } else {
-        this.form.expiration = new Date()
-      }
-    },
-    'form.date': function (val) {
-      this.change(val)
-    },
-    'form.payment_deadline': function (val) {
-      this.deadLineId(val)
-    },
+
   },
   mounted() {
-    this.initTrHeight()
+    // this.initTrHeight()
   },
   created() {
-    this.listprice()
     this.showContacts()
-    this.deadLine()
-    this.fetchProducts()
+    this.fetchBankAccounts()
+    this.fetchConcepts()
     this.discounts()
-    this.fetchRetention()
-    window.addEventListener('resize', this.initTrHeight)
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.initTrHeight)
+    // this.listprice()
+    // this.deadLine()
+    // this.fetchProducts()
+    // this.fetchRetention()
   },
   methods: {
     storeInvoice() {
-      this.$http.post('/invoice/store', this.form)
-        .then(response => {
-          if (response.data.code == 200) {
-            this.$swal({
-              title: response.data.message,
-              icon: 'success',
-              customClass: {
-                confirmButton: 'btn btn-success',
-              },
-              buttonsStyling: false,
-            })
-            this.$router.push('/invoice')
-          }
-          if (response.data.code == 500) {
-            this.$swal({
-              title: response.data.message,
-              icon: 'warning',
-              customClass: {
-                confirmButton: 'btn btn-warning',
-              },
-              buttonsStyling: false,
-            })
-          }
-        })
-        .catch(error => {
-          this.errors = error.response.data.errors
-        })
+      //   this.$http.post('/invoice/store', this.form)
+      //     .then(response => {
+      //       if (response.data.code === 200) {
+      //         this.$swal({
+      //           title: response.data.message,
+      //           icon: 'success',
+      //           customClass: {
+      //             confirmButton: 'btn btn-success',
+      //           },
+      //           buttonsStyling: false,
+      //         })
+      //         this.$router.push('/invoice')
+      //       }
+      //       if (response.data.code === 500) {
+      //         this.$swal({
+      //           title: response.data.message,
+      //           icon: 'warning',
+      //           customClass: {
+      //             confirmButton: 'btn btn-warning',
+      //           },
+      //           buttonsStyling: false,
+      //         })
+      //       }
+      //     })
+      //     .catch(error => {
+      //       this.errors = error.response.data.errors
+      //     })
+      this.formatFormDate()
+      console.log(this.form)
     },
     calculateTotals() {
       let sum = 0
-      for (let index = 0; index < this.form.products.length; index++) {
-        sum += +this.form.products[index].price
+      let imp = 0
+      let taxNotFound = false
+      let valuesNotFound = false
+
+      // SUBTOTOTAL
+
+      // eslint-disable-next-line no-plusplus
+      for (let index = 0; index < this.form.ledger_accounts.length; index++) {
+        if (
+          !this.form.ledger_accounts[index].price
+          || !this.form.ledger_accounts[index].quantity
+        ) {
+          valuesNotFound = true
+        } else {
+          sum
+            += +this.form.ledger_accounts[index].price
+            * this.form.ledger_accounts[index].quantity
+        }
       }
-      this.form.totals.subtotal = new Intl.NumberFormat('es-RD', { maximumSignificantDigits: 6 }).format(sum)
-    },
-    changeValueRetention(val) {
-      if (val == '') {
-        this.form.retentions[va].value = ''
+      if (valuesNotFound) this.form.totals.subtotal = null
+      else {
+        this.form.totals.subtotal = Math.round(sum * 100) / 100
       }
-    },
-    addRetention() {
-      this.form.retentions.push({
-        id: '',
-        retention: '',
-        value: '',
-      })
-    },
-    deleteRetention(index) {
-      this.form.retentions.splice(index, 1)
+
+      // TAXES
+
+      // eslint-disable-next-line no-plusplus
+      for (let inde = 0; inde < this.form.ledger_accounts.length; inde++) {
+        if (!this.form.ledger_accounts[inde].tax) {
+          taxNotFound = true
+        } else {
+          const tx = this.tax.find(
+            t => t.value === this.form.ledger_accounts[inde].tax,
+          )
+
+          imp += +((tx.discount * this.form.ledger_accounts[inde].total) / 100)
+        }
+      }
+      if (taxNotFound) this.form.totals.taxes = null
+      else {
+        this.form.totals.taxes = Math.round(imp * 100) / 100
+      }
+
+      // TOTAL TOTAL
+      if (taxNotFound || valuesNotFound) {
+        this.form.totals.total = null
+      } else {
+        this.form.totals.total = Math.round(
+          (parseFloat(this.form.totals.taxes)
+              + parseFloat(this.form.totals.subtotal))
+              * 100,
+        ) / 100
+      }
     },
     changePrice(index) {
-      if (this.form.products[index].price == '') {
-        this.form.products[index].total = 0
+      if (this.form.ledger_accounts[index].price === 0) {
+        this.form.ledger_accounts[index].total = 0
       } else {
-        this.changePercentage(index)
         this.calculateTotals()
+        this.calculateRowTotal(index)
       }
     },
-    changePercentage(index) {
-      if (this.form.products[index].percentage == '') {
-        const valuePercent = (this.form.products[index].quantity * this.form.products[index].price) * (0 / 100)
-        this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - valuePercent
-      } else {
-        const valuePercent = (this.form.products[index].quantity * this.form.products[index].price) * (this.form.products[index].percentage / 100)
-        this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - valuePercent
-      }
+    calculateRowTotal(index) {
+      this.form.ledger_accounts[index].total = this.form.ledger_accounts[index].quantity
+        * this.form.ledger_accounts[index].price
     },
     changeQuantity(index) {
-      if (this.form.products[index].quantity == '') {
-        this.form.products[index].total = 0
+      if (this.form.ledger_accounts[index].quantity === 0) {
+        this.form.ledger_accounts[index].total = 0
       } else {
-        this.changePercentage(index)
+        this.calculateTotals()
+        this.calculateRowTotal(index)
       }
     },
-    searchProduct(index, id) {
-      this.$http.get(`identification/product/${id}`).then(response => {
-        this.form.products[index].price = response.data.product.price
-        this.form.products[index].quantity = 1
-        this.form.products[index].total = response.data.product.price
-        this.form.products[index].percentage = 0
-        this.calculateTotals()
+    fetchBankAccounts() {
+      this.$http.get('bank_accounts/list').then(response => {
+        const list = response.data.data.accounts
+        // eslint-disable-next-line guard-for-in, no-restricted-syntax
+        for (const key in list) {
+          list[key].title = list[key].name
+        }
+        this.bank_accounts = list
       })
     },
     discounts() {
@@ -704,89 +666,84 @@ export default {
         })
       })
     },
-    change(val) {
-      this.form.expiration = moment(val).add(this.idDeadline, 'days').format('YYYY-MM-DD')
-    },
-    resetContact() {
-      this.form = {
-        credit: '',
-        contact: '',
-        rnc: '',
-        phone: '',
-        date: '',
-        payment_deadline: '',
-        expiration: '',
-      }
-    },
-    listprice() {
-      this.$http.get('identification/listPrice').then(response => {
-        this.listPrice = response.data.listPrice
-      })
-    },
-    fetchRetention() {
-      this.$http.get('identification/listRetention').then(response => {
-        this.retentions = response.data.retentions
-      })
+    formatFormDate() {
+      this.form.date = moment(this.form.date).format('DD-MM-YYYY')
     },
     showContacts() {
       this.$http.get('contact/showContacts').then(response => {
         this.contacts = response.data.contacts
       })
     },
-    showContactId(id) {
-      this.$http.get(`contact/showContact/${id}`).then(response => {
-        this.form.rnc = response.data.contact.number_identification
-        this.form.phone = response.data.contact.mobil
-        this.form.date = new Date()
-        this.form.payment_deadline = response.data.contact.payment_deadline
-      })
+    fetchConcepts() {
+      //   this.$http.get('identification/listProducts').then(response => {
+      //     this.products = response.data.products
+      //     this.products.push({
+      //       text: 'Seleccione',
+      //       value: null,
+      //     })
+      //   })
+      this.concepts = [
+        {
+          id: '1',
+          category: 'Gastos',
+          text: 'Costos de ventas y operaciones',
+          child: '',
+        },
+        {
+          id: '2',
+          category: 'Gastos',
+          text: 'Ajustes del inventario',
+          child: '',
+        },
+        {
+          id: '3',
+          category: 'Gastos',
+          text: 'Descuentos finacieros',
+          child: '',
+        },
+        {
+          id: '4',
+          category: 'Gastos',
+          text: 'Costos de ventas y operaciones 2',
+          child: '',
+        },
+        {
+          id: '5',
+          category: 'Gastos',
+          text: 'Ajustes del inventario 2',
+          child: '',
+        },
+        {
+          id: '6',
+          category: 'Gastos',
+          text: 'Descuentos finacieros 2',
+          child: '',
+        },
+      ]
     },
-    deadLine() {
-      this.$http.get('identification/listDeadline').then(response => {
-        this.payment_deadline = response.data.listDeadline
-      })
-    },
-    fetchProducts() {
-      this.$http.get('identification/listProducts').then(response => {
-        this.products = response.data.products
-        this.products.push({
-          text: 'Seleccione',
-          value: null,
-        })
-      })
-    },
-    deadLineId(id) {
-      this.$http.get(`identification/listDeadline/${id}`).then(response => {
-        this.idDeadline = response.data.listDeadlineId.days
-        this.form.expiration = moment(this.form.date).add(this.idDeadline, 'days').format('YYYY-MM-DD')
-      })
+    getLedgerAccountsLastId() {
+      let lastId = 0
+      // eslint-disable-next-line no-restricted-syntax
+      for (const i of this.form.ledger_accounts) {
+        if (i.id > lastId) lastId = i.id
+      }
+      return lastId
     },
     repeateAgain() {
-      this.form.products.push({
-        id: null,
-        name: null,
-        ref: '',
-        price: '',
-        percentage: '',
-        tax: '',
+      this.form.ledger_accounts.push({
+        id: this.getLedgerAccountsLastId() + 1,
+        concept: null,
+        price: 0,
+        tax: null,
+        quantity: 0,
         description: '',
-        quantity: '',
-        total: '',
+        total: null,
       })
-
-      this.$nextTick(() => {
-        this.trAddHeight(this.$refs.row[0].offsetHeight)
-      })
+      this.calculateTotals()
     },
     removeItem(index) {
-      this.form.products.splice(index, 1)
-      this.trTrimHeight(this.$refs.row[0].offsetHeight)
-    },
-    initTrHeight() {
-      this.trSetHeight(null)
-      this.$nextTick(() => {
-        this.trSetHeight(this.$refs.form.scrollHeight)
-      })
+      this.form.ledger_accounts.splice(index, 1)
+      this.calculateTotals()
     },
   },
 }
@@ -794,30 +751,30 @@ export default {
 
 <style lang="scss" scoped>
 .per-page-selector {
-    width: 90px;
+  width: 90px;
 }
 
 .imgLogo {
-    width: 90%;
+  width: 90%;
 }
 
 .repeater-form {
-    overflow: hidden;
-    transition: .35s height;
+  overflow: hidden;
+  transition: 0.35s height;
 }
 
 .line {
-    border: 1px solid black;
-    background: black;
-    margin: 10px 45px 10px 0px;
+  border: 1px solid black;
+  background: black;
+  margin: 10px 45px 10px 0px;
 }
 
 .retention {
-    cursor: pointer;
-    margin-left: 118px;
-    position: absolute;
+  cursor: pointer;
+  margin-left: 118px;
+  position: absolute;
 }
 </style>
 <style lang="scss">
-@import '@core/scss/vue/libs/vue-select.scss';
+@import "@core/scss/vue/libs/vue-select.scss";
 </style>
