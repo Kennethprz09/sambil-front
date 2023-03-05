@@ -333,7 +333,7 @@ export default {
         },
         showContact() {
             if (this.id && this.showContacts) {
-                this.$http.get('/contact/show/' + this.id).then((response) => {
+                this.$http.get('/' + this.id).then((response) => {
                     this.disabled = true;
                     if (response.data.contact.client_of_provider[0].client_of_provider == 'Client') {
                         this.form.checked1 = true;
