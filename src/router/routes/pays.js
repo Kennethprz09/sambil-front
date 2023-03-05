@@ -34,7 +34,7 @@ export default [
   {
     path: '/pay/edit/:id',
     name: 'pay-edit',
-    component: () => import('@/views/pays/SaleInvoice.vue'),
+    component: () => import('@/views/pays/EditPay.vue'),
     meta: {
       resource: 'Editar pagos',
       action: 'read',
@@ -50,7 +50,7 @@ export default [
   {
     path: '/pay/show/:id',
     name: 'pay-show',
-    component: () => import('@/views/pays/ReceivedInvoice.vue'),
+    component: () => import('@/views/pays/ShowPay.vue'),
     meta: {
       resource: 'Ver pagos',
       action: 'read',

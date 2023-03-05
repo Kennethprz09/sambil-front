@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="mt-2 mb-2">
-      Nuevo Pago
+      Ver Pago
     </h3>
     <!-- general -->
     <b-card
@@ -29,6 +29,7 @@
           <label for="">Contacto</label>
           <v-select
             v-model="form.contact"
+            disabled
             class="mb-1"
             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
             label="title"
@@ -39,6 +40,7 @@
           <label for="">Cuenta bancaria</label>
           <v-select
             v-model="form.bank_account"
+            disabled
             class="mb-1"
             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
             label="title"
@@ -49,6 +51,7 @@
           <label for="">Forma de pago</label>
           <v-select
             v-model="form.payment_method"
+            disabled
             class="mb-1"
             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
             label="title"
@@ -64,12 +67,14 @@
           <label for="">Fecha</label>
           <b-form-datepicker
             v-model="form.date"
+            disabled
             class="mb-1"
           />
 
           <label for="">Nota del gasto</label>
           <b-form-textarea
             v-model="form.note"
+            disabled
             class="mb-1"
           />
         </b-col>
@@ -110,6 +115,7 @@
             <div class="b-form-group mr-2">
               <input
                 v-model="payAsociateToProvider"
+                disabled
                 name="payAsociateToProvider"
                 type="radio"
                 value="TRUE"
@@ -122,6 +128,7 @@
             <div class="b-form-group">
               <input
                 v-model="payAsociateToProvider"
+                disabled
                 name="payNotAsociateToProvider"
                 type="radio"
                 value="FALSE"
@@ -136,81 +143,7 @@
       </b-row>
     </b-card>
     <!--  -->
-    <!-- <b-card
-      v-if="payAsociateToProvider == 'FALSE'"
-      no-body
-      class="mt-2 mb-0"
-    >
-      <b-row>
 
-        <b-col
-          md="6"
-          xl="8"
-          class=" px-3 py-1 pb-0"
-        >
-          <h6 class="mb-0">
-            ¿ A QUÉ CUENTAS CONTABLES PERTENECE ESTE GASTO?
-          </h6>
-        </b-col>
-
-      </b-row>
-      <hr class="m-0">
-      <b-row>
-        <b-col
-          md="6"
-          xl="6"
-          class="mb-3 p-3"
-        >
-          <label for="">Contacto</label>
-          <v-select
-            v-model="form.contact"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="contacts"
-            placeholder="Seleccionar"
-            :reduce="val => val.value"
-          />
-          <label for="">Cuenta bancaria</label>
-          <v-select
-            v-model="form.bank_account"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="bank_accounts"
-            placeholder="Seleccionar"
-            :reduce="val => val.name"
-          />
-          <label for="">Forma de pago</label>
-          <v-select
-            v-model="form.payment_method"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="payment_method"
-            placeholder="Seleccionar"
-          />
-        </b-col>
-        <b-col
-          md="6"
-          xl="6"
-          class="mb-3 p-3"
-        >
-          <label for="">Fecha</label>
-          <b-form-datepicker
-            v-model="form.date"
-            class="mb-1"
-          />
-
-          <label for="">Nota del gasto</label>
-          <b-form-textarea
-            v-model="form.note"
-            class="mb-1"
-          />
-        </b-col>
-      </b-row>
-
-    </b-card> -->
     <b-card
       v-if="payAsociateToProvider == 'FALSE'"
       no-body
@@ -270,7 +203,10 @@
           class="mb-2"
         >
           <b-col>
-            <b-form-select v-model="form.ledger_accounts[index].concept">
+            <b-form-select
+              v-model="form.ledger_accounts[index].concept_id"
+              disabled
+            >
               <option
                 :value="null"
                 disabled
@@ -289,6 +225,7 @@
           <b-col>
             <b-form-input
               v-model="form.ledger_accounts[index].price"
+              disabled
               type="number"
               min="0"
               @keyup="changePrice(index)"
@@ -296,7 +233,8 @@
           </b-col>
           <b-col>
             <b-form-select
-              v-model="form.ledger_accounts[index].tax"
+              v-model="form.ledger_accounts[index].tax_id"
+              disabled
               :options="tax"
               @change="calculateTotals()"
             />
@@ -304,6 +242,7 @@
           <b-col>
             <b-form-input
               v-model="form.ledger_accounts[index].quantity"
+              disabled
               type="number"
               min="0"
               placeholder="Cantidad"
@@ -314,6 +253,7 @@
           <b-col>
             <b-form-input
               v-model="form.ledger_accounts[index].description"
+              disabled
               placeholder="Descripción"
             />
           </b-col>
@@ -321,43 +261,17 @@
           <b-col>
             <b-form-input
               v-model="form.ledger_accounts[index].total"
+
               disabled
               placeholder="0.00"
             />
           </b-col>
 
           <!-- Remove Button -->
-          <b-col>
-            <b-button
-              v-ripple.400="'rgba(234, 84, 85, 0.15)'"
-              variant="outline-danger"
-              @click="removeItem(index)"
-            >
-              <feather-icon
-                icon="XIcon"
-                class="mr-25"
-              />
-            </b-button>
-          </b-col>
+          <b-col />
         </b-row>
       </b-form>
-      <b-col
-        cols="12"
-        class="text-center mt-3"
-      >
-        <b-button
-          v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-          class="mb-5"
-          variant="primary"
-          @click="repeateAgain"
-        >
-          <feather-icon
-            icon="PlusIcon"
-            class="mr-25"
-          />
-          <span>Agregar Linea</span>
-        </b-button>
-      </b-col>
+
     </b-card>
     <!--  -->
     <b-card
@@ -414,28 +328,7 @@
         </b-col>
       </b-row>
 
-      <b-row
-        v-if="
-          form.totals.total &&
-            form.totals.taxes &&
-            form.contact&&
-            form.date&&
-            form.payment_method
-            &&form.bank_account"
-      >
-        <b-col
-          md="12"
-          class="text-center mb-3"
-        >
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            @click="storeInvoice()"
-          >
-            Guardar
-          </b-button>
-        </b-col>
-      </b-row> </b-card><br>
+    </b-card><br>
   </div>
 </template>
 <script>
@@ -450,7 +343,6 @@ import {
   BRow,
   BCol,
   BForm,
-  BButton,
   BFormInput,
   BFormTextarea,
   BFormDatepicker,
@@ -470,7 +362,6 @@ export default {
     BRow,
     BCol,
     BForm,
-    BButton,
     BFormInput,
     BFormTextarea,
     BFormDatepicker,
@@ -491,9 +382,9 @@ export default {
         ledger_accounts: [
           {
             id: 1,
-            concept: null,
+            concept_id: null,
             price: 0,
-            tax: null,
+            tax_id: null,
             quantity: 0,
             description: '',
             total: null,
@@ -538,14 +429,11 @@ export default {
     // this.initTrHeight()
   },
   created() {
+    this.fetchPay()
     this.showContacts()
     this.fetchBankAccounts()
     this.fetchConcepts()
     this.discounts()
-    // this.listprice()
-    // this.deadLine()
-    // this.fetchProducts()
-    // this.fetchRetention()
   },
   methods: {
     storeInvoice() {
@@ -613,7 +501,7 @@ export default {
 
       // eslint-disable-next-line no-plusplus
       for (let inde = 0; inde < this.form.ledger_accounts.length; inde++) {
-        if (!this.form.ledger_accounts[inde].tax) {
+        if (!this.form.ledger_accounts[inde].tax_id) {
           taxNotFound = true
         } else {
           const tx = this.tax.find(
@@ -733,6 +621,13 @@ export default {
     //     },
     //   ]
     },
+    fetchPay() {
+      this.$http.get(`pays/show/${this.$route.params.id}`).then(response => {
+        this.form = response.data.pay
+        if (response.data.pay.ledger_accounts.length > 0) this.payAsociateToProvider = 'FALSE'
+        this.calculateTotals()
+      })
+    },
     getLedgerAccountsLastId() {
       let lastId = 0
       // eslint-disable-next-line no-restricted-syntax
@@ -744,9 +639,9 @@ export default {
     repeateAgain() {
       this.form.ledger_accounts.push({
         id: this.getLedgerAccountsLastId() + 1,
-        concept: null,
+        concept_id: null,
         price: 0,
-        tax: null,
+        tax_id: null,
         quantity: 0,
         description: '',
         total: null,

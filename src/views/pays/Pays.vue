@@ -297,7 +297,7 @@ export default {
         searchQuery: '',
         input: '',
         typeSearch: '',
-        perPage: 1,
+        perPage: 10,
         page: 1,
         sortBy: 'id',
         sortDesc: true,
@@ -354,16 +354,43 @@ export default {
       this.$router.push('/pay/store')
     },
     showPay(data) {
-      this.$router.push(`/pay/show/${data.index}`)
+      this.$router.push(`/pay/show/${data.item.id}`)
     },
     editPay(data) {
-      this.$router.push(`/pay/edit/${data.index}`)
+      this.$router.push(`/pay/edit/${data.item.id}`)
     },
     cancelPay(data) {
-      console.log(`cancel Pay ${data.index}`)
+      this.$router.push(`/pay/edit/${data.item.id}?anular=si`)
     },
     deletePay(data) {
-      console.log(`delete Pay ${data.index}`)
+      this.$http.put(`/pays/delete/${data.item.id}`)
+        .then(response => {
+          if (response.data.code === 200) {
+            this.$swal({
+              title: response.data.message,
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+              buttonsStyling: false,
+            })
+            // console.log(response)
+            window.location.reload()
+          }
+          if (response.data.code === 500) {
+            this.$swal({
+              title: response.data.message,
+              icon: 'warning',
+              customClass: {
+                confirmButton: 'btn btn-warning',
+              },
+              buttonsStyling: false,
+            })
+          }
+        })
+        .catch(error => {
+          this.errors = error.response.data.errors
+        })
     },
     dataMetaCounter() {
       const localItemsCount = this.dataTable.length

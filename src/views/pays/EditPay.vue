@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="mt-2 mb-2">
-      Nuevo Pago
+      Editar Pago
     </h3>
     <!-- general -->
     <b-card
@@ -136,81 +136,7 @@
       </b-row>
     </b-card>
     <!--  -->
-    <!-- <b-card
-      v-if="payAsociateToProvider == 'FALSE'"
-      no-body
-      class="mt-2 mb-0"
-    >
-      <b-row>
 
-        <b-col
-          md="6"
-          xl="8"
-          class=" px-3 py-1 pb-0"
-        >
-          <h6 class="mb-0">
-            ¿ A QUÉ CUENTAS CONTABLES PERTENECE ESTE GASTO?
-          </h6>
-        </b-col>
-
-      </b-row>
-      <hr class="m-0">
-      <b-row>
-        <b-col
-          md="6"
-          xl="6"
-          class="mb-3 p-3"
-        >
-          <label for="">Contacto</label>
-          <v-select
-            v-model="form.contact"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="contacts"
-            placeholder="Seleccionar"
-            :reduce="val => val.value"
-          />
-          <label for="">Cuenta bancaria</label>
-          <v-select
-            v-model="form.bank_account"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="bank_accounts"
-            placeholder="Seleccionar"
-            :reduce="val => val.name"
-          />
-          <label for="">Forma de pago</label>
-          <v-select
-            v-model="form.payment_method"
-            class="mb-1"
-            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            label="title"
-            :options="payment_method"
-            placeholder="Seleccionar"
-          />
-        </b-col>
-        <b-col
-          md="6"
-          xl="6"
-          class="mb-3 p-3"
-        >
-          <label for="">Fecha</label>
-          <b-form-datepicker
-            v-model="form.date"
-            class="mb-1"
-          />
-
-          <label for="">Nota del gasto</label>
-          <b-form-textarea
-            v-model="form.note"
-            class="mb-1"
-          />
-        </b-col>
-      </b-row>
-
-    </b-card> -->
     <b-card
       v-if="payAsociateToProvider == 'FALSE'"
       no-body
@@ -270,7 +196,7 @@
           class="mb-2"
         >
           <b-col>
-            <b-form-select v-model="form.ledger_accounts[index].concept">
+            <b-form-select v-model="form.ledger_accounts[index].concept_id">
               <option
                 :value="null"
                 disabled
@@ -296,7 +222,7 @@
           </b-col>
           <b-col>
             <b-form-select
-              v-model="form.ledger_accounts[index].tax"
+              v-model="form.ledger_accounts[index].tax_id"
               :options="tax"
               @change="calculateTotals()"
             />
@@ -331,7 +257,7 @@
             <b-button
               v-ripple.400="'rgba(234, 84, 85, 0.15)'"
               variant="outline-danger"
-              @click="removeItem(index)"
+              @click="removeItem(index,item.id)"
             >
               <feather-icon
                 icon="XIcon"
@@ -444,7 +370,7 @@ import { required } from '@validations'
 import vSelect from 'vue-select'
 import { heightTransition } from '@core/mixins/ui/transition'
 import Ripple from 'vue-ripple-directive'
-import moment from 'moment'
+
 import {
   BCard,
   BRow,
@@ -486,14 +412,15 @@ export default {
       form: {
         contact: '',
         date: '',
+        status: 'ACTIVA',
         payment_method: '',
         bank_account: '',
         ledger_accounts: [
           {
             id: 1,
-            concept: null,
+            concept_id: null,
             price: 0,
-            tax: null,
+            tax_id: null,
             quantity: 0,
             description: '',
             total: null,
@@ -505,6 +432,7 @@ export default {
           total: null,
         },
         note: '',
+
       },
       payAsociateToProvider: '',
       contacts: [],
@@ -522,6 +450,7 @@ export default {
       concepts: [],
       tax: [],
       bank_accounts: [],
+      itemsDelete: [],
     }
   },
   watch: {
@@ -534,26 +463,20 @@ export default {
     },
 
   },
-  mounted() {
-    // this.initTrHeight()
-  },
+
   created() {
     this.showContacts()
     this.fetchBankAccounts()
     this.fetchConcepts()
     this.discounts()
-    // this.listprice()
-    // this.deadLine()
-    // this.fetchProducts()
-    // this.fetchRetention()
+    this.fetchPay()
   },
   methods: {
     storeInvoice() {
-    //   this.formatFormDate()
-
       this.form.total_taxes = this.form.totals.taxes
       this.form.total_amount = this.form.totals.total
-      this.$http.post('/pays/store', this.form)
+      this.form.itemsDelete = this.itemsDelete
+      this.$http.put(`/pays/edit/${this.$route.params.id}`, this.form)
         .then(response => {
           if (response.data.code === 200) {
             this.$swal({
@@ -564,7 +487,7 @@ export default {
               },
               buttonsStyling: false,
             })
-            // console.log(response)
+
             this.$router.push('/pay')
           }
           if (response.data.code === 500) {
@@ -581,8 +504,8 @@ export default {
         .catch(error => {
           this.errors = error.response.data.errors
         })
-    //   console.log(this.form)
     },
+
     calculateTotals() {
       let sum = 0
       let imp = 0
@@ -613,11 +536,12 @@ export default {
 
       // eslint-disable-next-line no-plusplus
       for (let inde = 0; inde < this.form.ledger_accounts.length; inde++) {
-        if (!this.form.ledger_accounts[inde].tax) {
+        if (!this.form.ledger_accounts[inde].tax_id) {
           taxNotFound = true
         } else {
+          console.log(this.tax)
           const tx = this.tax.find(
-            t => t.value === this.form.ledger_accounts[inde].tax,
+            t => t.value === this.form.ledger_accounts[inde].tax_id,
           )
 
           imp += +((tx.discount * this.form.ledger_accounts[inde].total) / 100)
@@ -678,9 +602,7 @@ export default {
         })
       })
     },
-    formatFormDate() {
-      this.form.date = moment(this.form.date).format('DD-MM-YYYY')
-    },
+
     showContacts() {
       this.$http.get('contact/showContacts').then(response => {
         this.contacts = response.data.contacts
@@ -689,49 +611,46 @@ export default {
     fetchConcepts() {
       this.$http.get('concepts_ledger_accounts/list').then(response => {
         this.concepts = response.data.concepts
-        //   this.products.push({
-        //     text: 'Seleccione',
-        //     value: null,
-        //   })
       })
-    //   this.concepts = [
-    //     {
-    //       id: '1',
-    //       category: 'Gastos',
-    //       text: 'Costos de ventas y operaciones',
-    //       child: '',
-    //     },
-    //     {
-    //       id: '2',
-    //       category: 'Gastos',
-    //       text: 'Ajustes del inventario',
-    //       child: '',
-    //     },
-    //     {
-    //       id: '3',
-    //       category: 'Gastos',
-    //       text: 'Descuentos finacieros',
-    //       child: '',
-    //     },
-    //     {
-    //       id: '4',
-    //       category: 'Gastos',
-    //       text: 'Costos de ventas y operaciones 2',
-    //       child: '',
-    //     },
-    //     {
-    //       id: '5',
-    //       category: 'Gastos',
-    //       text: 'Ajustes del inventario 2',
-    //       child: '',
-    //     },
-    //     {
-    //       id: '6',
-    //       category: 'Gastos',
-    //       text: 'Descuentos finacieros 2',
-    //       child: '',
-    //     },
-    //   ]
+    },
+    fetchPay() {
+      this.$http.get(`pays/show/${this.$route.params.id}`).then(response => {
+        this.form = response.data.pay
+        if (response.data.pay.ledger_accounts.length > 0) this.payAsociateToProvider = 'FALSE'
+        this.calculateTotals()
+      })
+      if (this.$route.query.anular === 'si') {
+        console.log('entro')
+        this.form.status = 'ANULADA'
+        this.$http.put(`/pays/anular/${this.$route.params.id}`, this.form)
+          .then(response => {
+            if (response.data.code === 200) {
+              this.$swal({
+                title: response.data.message,
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-success',
+                },
+                buttonsStyling: false,
+              })
+              // console.log(response)
+              this.$router.push('/pay')
+            }
+            if (response.data.code === 500) {
+              this.$swal({
+                title: response.data.message,
+                icon: 'warning',
+                customClass: {
+                  confirmButton: 'btn btn-warning',
+                },
+                buttonsStyling: false,
+              })
+            }
+          })
+          .catch(error => {
+            this.errors = error.response.data.errors
+          })
+      }
     },
     getLedgerAccountsLastId() {
       let lastId = 0
@@ -744,17 +663,21 @@ export default {
     repeateAgain() {
       this.form.ledger_accounts.push({
         id: this.getLedgerAccountsLastId() + 1,
-        concept: null,
+        concept_id: null,
         price: 0,
-        tax: null,
+        tax_id: null,
         quantity: 0,
         description: '',
         total: null,
       })
       this.calculateTotals()
     },
-    removeItem(index) {
+    removeItem(index, id) {
       this.form.ledger_accounts.splice(index, 1)
+      if (this.itemsDelete) this.itemsDelete.push({ id })
+      else {
+        this.itemsDelete = [{ id }]
+      }
       this.calculateTotals()
     },
   },
