@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h3 class="mt-2 mb-2">Nueva Factura Proveedor</h3>
         <b-card no-body class="mt-2 mb-0">
             <b-row>
                 <b-col md="6" xl="6" class="mb-3 p-3">
