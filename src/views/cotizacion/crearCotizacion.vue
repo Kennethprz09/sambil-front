@@ -82,9 +82,9 @@
                             @keyup="changePercentage(index)" />
                     </b-col>
                     <b-col>
-                        <select v-model="form.products[index].tax" multiple="multiple" class="custom-select" id="BVID__125"
+                        <select v-model="form.products[index].tax" multiple="multiple" class="custom-select" id="BVID__125" :key="index"
                             @change="changeTax(index)">
-                            <option v-for="(item, index) in tax" :key="index" :value="item">
+                            <option v-for="(item, indexS) in tax" :key="indexS" :value="item">
                                 {{ item.text }}
                             </option>
                         </select>
@@ -410,9 +410,13 @@ export default {
                     index2++
                 ) {
                     sum += +this.form.products[index].tax[index2].discount;
-                    this.form.totals.taxMostrar.push(
-                        this.form.products[index].tax[index2]
-                    );
+                    var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
+                    if (!llenar) {
+                        this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
+                        this.form.totals.taxMostrar.push(
+                            this.form.products[index].tax[index2]
+                        );
+                    }
                 }
             }
             this.form.totals.tax = sum;
