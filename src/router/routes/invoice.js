@@ -175,5 +175,21 @@ export default [
         ],
       },
     },
+    {
+      path: '/invoice/updateInvoice',
+      name: 'invoice-update',
+      component: () => import('@/views/cotizacion/updateCotizacion.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Editar Cotización',
+        breadcrumb: [
+          {
+            text: 'Editar Cotización',
+            active: true,
+          },
+        ],
+      },
+    },
   ]
   

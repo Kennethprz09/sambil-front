@@ -11,7 +11,7 @@
                 </b-col>
                 <b-col md="2" xl="2" offset="2" class="mb-3 p-3">
                     <b-form-group label-cols="4" label-cols-lg="2" label="No.">
-                        <b-form-input value="5" disabled />
+                        <b-form-input value="5" />
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -20,21 +20,20 @@
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Contacto</label>
                     <v-select v-model="form.contact" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                        label="title" :options="contacts" placeholder="Seleccionar" :reduce="(val) => val.value" disabled />
+                        label="title" :options="contacts" placeholder="Seleccionar" :reduce="(val) => val.value" />
                     <label for="">RNC o Cédula</label>
-                    <b-form-input v-model="form.rnc" disabled />
+                    <b-form-input v-model="form.rnc" />
                     <label class="mt-2" for="">Teléfono</label>
-                    <b-form-input v-model="form.phone" disabled />
+                    <b-form-input v-model="form.phone" />
                 </b-col>
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Fecha</label>
-                    <b-form-datepicker v-model="form.date" class="mb-1" disabled />
+                    <b-form-datepicker v-model="form.date" class="mb-1" />
                     <label for="">Vencimiento</label>
-                    <b-form-datepicker v-model="form.expiration" class="mb-1" disabled />
+                    <b-form-datepicker v-model="form.expiration" class="mb-1" />
                 </b-col>
             </b-row>
-            <b-form ref="form" :style="{ height: trHeight }" class="repeater-form ml-2" @submit.prevent="repeateAgain"
-                disabled>
+            <b-form ref="form" :style="{ height: trHeight }" class="repeater-form ml-2" @submit.prevent="repeateAgain">
                 <b-row>
                     <b-col>
                         <h6>Producto/servicio</h6>
@@ -69,38 +68,36 @@
                 <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
                     <b-col>
                         <b-form-select v-model="form.products[index].name" :options="products"
-                            @change="searchProduct(index, form.products[index].name)" :reduce="(val) => val.value"
-                            disabled />
+                            @change="searchProduct(index, form.products[index].name)" :reduce="(val) => val.value" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].ref" placeholder="Referencia" disabled />
+                        <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].price" type="number" placeholder="Precio unitario"
-                            @keyup="changePrice(index)" disabled />
+                            @keyup="changePrice(index)" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].percentage" type="number" placeholder="%"
-                            @keyup="changePercentage(index)" disabled />
+                            @keyup="changePercentage(index)" />
                     </b-col>
                     <b-col>
-                        <select v-model="form.products[index].tax" multiple="multiple" class="custom-select" id="BVID__125"
-                            @change="changeTax(index)" disabled>
-                            <option v-for="(item, index) in form.products[index].tax" :key="index" :value="item">
+                        <select v-model="form.products[index].tax" multiple="multiple" class="custom-select" id="BVID__125" @change="changeTax(index)">
+                            <option v-for="(item, indexS) in tax" :key="indexS" :value="item">
                                 {{ item.text }}
                             </option>
                         </select>
                         <!-- <v-select v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" @change="changeTax(index)" /> -->
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].description" placeholder="Descripción" disabled />
+                        <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].quantity" type="number" placeholder="Cantidad"
-                            @keyup="changeQuantity(index)" disabled />
+                            @keyup="changeQuantity(index)" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].total" placeholder="0.00" disabled />
+                        <b-form-input v-model="form.products[index].total" placeholder="0.00" />
                     </b-col>
                 </b-row>
             </b-form>
@@ -167,8 +164,7 @@
             <b-row>
                 <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
                     <label for="textarea-default">Notas</label>
-                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3"
-                        disabled />
+                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" />
                 </b-col>
             </b-row> </b-card><br />
     </div>
@@ -363,16 +359,22 @@ export default {
             var sum = 0;
             this.form.totals.taxMostrar = [];
             for (let index = 0; index < this.form.products.length; index++) {
-                for (let index2 = 0;index2 < this.form.products[index].tax.length;index2++
+                for (
+                    let index2 = 0;
+                    index2 < this.form.products[index].tax.length;
+                    index2++
                 ) {
                     sum += +this.form.products[index].tax[index2].discount;
-                    var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
-                    if (!llenar) {
-                        this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
-                        this.form.totals.taxMostrar.push(
-                            this.form.products[index].tax[index2]
-                        );
-                    }
+                    // var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
+                    // if (!llenar) {
+                    //     this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
+                    //     this.form.totals.taxMostrar.push(
+                    //         this.form.products[index].tax[index2]
+                    //     );
+                    // }
+                    this.form.totals.taxMostrar.push(
+                        this.form.products[index].tax[index2]
+                    );
                 }
             }
             this.form.totals.tax = sum;

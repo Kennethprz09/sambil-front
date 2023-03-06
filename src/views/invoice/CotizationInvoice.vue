@@ -269,7 +269,7 @@ export default {
         },
         editContact(id) {
             this.$router.push({
-                name: 'contacts/new-contact',
+                name: 'invoice-update',
                 params: { id: id, edit: this.edit }
             });
         },
