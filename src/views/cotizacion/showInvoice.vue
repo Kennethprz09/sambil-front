@@ -60,9 +60,6 @@
                     <b-col>
                         <h6>Total</h6>
                     </b-col>
-                    <b-col>
-                        <h6></h6>
-                    </b-col>
                 </b-row>
                 <hr class="line" />
                 <!-- Row Loop -->

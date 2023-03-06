@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="mostrarEdit">
         <b-card no-body class="mt-2 mb-0">
             <b-row>
                 <b-col md="5" xl="4" class="mb-3 p-3">
@@ -11,7 +11,7 @@
                 </b-col>
                 <b-col md="2" xl="2" offset="2" class="mb-3 p-3">
                     <b-form-group label-cols="4" label-cols-lg="2" label="No.">
-                        <b-form-input value="5" disabled />
+                        <b-form-input value="5" />
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -22,9 +22,9 @@
                     <v-select v-model="form.contact" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                         label="title" :options="contacts" placeholder="Seleccionar" :reduce="(val) => val.value" />
                     <label for="">RNC o Cédula</label>
-                    <b-form-input v-model="form.rnc" disabled />
+                    <b-form-input v-model="form.rnc" />
                     <label class="mt-2" for="">Teléfono</label>
-                    <b-form-input v-model="form.phone" disabled />
+                    <b-form-input v-model="form.phone" />
                 </b-col>
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Fecha</label>
@@ -103,9 +103,8 @@
                             @keyup="changeQuantity(index)" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].total" placeholder="0.00" disabled />
+                        <b-form-input v-model="form.products[index].total" placeholder="0.00" />
                     </b-col>
-
                     <!-- Remove Button -->
                     <b-col>
                         <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
@@ -186,42 +185,28 @@
                     <label for="textarea-default">Notas</label>
                     <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" />
                 </b-col>
+            </b-row>
+            <b-row>
                 <b-col md="12" class="text-center mb-3">
                     <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="storeInvoice()">
                         Guardar
                     </b-button>
                 </b-col>
-            </b-row> </b-card><br />
+            </b-row>
+        </b-card><br />
     </div>
 </template>
 <script>
-extend("required", {
-    ...required,
-    message: "El campo {field} es obligatorio",
-});
-import { extend } from "vee-validate";
-import { ValidationProvider, ValidationObserver, localize } from "vee-validate";
-import { required } from "@validations";
 import vSelect from "vue-select";
 import { heightTransition } from "@core/mixins/ui/transition";
 import Ripple from "vue-ripple-directive";
 import moment from "moment";
-import {
-    BCard,
-    BRow,
-    BCol,
-    BImg,
-    BForm,
-    BButton,
-    BFormGroup,
-    BFormInput,
-    BFormTextarea,
-    BFormDatepicker,
-    BFormSelect,
-} from "bootstrap-vue";
+import { BCard, BRow, BCol, BImg, BForm, BButton, BFormGroup, BFormInput, BFormTextarea, BFormDatepicker, BFormSelect } from "bootstrap-vue";
+import { forEach } from 'postcss-rtl/lib/affected-props';
+
 export default {
     mixins: [heightTransition],
-    name: "EditarFacturas",
+    name: "VERFacturas",
     components: {
         vSelect,
         BCard,
@@ -243,25 +228,14 @@ export default {
             listPrice: [],
             nextTodoId: 2,
             form: {
+                id: null,
                 contact: "",
                 rnc: "",
                 phone: "",
                 date: "",
                 payment_deadline: "",
                 expiration: "",
-                products: [
-                    {
-                        id: null,
-                        name: null,
-                        ref: "",
-                        price: 0,
-                        percentage: 0,
-                        tax: [],
-                        description: "",
-                        quantity: "",
-                        total: "",
-                    },
-                ],
+                products: [],
                 totals: {
                     subtotal: 0,
                     discount: 0,
@@ -279,6 +253,7 @@ export default {
         };
     },
     mounted() {
+        // this.$http.get("invoice/showCotization/" + this.id).then((response) => {
         this.$http.get("invoice/showCotization/" + 2).then((response) => {
             this.listprice();
             this.showContacts();
@@ -308,25 +283,8 @@ export default {
         Ripple,
     },
     watch: {
-        "form.contact"(val) {
-            if (val) {
-                this.showContactId(val);
-            } else {
-                this.resetContact();
-            }
-        },
-        "form.payment_deadline"(val) {
-            if (val) {
-                this.deadLineId(val);
-            } else {
-                this.form.expiration = new Date();
-            }
-        },
         "form.date"(val) {
             this.change(val);
-        },
-        "form.payment_deadline"(val) {
-            this.deadLineId(val);
         },
     },
     created() {
@@ -338,7 +296,7 @@ export default {
     methods: {
         storeInvoice() {
             this.$http
-                .post("/invoice/storeCotization", this.form)
+                .post("/invoice/updateCotization", this.form)
                 .then((response) => {
                     if (response.data.code == 200) {
                         this.$swal({
@@ -374,6 +332,7 @@ export default {
                 } else {
                     sum += +this.form.products[index].price;
                 }
+                this.totalProduct(index);
             }
             this.form.totals.subtotal = sum;
         },
@@ -428,18 +387,16 @@ export default {
             var sum = 0;
             this.form.totals.taxMostrar = [];
             for (let index = 0; index < this.form.products.length; index++) {
-                for (
-                    let index2 = 0;
-                    index2 < this.form.products[index].tax.length;
-                    index2++
-                ) {
-                    sum += +this.form.products[index].tax[index2].discount;
-                    var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
-                    if (!llenar) {
-                        this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
-                        this.form.totals.taxMostrar.push(
-                            this.form.products[index].tax[index2]
-                        );
+                for (let index2 = 0; index2 < this.form.products[index].tax.length; index2++) {
+                    var validate = this.form.totals.taxMostrar.find(item => item.value == this.form.products[index].tax[index2].value);
+                    if (!validate) {
+                        sum += +this.form.products[index].tax[index2].discount;
+                        this.form.totals.taxMostrar.push(this.form.products[index].tax[index2]);
+                    } else {
+                        var searchTax = this.form.totals.taxMostrar.indexOf(validate);
+                        var sumaTax = parseFloat(this.form.totals.taxMostrar[searchTax].discount) + parseFloat(this.form.products[index].tax[index2].discount);
+                        this.form.totals.taxMostrar[searchTax].discount = sumaTax;
+                        sum += +sumaTax;
                     }
                 }
             }
@@ -497,14 +454,6 @@ export default {
                 this.contacts = response.data.contacts;
             });
         },
-        showContactId(id) {
-            this.$http.get("contact/showContact/" + id).then((response) => {
-                this.form.rnc = response.data.contact.number_identification;
-                this.form.phone = response.data.contact.mobil;
-                this.form.date = new Date();
-                this.form.payment_deadline = response.data.contact.payment_deadline;
-            });
-        },
         deadLine() {
             this.$http.get("identification/listDeadline").then((response) => {
                 this.payment_deadline = response.data.listDeadline;
@@ -513,18 +462,6 @@ export default {
         fetchProducts() {
             this.$http.get("identification/listProducts").then((response) => {
                 this.products = response.data.products;
-                this.products.push({
-                    text: "Seleccione",
-                    value: null,
-                });
-            });
-        },
-        deadLineId(id) {
-            this.$http.get("identification/listDeadline/" + id).then((response) => {
-                this.idDeadline = response.data.listDeadlineId.days;
-                this.form.expiration = moment(this.form.date)
-                    .add(this.idDeadline, "days")
-                    .format("YYYY-MM-DD");
             });
         },
         repeateAgain() {
@@ -551,7 +488,7 @@ export default {
         initTrHeight() {
             this.trSetHeight(null);
             this.$nextTick(() => {
-                this.trSetHeight(this.$refs.form.scrollHeight);
+                // this.trSetHeight(this.$refs.form.scrollHeight);
             });
         },
         formatPrice(value) {
