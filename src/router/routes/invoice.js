@@ -30,6 +30,41 @@ export default [
           },
         ],
       },
+      props:{action:'create'}
+    },
+    {
+      path: '/invoice/edit/:id',
+      name: 'invoice-edit',
+      component: () => import('@/views/invoice/StoreInvoice.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Editar Factura',
+        breadcrumb: [
+          {
+            text: 'Facturas De Venta',
+            active: true,
+          },
+        ],
+      },
+      props:{action:'edit'}
+    },
+    {
+      path: '/invoice/view/:id',
+      name: 'invoice-view',
+      component: () => import('@/views/invoice/StoreInvoice.vue'),
+      meta: {
+        resource: 'Ver roles',
+        action: 'read',
+        pageTitle: 'Ver Factura',
+        breadcrumb: [
+          {
+            text: 'Facturas De Venta',
+            active: true,
+          },
+        ],
+      },
+      props:{action:'view'}
     },
     {
       path: '/invoice/sale',

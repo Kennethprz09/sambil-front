@@ -90,4 +90,18 @@ export default [
       },
     ],
   },
+  {
+    title: 'Compras',
+    icon: 'ShoppingCartIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Facturas de proveedores',
+        route: 'invoice-provider',
+        action: 'read',
+        resource: 'Ver roles'
+      }
+    ],
+  },
 ]

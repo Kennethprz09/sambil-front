@@ -1,32 +1,18 @@
 <template>
     <div>
-        <h3 class="mt-2 mb-2">Nueva factura</h3>
+        <h3 class="mt-2 mb-2">Nueva Factura Proveedor</h3>
         <b-card no-body class="mt-2 mb-0">
-            <b-row>
-                <b-col md="4" xl="4" class=" p-3">
-                    <b-img class="imgLogo" :src="require('@/assets/images/logo/sambil-logo.png')" fluid
-                        alt="Responsive image" />
-                </b-col>
-            </b-row>
-            <hr>
             <b-row>
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Contacto</label>
-                    <v-select v-model="form.contact" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                        label="title" :options="contacts" placeholder="Seleccionar" :reduce="val => val.value"
-                        @change="showContactId()" :disabled="action !== 'view' ? false : true" />
-                    <label for="">RNC o Cédula</label>
-                    <b-form-input v-model="form.rnc" disabled />
-                    <label class="mt-2" for="">Teléfono</label>
-                    <b-form-input v-model="form.phone" disabled />
+                    <v-select v-model="form.contact" class="mb-1"
+                        label="title" :options="contacts" placeholder="Seleccionar" :reduce="val => val.value" :disabled="action !== 'view' ? false : true" />
+                    <label for="">NCF</label>
+                    <b-form-input v-model="form.nfc_number" :disabled="action !== 'view' ? false : true" />
                 </b-col>
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Fecha</label>
                     <b-form-datepicker v-model="form.date" class="mb-1" :disabled="action !== 'view' ? false : true" />
-                    <label for="">Plazo de pago</label>
-                    <v-select v-model="form.payment_deadline" class="mb-1"
-                        :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="payment_deadline"
-                        placeholder="Seleccionar" :reduce="val => val.value" :disabled="action !== 'view' ? false : true" />
                     <label for="">Vencimiento</label>
                     <b-form-datepicker v-model="form.expiration" class="mb-1" :disabled="action !== 'view' ? false : true" />
                 </b-col>
@@ -34,10 +20,7 @@
             <b-form ref="form" class="repeater-form ml-2" @submit.prevent="repeateAgain">
                 <b-row>
                     <b-col>
-                        <h6>Producto/servicio</h6>
-                    </b-col>
-                    <b-col>
-                        <h6>Referencia</h6>
+                        <h6>Concepto</h6>
                     </b-col>
                     <b-col>
                         <h6>Precio</h6>
@@ -49,10 +32,10 @@
                         <h6>Impuesto</h6>
                     </b-col>
                     <b-col>
-                        <h6>Descripción</h6>
+                        <h6>Cantidad</h6>
                     </b-col>
                     <b-col>
-                        <h6>Cantidad</h6>
+                        <h6>Descripción</h6>
                     </b-col>
                     <b-col>
                         <h6>Total</h6>
@@ -69,26 +52,23 @@
                             @change="searchProduct(index, form.products[index].name)" :reduce="val => val.value" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].ref" placeholder="Referencia" :disabled="action !== 'view' ? false : true" />
-                    </b-col>
-                    <b-col>
                         <b-form-input v-model="form.products[index].price" type="number" placeholder="Precio unitario"
-                            @keyup="changePrice(index)" disabled />
+                            disabled />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="form.products[index].percentage" type="number" placeholder="%"
+                        <b-form-input v-model="form.products[index].percentage" type="number" placeholder="0"
                             @keyup="changePercentage(index)" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
-                        <v-select v-model="form.products[index].tax" multiple label="text" :options="tax" @input="changeTax"
-                            :disabled="action !== 'view' ? false : true" />
-                    </b-col>
-                    <b-col>
-                        <b-form-input v-model="form.products[index].description" placeholder="Descripción" :disabled="action !== 'view' ? false : true" />
+                        <v-select v-model="form.products[index].tax" multiple label="text" :options="tax"
+                            @input="changeTax" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].quantity" type="number" placeholder="Cantidad"
                             @keyup="changeQuantity(index)" :disabled="action !== 'view' ? false : true" />
+                    </b-col>
+                    <b-col>
+                        <b-form-input v-model="form.products[index].description" placeholder="Descripción" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].total" placeholder="0.00" disabled />
@@ -104,7 +84,7 @@
                 </b-row>
             </b-form>
             <b-col cols="12" class="text-center mt-3">
-                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="repeateAgain"  v-if="(action !== 'view')">
+                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary"  v-if="(action !== 'view')" @click="repeateAgain" :disabled="action !== 'view' ? false : true">
                     <feather-icon icon="PlusIcon" class="mr-25" />
                     <span>Agregar Linea</span>
                 </b-button>
@@ -112,10 +92,9 @@
         </b-card>
         <b-card no-body class="mt-1">
             <b-row>
-                <b-col md="4" xl="4" class="mb-3 p-3">
-                    <b-img class="imgLogo" :src="require('@/assets/images/logo/firma.png')" fluid alt="Responsive image" />
+                <b-col md="4" xl="4" class="mb-3">
                 </b-col>
-                <b-col md="2" class="mb-3 p-3"></b-col>
+                <b-col md="2" class="mb-3"></b-col>
                 <b-col md="3" class="mb-3">
                     <b-row class="ml-5 mt-4 d-flex">
                         <b-col md="12" class="ml-5 mt-1 d-flex">
@@ -166,32 +145,20 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-col md="6" class="pl-3 pr-3">
-                    <label for="textarea-default">Términos y condiciones</label>
-                    <b-form-textarea v-model="form.terms" placeholder="Visible en la impresión del documento" rows="3" :disabled="action !== 'view' ? false : true" />
-                </b-col>
-                <b-col md="6" class="pl-3 pr-3">
-                    <label for="textarea-default">Notas</label>
-                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" :disabled="action !== 'view' ? false : true" />
-                </b-col>
-                <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
-                    <label for="textarea-default">Pie de factura</label>
-                    <b-form-textarea v-model="form.footer" placeholder="Visible en la impresión del documento" rows="3" :disabled="action !== 'view' ? false : true" />
-                </b-col>
                 <b-col md="12" class="text-center mb-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'create')" @click="storeInvoice()">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'create')" @click="createInvoiceProvider()" :disabled="action !== 'view' ? false : true">
                         Guardar
                     </b-button>
-                    <b-col md="12" class="text-center mb-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'edit')" @click="updateInvoice()" :disabled="action !== 'view' ? false : true">
+                </b-col>
+                <b-col md="12" class="text-center mb-3">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'edit')" @click="updateInvoiceProvider()" :disabled="action !== 'view' ? false : true">
                         Actualizar
                     </b-button>
                 </b-col>
                 <b-col md="12" class="text-center mb-3">
-                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'view')" @click="editInvoice()">
+                    <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" v-if="(action === 'view')" @click="editInvoiceProvider()">
                         Editar
                     </b-button>
-                </b-col>
                 </b-col>
             </b-row>
         </b-card><br>
@@ -223,7 +190,7 @@ import {
     BFormSelect
 } from 'bootstrap-vue'
 export default {
-    props: { action: String },
+    props: {action: String },
     mixins: [heightTransition],
     name: 'Facturas',
     components: {
@@ -243,23 +210,19 @@ export default {
     data() {
         return {
             form: {
-                id: null,
-                list_price: '',
+                id:null,
                 contact: '',
+                nfc_number: '',
                 date: '',
-                payment_deadline: '',
                 expiration: '',
-                rnc: '',
-                phone: '',
                 products: [{
                     id: null,
                     name: null,
-                    ref: '',
                     price: 0,
                     percentage: 0,
                     tax: [],
                     description: '',
-                    quantity: '',
+                    quantity: 0,
                     total: '',
                     discount: 0
                 }],
@@ -269,12 +232,8 @@ export default {
                     total: 0
                 },
                 listTax: [],
-                terms: '',
-                note: '',
-                footer: ''
             },
             contacts: [],
-            payment_deadline: [],
             products: [],
             tax: [],
             idDeadline: '',
@@ -288,119 +247,22 @@ export default {
     },
     watch: {
 
-        "form.contact"(val) {
-            if (val) {
-                this.showContactId(val)
-            } else {
-                this.resetContact()
-            }
-        },
-        "form.payment_deadline"(val) {
-            if (val) {
-                this.deadLineId(val)
-            } else {
-                this.form.expiration = new Date();
-            }
-        },
-        "form.date"(val) {
-            this.change(val)
-        },
-        "form.payment_deadline"(val) {
-            this.deadLineId(val)
-        },
     },
     created() {
-        this.showContacts()
-        this.deadLine()
-        this.fetchProducts()
-        this.discounts()
-        this.fecthInvoice();
+        this.discounts();
+        this.showContacts();
+        this.change();
+        this.fetchProducts();
+        this.fecthInvoiceProvider();
         this.fetchInvoiceTax();
         this.fetchInvoiceProduct();
         this.fetchTaxProduct();
-        window.addEventListener('resize', this.initTrHeight)
+        window.addEventListener('resize', this.initTrHeight);
     },
     destroyed() {
-        window.removeEventListener('resize', this.initTrHeight)
+        window.removeEventListener('resize', this.initTrHeight);
     },
     methods: {
-        storeInvoice() {
-            this.$http.post('/invoice/store', this.form)
-                .then(response => {
-                    if (response.data.code == 200) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: 'success',
-                            customClass: {
-                                confirmButton: 'btn btn-success',
-                            },
-                            buttonsStyling: false,
-                        });
-                        this.$router.push('/invoice');
-                    }
-                    if (response.data.code == 500) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: 'warning',
-                            customClass: {
-                                confirmButton: 'btn btn-warning',
-                            },
-                            buttonsStyling: false,
-                        })
-                    }
-                })
-                .catch((error) => {
-                    this.errors = error.response.data.errors;
-                });
-        },
-        showContacts() {
-            this.$http.get('contact/showContacts').then((response) => {
-                this.contacts = response.data.contacts
-            })
-        },
-        calculateTotals() {
-            var sum = 0;
-            var discount = 0;
-            var total = 0;
-            for (let index = 0; index < this.form.products.length; index++) {
-                sum += +this.form.products[index].price * this.form.products[index].quantity;
-                discount += +this.form.products[index].discount;
-            }
-            total = sum - discount;
-            this.form.totals.total = total;
-            this.form.totals.subtotal = sum;
-            this.form.totals.discount = discount;
-            this.updateTotal();
-        },
-        changePrice(index) {
-            if (this.form.products[index].price == '') {
-                this.form.products[index].total = 0;
-            } else {
-                this.changePercentage(index);
-            }
-        },
-        changePercentage(index) {
-            if (this.form.products[index].percentage == 0) {
-                this.form.products[index].discount = (this.form.products[index].quantity * this.form.products[index].price) * (0 / 100)
-                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - this.form.products[index].discount;
-                this.calculateTotals();
-            } else {
-                this.form.products[index].percentage = this.form.products[index].percentage > 100 ? 100 : this.form.products[index].percentage;
-                this.form.products[index].discount = (this.form.products[index].quantity * this.form.products[index].price) * (this.form.products[index].percentage / 100)
-                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - this.form.products[index].discount;
-                this.calculateTotals();
-            }
-            this.changeTax();
-        },
-        changeQuantity(index) {
-            if (this.form.products[index].quantity == '') {
-                this.form.products[index].total = 0;
-            } else {
-                this.changePercentage(index);
-                this.changeTax();
-                this.calculateTotals();
-            }
-        },
         searchProduct(index, id) {
             this.$http.get('identification/product/' + id).then((response) => {
                 this.form.products[index].price = response.data.product.price;
@@ -410,59 +272,19 @@ export default {
                 this.calculateTotals();
             })
         },
-        discounts() {
-            this.$http.get('identification/listDiscounts').then((response) => {
-                this.tax = response.data.discounts;
-                this.tax.push({
-                    text: 'Seleccione',
-                    value: null
-                })
-            })
+        change() {
+            this.form.date = moment().add(this.idDeadline, 'days').format('YYYY-MM-DD')
+            this.form.expiration = moment().add(this.idDeadline, 'days').format('YYYY-MM-DD')
         },
-        change(val) {
-            this.form.expiration = moment(val).add(this.idDeadline, 'days').format('YYYY-MM-DD')
-        },
-        resetContact() {
-            this.form.contact = '';
-            this.form.date = '',
-            this.form.payment_deadline = '',
-            this.form.expiration = '';
-            this.form.rnc = '',
-            this.form.phone = ''
-        },
-        showContactId(id) {
-            this.$http.get('contact/showContact/' + id).then((response) => {
-                this.form.rnc = response.data.contact.number_identification;
-                this.form.phone = response.data.contact.mobil;
-                this.form.date = moment().format('YYYY-MM-DD');
-                this.form.payment_deadline = response.data.contact.payment_deadline;
-            })
-        },
-        deadLine() {
-            this.$http.get('identification/listDeadline').then((response) => {
-                this.payment_deadline = response.data.listDeadline;
-            })
-        },
-        fetchProducts() {
-            this.$http.get('identification/listProducts').then((response) => {
-                this.products = response.data.products;
-                this.products.push({
-                    text: 'Seleccione',
-                    value: null
-                })
-            })
-        },
-        deadLineId(id) {
-            this.$http.get('identification/listDeadline/' + id).then((response) => {
-                this.idDeadline = response.data.listDeadlineId.days;
-                this.form.expiration = moment(this.form.date).add(this.idDeadline, 'days').format('YYYY-MM-DD')
+        showContacts() {
+            this.$http.get('contact/showContacts').then((response) => {
+                this.contacts = response.data.contacts
             })
         },
         repeateAgain() {
             this.form.products.push({
                 id: null,
                 name: null,
-                ref: '',
                 price: 0,
                 percentage: 0,
                 tax: [],
@@ -479,13 +301,72 @@ export default {
         removeItem(index) {
             this.form.products.splice(index, 1);
             this.changeTax();
-            this.trTrimHeight(this.$refs.row[0].offsetHeight)
+            this.trTrimHeight(this.$refs.row[0].offsetHeight);
+        },
+        fetchProducts() {
+            this.$http.get('identification/listProducts').then((response) => {
+                this.products = response.data.products;
+                this.products.push({
+                    text: 'Seleccione',
+                    value: null
+                })
+            })
+        },
+        calculateTotals() {
+            var sum = 0;
+            var discount = 0;
+            var total = 0;
+            for (let index = 0; index < this.form.products.length; index++) {
+                sum += +this.form.products[index].price*this.form.products[index].quantity;
+                discount += +this.form.products[index].discount;
+            }
+            total = sum - discount;
+            this.form.totals.total = total;
+            this.form.totals.subtotal = sum;
+            this.form.totals.discount = discount;
+            this.updateTotal();
+        },
+        changePrice(index) {
+            if (this.form.products[index].price == '') {
+                this.form.products[index].total = 0;
+            } else {
+                this.changePercentage(index);
+
+            }
+        },
+        changePercentage(index) {
+            if (this.form.products[index].percentage == 0) {
+                this.form.products[index].discount = (this.form.products[index].quantity * this.form.products[index].price) * (0 / 100)
+                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - this.form.products[index].discount;
+                this.calculateTotals();
+            } else {
+                this.form.products[index].percentage = this.form.products[index].percentage > 100 ? 100 : this.form.products[index].percentage;
+                this.form.products[index].discount = (this.form.products[index].quantity * this.form.products[index].price) * (this.form.products[index].percentage / 100)
+                this.form.products[index].total = (this.form.products[index].quantity * this.form.products[index].price) - this.form.products[index].discount;
+                this.calculateTotals();
+            }
+            this.changeTax();
         },
         initTrHeight() {
             this.trSetHeight(null)
             this.$nextTick(() => {
                 this.trSetHeight(this.$refs.form.scrollHeight)
             })
+        },
+        discounts() {
+            this.$http.get('identification/listDiscounts').then((response) => {
+                this.tax = response.data.discounts;
+            })
+        },
+        changeQuantity(index) {
+            if (this.form.products[index].quantity == '') {
+                this.form.products[index].total = 0;
+            } else {
+                this.changePercentage(index);
+                this.changeTax();
+                this.calculateTotals();
+
+            }
         },
         changeTax() {
             this.form.listTax = [];
@@ -511,62 +392,8 @@ export default {
             }
             this.form.totals.total = total;
         },
-        fecthInvoice(){
-         if(this.action !== 'create'){
-            this.$http.get('/invoice/getInvoice/'+this.$route.params.id)
-                .then(response => {
-                    this.form.contact = response.data.invoice.client_id;
-                    this.form.payment_deadline = response.data.invoice.payment_id;
-                    this.form.expiration = response.data.invoice.expiration;
-                    this.form.date = response.data.invoice.created;
-                    this.form.terms = response.data.invoice.terms;
-                    this.form.footer = response.data.invoice.footer;
-                    this.form.note = response.data.invoice.note;
-                    this.form.totals.subtotal =response.data.invoice.subtotal;
-                    this.form.totals.discount =response.data.invoice.discount;
-                    this.form.totals.total =response.data.invoice.total;
-                })
-         }
-        },
-        fetchInvoiceProduct(){
-            if(this.action !== 'create'){
-            this.form.products = []
-            this.$http.get('/invoice/getInvoiceProduct/'+this.$route.params.id)
-                .then(response => {
-                    for (let index = 0; index < response.data.invoiceProduct.length; index++) {
-                        let product = response.data.invoiceProduct;
-                        this.form.products.push({id:product[index].id,name:product[index].product_id,price:product[index].price,percentage:product[index].percentage,tax:[],description:product[index].description,quantity:product[index].quantity,total:product[index].total,discount:product[index].discount,ref:product[index].ref});
-                    }
-                })
-            }  
-        },
-        fetchInvoiceTax(){
-            if(this.action !== 'create'){
-            this.$http.get('/invoice/getInvoiceTax/'+this.$route.params.id)
-                .then(response => {
-                    for (let index = 0; index < response.data.invoiceTax.length; index++) {
-                        let tax = response.data.invoiceTax;
-                        this.form.listTax.push({ name: tax[index].name+' - '+tax[index].discount, discount: tax[index].discount, value: tax[index].id, total: tax[index].total });
-                    }
-                })
-            }  
-        },
-        fetchTaxProduct(){
-            if(this.action !== 'create'){
-            this.$http.get('/invoice/getTaxProduct/'+this.$route.params.id)
-                .then(response => {
-                    for (let index = 0; index < response.data.taxProduct.length; index++) {
-                        let tax = response.data.taxProduct;
-                        let position = this.form.products.findIndex(({ id }) => id === tax[index].id_invoice_products);
-                        this.form.products[position].tax.push({text:tax[index].name+' - '+tax[index].discount,discount: tax[index].discount,value:tax[index].id});
-                    }
-                })
-            } 
-        },
-        updateInvoice(){
-            this.form.id=this.$route.params.id;
-
-            this.$http.post('/invoice/update', this.form)
+        createInvoiceProvider() {
+            this.$http.post('/invoiceProvider/create', this.form)
                 .then(response => {
                     if (response.data.code == 200) {
                         this.$swal({
@@ -577,7 +404,7 @@ export default {
                             },
                             buttonsStyling: false,
                         });
-                        this.$router.push('/invoice');
+                        this.$router.push('/invoice-provider');
                     }
                     if (response.data.code == 500) {
                         this.$swal({
@@ -594,9 +421,89 @@ export default {
                     this.errors = error.response.data.errors;
                 });
         },
-        editInvoice(){
-            this.$router.push({name:'invoice-edit',params: {id:this.$route.params.id}});
+        fecthInvoiceProvider(){
+         if(this.action !== 'create'){
+            this.$http.get('/invoiceProvider/getInvoiceProvider/'+this.$route.params.id)
+                .then(response => {
+                    this.form.contact = response.data.invoiceProvider.id_contacts;
+                    this.form.nfc_number = response.data.invoiceProvider.nfc_number;
+                    this.form.expiration = response.data.invoiceProvider.expiration;
+                    this.form.date = response.data.invoiceProvider.created;
+                    this.form.totals.subtotal =response.data.invoiceProvider.subtotal;
+                    this.form.totals.discount =response.data.invoiceProvider.discount;
+                    this.form.totals.total =response.data.invoiceProvider.total;
+                })
+         }
+        },
+        fetchInvoiceProduct(){
+            if(this.action !== 'create'){
+            this.form.products = []
+            this.$http.get('/invoiceProvider/getInvoiceProduct/'+this.$route.params.id)
+                .then(response => {
+                    for (let index = 0; index < response.data.invoiceProduct.length; index++) {
+                        let product = response.data.invoiceProduct;
+                        this.form.products.push({id:product[index].id,name:product[index].product_id,price:product[index].price,percentage:product[index].percentage,tax:[],description:product[index].description,quantity:product[index].quantity,total:product[index].total,discount:product[index].discount});
+                    }
+                })
+            }  
+        },
+        fetchInvoiceTax(){
+            if(this.action !== 'create'){
+            this.$http.get('/invoiceProvider/getInvoiceTax/'+this.$route.params.id)
+                .then(response => {
+                    for (let index = 0; index < response.data.invoiceTax.length; index++) {
+                        let tax = response.data.invoiceTax;
+                        this.form.listTax.push({ name: tax[index].name+' - '+tax[index].discount, discount: tax[index].discount, value: tax[index].id, total: tax[index].total });
+                    }
+                })
+            }  
+        },
+        fetchTaxProduct(){
+            if(this.action !== 'create'){
+            this.$http.get('/invoiceProvider/getTaxProduct/'+this.$route.params.id)
+                .then(response => {
+                    for (let index = 0; index < response.data.taxProduct.length; index++) {
+                        let tax = response.data.taxProduct;
+                        let position = this.form.products.findIndex(({ id }) => id === tax[index].id_invoice_provider_products);
+                        this.form.products[position].tax.push({text:tax[index].name+' - '+tax[index].discount,discount: tax[index].discount,value:tax[index].id});
+                    }
+                })
+            } 
+        },
+        updateInvoiceProvider(){
+            this.form.id=this.$route.params.id;
+            this.$http.post('/invoiceProvider/update', this.form)
+                .then(response => {
+                    if (response.data.code == 200) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                            },
+                            buttonsStyling: false,
+                        });
+                        this.$router.push('/invoice-provider');
+                    }
+                    if (response.data.code == 500) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'warning',
+                            customClass: {
+                                confirmButton: 'btn btn-warning',
+                            },
+                            buttonsStyling: false,
+                        })
+                    }
+                })
+                .catch((error) => {
+                    this.errors = error.response.data.errors;
+                });
+        },
+        editInvoiceProvider(){
+            this.$router.push({name:'invoice-provider-edit',params: {id:this.$route.params.id}});
         }
+
     },
 }
 </script>
