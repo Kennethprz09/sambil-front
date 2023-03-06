@@ -463,7 +463,7 @@ export default {
                 .then(response => {
                     for (let index = 0; index < response.data.taxProduct.length; index++) {
                         let tax = response.data.taxProduct;
-                        let position = this.form.products.findIndex(({ id }) => id === tax[index].id_invoice_provider_products);
+                        let position = this.form.products.findIndex(({ id }) => id === tax[index].id_invoice_pro_products);
                         this.form.products[position].tax.push({text:tax[index].name+' - '+tax[index].discount,discount: tax[index].discount,value:tax[index].id});
                     }
                 })
