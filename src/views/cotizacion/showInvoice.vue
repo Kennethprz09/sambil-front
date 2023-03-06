@@ -369,9 +369,13 @@ export default {
                     index2++
                 ) {
                     sum += +this.form.products[index].tax[index2].discount;
-                    this.form.totals.taxMostrar.push(
-                        this.form.products[index].tax[index2]
-                    );
+                    var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
+                    if (!llenar) {
+                        this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
+                        this.form.totals.taxMostrar.push(
+                            this.form.products[index].tax[index2]
+                        );
+                    }
                 }
             }
             this.form.totals.tax = sum;
