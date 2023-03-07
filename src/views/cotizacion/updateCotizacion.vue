@@ -207,7 +207,7 @@ import { BCard, BRow, BCol, BImg, BForm, BButton, BFormGroup, BFormInput, BFormT
 export default {
     name: 'CrearCotizacion',
     mounted() {
-        this.$http.get("invoice/showCotization/" + 2).then((response) => {
+        this.$http.get("invoice/showCotization/" + this.id).then((response) => {
             this.listprice();
             this.showContacts();
             this.fetchProducts();
@@ -233,6 +233,7 @@ export default {
     data() {
         return {
             mostrarEdit: false,
+            id: this.$route.params && this.$route.params.id,
             listPrice: [],
             contacts: [],
             products: [],

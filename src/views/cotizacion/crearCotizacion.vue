@@ -82,13 +82,13 @@
                             @keyup="changePercentage(index)" />
                     </b-col>
                     <b-col>
-                        <select id="BVID__125" :key="index" v-model="form.products[index].tax" multiple="multiple"
+                        <!-- <select id="BVID__125" :key="index" v-model="form.products[index].tax" multiple="multiple"
                             class="custom-select" @change="changeTax(index)">
                             <option v-for="(item, indexS) in tax" :key="indexS" :value="item">
                                 {{ item.text }}
                             </option>
-                        </select>
-                        <!-- <v-select v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" @change="changeTax(index)" /> -->
+                        </select> -->
+                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
