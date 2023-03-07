@@ -239,6 +239,7 @@ export default {
             products: [],
             tax: [],
             form: {
+                cotizacion_id: this.$route.params && this.$route.params.id,
                 contact: '',
                 rnc: '',
                 phone: '',
