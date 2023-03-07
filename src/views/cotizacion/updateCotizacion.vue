@@ -93,7 +93,8 @@
                                 </option>
                             </template>
                         </select> -->
-                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="form.products[index].taxselect" />
+                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="form.products[index].taxselect" v-if="form.products[index].taxselect.length > 0" />
+                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" v-else />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
@@ -371,10 +372,13 @@ export default {
         },
         searchProduct(index, id) {
             this.$http.get(`identification/product/${id}`).then(response => {
+                this.form.products[index].ref = null
                 this.form.products[index].price = response.data.product.price
+                this.form.products[index].percentage = 0
+                this.form.products[index].tax = []
+                this.form.products[index].description = null
                 this.form.products[index].quantity = 1
                 this.form.products[index].total = response.data.product.price
-                this.form.products[index].percentage = 0
                 this.calculateTotals()
             })
         },
@@ -431,6 +435,7 @@ export default {
                 price: 0,
                 percentage: 0,
                 tax: [],
+                taxselect: [],
                 description: '',
                 quantity: 1,
                 total: '',
