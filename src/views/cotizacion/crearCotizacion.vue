@@ -15,7 +15,7 @@
                     </b-form-group>
                 </b-col>
             </b-row>
-            <hr />
+            <hr>
             <b-row>
                 <b-col md="6" xl="6" class="mb-3 p-3">
                     <label for="">Contacto</label>
@@ -33,7 +33,7 @@
                     <b-form-datepicker v-model="form.expiration" class="mb-1" />
                 </b-col>
             </b-row>
-            <b-form ref="form" :style="{ height: trHeight }" class="repeater-form ml-2" @submit.prevent="repeateAgain">
+            <b-form ref="form" class="repeater-form ml-2" @submit.prevent="repeateAgain">
                 <b-row>
                     <b-col>
                         <h6>Producto/servicio</h6>
@@ -60,15 +60,15 @@
                         <h6>Total</h6>
                     </b-col>
                     <b-col>
-                        <h6></h6>
+                        <h6 />
                     </b-col>
                 </b-row>
-                <hr class="line" />
+                <hr class="line">
                 <!-- Row Loop -->
-                <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
+                <b-row v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row" class="mb-2">
                     <b-col>
-                        <b-form-select v-model="form.products[index].name" :options="products"
-                            @change="searchProduct(index, form.products[index].name)" :reduce="(val) => val.value" />
+                        <b-form-select v-model="form.products[index].name" :options="products" :reduce="(val) => val.value"
+                            @change="searchProduct(index, form.products[index].name)" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].ref" placeholder="Referencia" />
@@ -82,8 +82,8 @@
                             @keyup="changePercentage(index)" />
                     </b-col>
                     <b-col>
-                        <select v-model="form.products[index].tax" multiple="multiple" class="custom-select" id="BVID__125" :key="index"
-                            @change="changeTax(index)">
+                        <select id="BVID__125" :key="index" v-model="form.products[index].tax" multiple="multiple"
+                            class="custom-select" @change="changeTax(index)">
                             <option v-for="(item, indexS) in tax" :key="indexS" :value="item">
                                 {{ item.text }}
                             </option>
@@ -111,7 +111,7 @@
                 </b-row>
             </b-form>
             <b-col cols="12" class="text-center mt-3">
-                <b-button class="mb-5" v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="repeateAgain">
+                <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" class="mb-5" variant="primary" @click="repeateAgain">
                     <feather-icon icon="PlusIcon" class="mr-25" />
                     <span>Agregar Linea</span>
                 </b-button>
@@ -122,7 +122,7 @@
                 <b-col md="4" xl="4" class="mb-3 p-3">
                     <b-img class="imgLogo" :src="require('@/assets/images/logo/firma.png')" fluid alt="Responsive image" />
                 </b-col>
-                <b-col md="2" class="mb-3 p-3"></b-col>
+                <b-col md="2" class="mb-3 p-3" />
                 <b-col md="3" offset="1" class="mb-3 p-3">
                     <b-row class="ml-5 mt-4 d-flex">
                         <b-col md="12">
@@ -140,8 +140,8 @@
                                 <p class="ml-3 d-flex">Subtotal</p>
                             </strong>
                         </b-col>
-                        <template v-for="(item, index) in form.totals.taxMostrar">
-                            <b-col md="12" :key="index">
+                        <template v-for="(item, index) in MostrarTax">
+                            <b-col :key="index" md="12">
                                 <strong>
                                     <p class="ml-3">{{ item.text }}</p>
                                 </strong>
@@ -165,9 +165,9 @@
                         <b-col md="12">
                             <p>RD${{ formatPrice(Subtotal) }}</p>
                         </b-col>
-                        <template v-for="(item, index) in form.totals.taxMostrar">
-                            <b-col md="12" :key="index">
-                                <p>RD${{ CalcularImpuesto(item.discount) }}</p>
+                        <template v-for="(item, index) in MostrarTax">
+                            <b-col :key="index" md="12">
+                                <p>RD${{ CalcularImpuesto((item.discount * item.quantity)) }}</p>
                             </b-col>
                         </template>
                         <b-col md="12">
@@ -186,37 +186,290 @@
                         Guardar
                     </b-button>
                 </b-col>
-            </b-row> </b-card><br />
+            </b-row>
+        </b-card>
+        <br>
     </div>
 </template>
+
 <script>
-extend("required", {
-    ...required,
-    message: "El campo {field} es obligatorio",
-});
-import { extend } from "vee-validate";
-import { ValidationProvider, ValidationObserver, localize } from "vee-validate";
-import { required } from "@validations";
-import vSelect from "vue-select";
-import { heightTransition } from "@core/mixins/ui/transition";
-import Ripple from "vue-ripple-directive";
-import moment from "moment";
-import {
-    BCard,
-    BRow,
-    BCol,
-    BImg,
-    BForm,
-    BButton,
-    BFormGroup,
-    BFormInput,
-    BFormTextarea,
-    BFormDatepicker,
-    BFormSelect,
-} from "bootstrap-vue";
+import vSelect from 'vue-select'
+import { heightTransition } from '@core/mixins/ui/transition'
+import Ripple from 'vue-ripple-directive'
+import moment from 'moment'
+import { BCard, BRow, BCol, BImg, BForm, BButton, BFormGroup, BFormInput, BFormTextarea, BFormDatepicker, BFormSelect } from 'bootstrap-vue'
+
 export default {
-    mixins: [heightTransition],
-    name: "Facturas",
+    name: 'CrearCotizacion',
+    created() {
+        this.listprice()
+        this.showContacts()
+        this.fetchProducts()
+        this.discounts()
+    },
+    data() {
+        return {
+            listPrice: [],
+            contacts: [],
+            products: [],
+            tax: [],
+            form: {
+                contact: '',
+                rnc: '',
+                phone: '',
+                date: '',
+                payment_deadline: '',
+                expiration: '',
+                products: [
+                    {
+                        id: null,
+                        name: null,
+                        ref: '',
+                        price: 0,
+                        percentage: 0,
+                        tax: [],
+                        description: '',
+                        quantity: '',
+                        total: '',
+                    },
+                ],
+                totals: {
+                    subtotal: 0,
+                    discount: 0,
+                    total: 0,
+                    tax: 0,
+                    taxMostrar: [],
+                },
+                note: '',
+            },
+        }
+    },
+    methods: {
+        storeInvoice() {
+            this.$http
+                .post('/invoice/storeCotization', this.form)
+                .then(response => {
+                    if (response.data.code == 200) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                            },
+                            buttonsStyling: false,
+                        })
+                        this.$router.push('/invoice')
+                    }
+                    if (response.data.code == 500) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'warning',
+                            customClass: {
+                                confirmButton: 'btn btn-warning',
+                            },
+                            buttonsStyling: false,
+                        })
+                    }
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors
+                })
+        },
+        calculateTotals() {
+            let sum = 0
+            for (let index = 0; index < this.form.products.length; index++) {
+                if (this.form.products[index].quantity > 0) {
+                    sum += +(this.form.products[index].price * this.form.products[index].quantity)
+                } else {
+                    sum += +this.form.products[index].price
+                }
+            }
+            this.form.totals.subtotal = sum
+        },
+        changePrice(index) {
+            if (
+                this.form.products[index].price == ''
+                || this.form.products[index].price == 0
+            ) {
+                this.form.products[index].total = 0
+                this.calculateTotals()
+            } else {
+                this.form.products[index].total = this.form.products[index].price
+                this.calculateTotals()
+                this.totalProduct(index)
+            }
+        },
+        totalProduct(index) {
+            if (this.form.products[index].quantity > 1) {
+                var total = this.form.products[index].total * this.form.products[index].quantity
+            } else {
+                var total = this.form.products[index].price
+            }
+
+            const descuentos = (total * (this.form.products[index].percentage / 100))
+
+            this.form.products[index].total = (total - descuentos)
+        },
+        changePercentage(index) {
+            let sum = 0
+            for (let index = 0; index < this.form.products.length; index++) {
+                sum += +this.form.products[index].percentage
+            }
+            this.form.totals.discount = sum
+            this.totalProduct(index)
+        },
+        changeTax(index) {
+            let sum = 0
+            this.form.totals.taxMostrar = []
+            for (let index = 0; index < this.form.products.length; index++) {
+                for (let index2 = 0; index2 < this.form.products[index].tax.length; index2++) {
+                    sum += +this.form.products[index].tax[index2].discount
+                    const llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text)
+                    if (!llenar) {
+                        sum = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount
+                    }
+                    this.form.totals.taxMostrar.push(this.form.products[index].tax[index2])
+                }
+            }
+            this.form.totals.tax = sum
+        },
+        changeQuantity(index) {
+            if (this.form.products[index].quantity == '' || this.form.products[index].quantity > 0) {
+                this.changePrice(index)
+            } else {
+                this.totalProduct(index)
+                this.calculateTotals()
+            }
+        },
+        searchProduct(index, id) {
+            this.$http.get(`identification/product/${id}`).then(response => {
+                this.form.products[index].price = response.data.product.price
+                this.form.products[index].quantity = 1
+                this.form.products[index].total = response.data.product.price
+                this.form.products[index].percentage = 0
+                this.calculateTotals()
+            })
+        },
+        discounts() {
+            this.$http.get('identification/listDiscounts').then(response => {
+                this.tax = response.data.discounts
+            })
+        },
+        change(val) {
+            this.form.expiration = moment(val).format('YYYY-MM-DD')
+        },
+        resetContact() {
+            this.form = {
+                contact: '',
+                rnc: '',
+                phone: '',
+                date: '',
+                payment_deadline: '',
+                expiration: '',
+            }
+        },
+        listprice() {
+            this.$http.get('identification/listPrice').then(response => {
+                this.listPrice = response.data.listPrice
+            })
+        },
+        showContacts() {
+            this.$http.get('contact/showContacts').then(response => {
+                this.contacts = response.data.contacts
+            })
+        },
+        showContactId(id) {
+            this.$http.get(`contact/showContact/${id}`).then(response => {
+                this.form.rnc = response.data.contact.number_identification
+                this.form.phone = response.data.contact.mobil
+                this.form.date = new Date()
+                this.form.payment_deadline = response.data.contact.payment_deadline
+            })
+        },
+        fetchProducts() {
+            this.$http.get('identification/listProducts').then(response => {
+                this.products = response.data.products
+                this.products.push({
+                    text: 'Seleccione',
+                    value: null,
+                })
+            })
+        },
+        repeateAgain() {
+            this.form.products.push({
+                id: null,
+                name: null,
+                ref: '',
+                price: 0,
+                percentage: 0,
+                tax: [],
+                description: '',
+                quantity: 1,
+                total: '',
+            })
+        },
+        removeItem(index) {
+            this.form.products.splice(index, 1)
+            this.trTrimHeight(this.$refs.row[0].offsetHeight)
+        },
+        formatPrice(value) {
+            const val = (value / 1).toFixed(2).replace('.', ',')
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        },
+        CalcularImpuesto(tax) {
+            console.log(tax, 'taxtaxtaxtaxtaxtaxtaxtaxtaxtaxtax');
+            const impuestos = this.Subtotal * (tax / 100)
+            return this.formatPrice(impuestos)
+        },
+    },
+    computed: {
+        Descuento() {
+            return this.form.totals.subtotal * (this.form.totals.discount / 100)
+        },
+        Subtotal() {
+            return this.form.totals.subtotal - this.Descuento
+        },
+        Impuestos() {
+            if (this.form.totals.tax) {
+                const impuestos = this.Subtotal * (this.form.totals.tax / 100)
+                this.form.total = this.Subtotal + impuestos
+                return this.formatPrice(this.Subtotal + impuestos)
+            }
+            this.form.total = this.Subtotal
+
+            return this.formatPrice(this.Subtotal)
+        },
+        MostrarTax() {
+            const array = this.form.totals.taxMostrar;
+            const arreglo = [];
+            for (let index = 0; index < array.length; index++) {
+                const item = array[index];
+                const existe = arreglo.find(i => i.value == item.value);
+                if (existe) {
+                    var indexExiste = arreglo.indexOf(existe);
+                    arreglo[indexExiste].quantity = arreglo[indexExiste].quantity + 1;
+                    arreglo.splice(indexExiste, 1, arreglo[indexExiste]);
+                } else {
+                    item.quantity = 1;
+                    arreglo.push(item);
+                }
+            }
+
+            return arreglo;
+        }
+    },
+    watch: {
+        'form.contact': function (val) {
+            if (val) {
+                this.showContactId(val)
+            } else {
+                this.resetContact()
+            }
+        },
+        'form.date': function (val) {
+            this.change(val)
+        },
+    },
     components: {
         vSelect,
         BCard,
@@ -231,336 +484,13 @@ export default {
         BFormDatepicker,
         BFormSelect,
     },
-    data() {
-        return {
-            listPrice: [],
-            nextTodoId: 2,
-            form: {
-                contact: "",
-                rnc: "",
-                phone: "",
-                date: "",
-                payment_deadline: "",
-                expiration: "",
-                products: [
-                    {
-                        id: null,
-                        name: null,
-                        ref: "",
-                        price: 0,
-                        percentage: 0,
-                        tax: [],
-                        description: "",
-                        quantity: "",
-                        total: "",
-                    },
-                ],
-                totals: {
-                    subtotal: 0,
-                    discount: 0,
-                    total: 0,
-                    tax: 0,
-                    taxMostrar: [],
-                },
-                note: "",
-            },
-            contacts: [],
-            payment_deadline: [],
-            products: [],
-            tax: [],
-            idDeadline: "",
-        };
-    },
-    mounted() {
-        this.initTrHeight();
-    },
     directives: {
         Ripple,
     },
-    watch: {
-        "form.contact"(val) {
-            if (val) {
-                this.showContactId(val);
-            } else {
-                this.resetContact();
-            }
-        },
-        "form.payment_deadline"(val) {
-            if (val) {
-                this.deadLineId(val);
-            } else {
-                this.form.expiration = new Date();
-            }
-        },
-        "form.date"(val) {
-            this.change(val);
-        },
-        "form.payment_deadline"(val) {
-            this.deadLineId(val);
-        },
-    },
-    created() {
-        this.listprice();
-        this.showContacts();
-        this.deadLine();
-        this.fetchProducts();
-        this.discounts();
-        this.fetchRetention();
-        window.addEventListener("resize", this.initTrHeight);
-    },
-    destroyed() {
-        window.removeEventListener("resize", this.initTrHeight);
-    },
-    methods: {
-        storeInvoice() {
-            this.$http
-                .post("/invoice/storeCotization", this.form)
-                .then((response) => {
-                    if (response.data.code == 200) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: "success",
-                            customClass: {
-                                confirmButton: "btn btn-success",
-                            },
-                            buttonsStyling: false,
-                        });
-                        this.$router.push("/invoice");
-                    }
-                    if (response.data.code == 500) {
-                        this.$swal({
-                            title: response.data.message,
-                            icon: "warning",
-                            customClass: {
-                                confirmButton: "btn btn-warning",
-                            },
-                            buttonsStyling: false,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    this.errors = error.response.data.errors;
-                });
-        },
-        calculateTotals() {
-            var sum = 0;
-            for (let index = 0; index < this.form.products.length; index++) {
-                if (this.form.products[index].quantity > 0) {
-                    sum += +(this.form.products[index].price * this.form.products[index].quantity);
-                } else {
-                    sum += +this.form.products[index].price;
-                }
-            }
-            this.form.totals.subtotal = sum;
-        },
-        changeValueRetention(val) {
-            if (val == "") {
-                this.form.retentions[va].value = "";
-            }
-        },
-        addRetention() {
-            this.form.retentions.push({
-                id: "",
-                retention: "",
-                value: "",
-            });
-        },
-        deleteRetention(index) {
-            this.form.retentions.splice(index, 1);
-        },
-        changePrice(index) {
-            if (
-                this.form.products[index].price == "" ||
-                this.form.products[index].price == 0
-            ) {
-                this.form.products[index].total = 0;
-                this.calculateTotals();
-            } else {
-                this.form.products[index].total = this.form.products[index].price;
-                this.calculateTotals();
-                this.totalProduct(index);
-            }
-        },
-        totalProduct(index, status) {
-            if (this.form.products[index].quantity > 1) {
-                var total = this.form.products[index].total * this.form.products[index].quantity;
-            } else {
-                var total = this.form.products[index].price;
-            }
-
-            var descuentos = (total * (this.form.products[index].percentage / 100));
-
-            this.form.products[index].total = (total - descuentos);
-        },
-        changePercentage(index) {
-            var sum = 0;
-            for (let index = 0; index < this.form.products.length; index++) {
-                sum += +this.form.products[index].percentage;
-            }
-            this.form.totals.discount = sum;
-            this.totalProduct(index);
-        },
-        changeTax(index) {
-            var sum = 0;
-            this.form.totals.taxMostrar = [];
-            for (let index = 0; index < this.form.products.length; index++) {
-                for (
-                    let index2 = 0;
-                    index2 < this.form.products[index].tax.length;
-                    index2++
-                ) {
-                    sum += +this.form.products[index].tax[index2].discount;
-                    var llenar = this.form.totals.taxMostrar.find(item => item.text == this.form.products[index].tax[index2].text);
-                    if (!llenar) {
-                        this.form.products[index].tax[index2] = this.form.products[index].tax[index2].discount + this.form.products[index].tax[index2].discount;
-                        this.form.totals.taxMostrar.push(
-                            this.form.products[index].tax[index2]
-                        );
-                    }
-                }
-            }
-            this.form.totals.tax = sum;
-        },
-        changeQuantity(index) {
-            if (this.form.products[index].quantity == "" || this.form.products[index].quantity > 0) {
-                this.changePrice(index);
-            } else {
-                this.totalProduct(index);
-                this.calculateTotals();
-            }
-        },
-        searchProduct(index, id) {
-            this.$http.get("identification/product/" + id).then((response) => {
-                this.form.products[index].price = response.data.product.price;
-                this.form.products[index].quantity = 1;
-                this.form.products[index].total = response.data.product.price;
-                this.form.products[index].percentage = 0;
-                this.calculateTotals();
-            });
-        },
-        discounts() {
-            this.$http.get("identification/listDiscounts").then((response) => {
-                this.tax = response.data.discounts;
-            });
-        },
-        change(val) {
-            this.form.expiration = moment(val)
-                .add(this.idDeadline, "days")
-                .format("YYYY-MM-DD");
-        },
-        resetContact() {
-            this.form = {
-                contact: "",
-                rnc: "",
-                phone: "",
-                date: "",
-                payment_deadline: "",
-                expiration: "",
-            };
-        },
-        listprice() {
-            this.$http.get("identification/listPrice").then((response) => {
-                this.listPrice = response.data.listPrice;
-            });
-        },
-        fetchRetention() {
-            this.$http.get("identification/listRetention").then((response) => {
-                this.retentions = response.data.retentions;
-            });
-        },
-        showContacts() {
-            this.$http.get("contact/showContacts").then((response) => {
-                this.contacts = response.data.contacts;
-            });
-        },
-        showContactId(id) {
-            this.$http.get("contact/showContact/" + id).then((response) => {
-                this.form.rnc = response.data.contact.number_identification;
-                this.form.phone = response.data.contact.mobil;
-                this.form.date = new Date();
-                this.form.payment_deadline = response.data.contact.payment_deadline;
-            });
-        },
-        deadLine() {
-            this.$http.get("identification/listDeadline").then((response) => {
-                this.payment_deadline = response.data.listDeadline;
-            });
-        },
-        fetchProducts() {
-            this.$http.get("identification/listProducts").then((response) => {
-                this.products = response.data.products;
-                this.products.push({
-                    text: "Seleccione",
-                    value: null,
-                });
-            });
-        },
-        deadLineId(id) {
-            this.$http.get("identification/listDeadline/" + id).then((response) => {
-                this.idDeadline = response.data.listDeadlineId.days;
-                this.form.expiration = moment(this.form.date)
-                    .add(this.idDeadline, "days")
-                    .format("YYYY-MM-DD");
-            });
-        },
-        repeateAgain() {
-            this.form.products.push({
-                id: null,
-                name: null,
-                ref: "",
-                price: "",
-                percentage: "",
-                tax: "",
-                description: "",
-                quantity: "",
-                total: "",
-            });
-
-            this.$nextTick(() => {
-                this.trAddHeight(this.$refs.row[0].offsetHeight);
-            });
-        },
-        removeItem(index) {
-            this.form.products.splice(index, 1);
-            this.trTrimHeight(this.$refs.row[0].offsetHeight);
-        },
-        initTrHeight() {
-            this.trSetHeight(null);
-            this.$nextTick(() => {
-                this.trSetHeight(this.$refs.form.scrollHeight);
-            });
-        },
-        formatPrice(value) {
-            let val = (value / 1).toFixed(2).replace(".", ",");
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        },
-        CalcularImpuesto(tax) {
-            var impuestos = this.Subtotal * (tax / 100);
-            return this.formatPrice(impuestos);
-        },
-    },
-    computed: {
-        Descuento() {
-            return this.form.totals.subtotal * (this.form.totals.discount / 100);
-        },
-        Subtotal() {
-            return this.form.totals.subtotal - this.Descuento;
-        },
-        Impuestos() {
-            if (this.form.totals.tax) {
-                var impuestos = this.Subtotal * (this.form.totals.tax / 100);
-                this.form.total = this.Subtotal + impuestos;
-                return this.formatPrice(this.Subtotal + impuestos);
-            } else {
-                this.form.total = this.Subtotal;
-            }
-
-            return this.formatPrice(this.Subtotal);
-        },
-    },
-};
+    mixins: [heightTransition],
+}
 </script>
-  
+
 <style lang="scss" scoped>
 .per-page-selector {
     width: 90px;
