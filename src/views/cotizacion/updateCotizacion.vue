@@ -378,6 +378,7 @@ export default {
                     }
                     this.form.totals.taxMostrar.push(this.form.products[index].tax[index2])
                 }
+                this.deleteTax(index);
             }
             this.form.totals.tax = sum
         },
