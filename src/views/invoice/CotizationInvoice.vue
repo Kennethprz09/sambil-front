@@ -24,24 +24,26 @@
 
                     <b-col md="4">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
+                            <b-form-input v-model="tableSettings.numero" class="d-inline-block mr-1"
                                 placeholder="Número" />
                         </b-form-group>
                     </b-col>
                     <b-col md="4">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
-                                placeholder="Cliente" />
+                            <b-form-input v-model="tableSettings.cliente" class="d-inline-block mr-1" placeholder="Cliente" />
                         </b-form-group>
                     </b-col>
                     <b-col md="3">
                         <b-form-group>
-                            <b-form-datepicker class="mb-1" placeholder="Creacion" />
+                            <b-form-datepicker class="mb-1" v-model="tableSettings.creacion" placeholder="Creacion" />
                         </b-form-group>
                     </b-col>
                     <b-col md="1" class="text-left">
                         <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle">
                             <feather-icon icon="SearchIcon" />
+                        </b-button>
+                        <b-button variant="secondary" @click="cleanData" class=" ml-2 btn-icon rounded-circle">
+                            <feather-icon icon="XIcon" />
                         </b-button>
                     </b-col>
                 </b-row>
@@ -274,7 +276,7 @@ export default {
             });
         },
         deleteContact(id) {
-            this.$http.post('/contact/delete/' + id)
+            this.$http.post('/invoice/deleteCotizatio/' + id)
                 .then(response => {
                     if (response.data.code == 200) {
                         this.$swal({
@@ -303,6 +305,12 @@ export default {
                 });
         },
         searchData() {
+            this.fetchList()
+        },
+        cleanData() {
+            this.tableSettings.numero = null;
+            this.tableSettings.cliente = null;
+            this.tableSettings.creacion = null;
             this.fetchList()
         },
     },
