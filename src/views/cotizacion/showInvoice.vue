@@ -59,9 +59,6 @@
                     <b-col>
                         <h6>Total</h6>
                     </b-col>
-                    <b-col>
-                        <h6 />
-                    </b-col>
                 </b-row>
                 <hr class="line">
                 <!-- Row Loop -->
@@ -104,14 +101,6 @@
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].total" placeholder="0.00" disabled />
-                    </b-col>
-
-                    <!-- Remove Button -->
-                    <b-col>
-                        <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
-                            @click="removeItem(index)">
-                            <feather-icon icon="XIcon" class="mr-25" />
-                        </b-button>
                     </b-col>
                 </b-row>
             </b-form>

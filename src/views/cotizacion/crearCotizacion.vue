@@ -258,7 +258,7 @@ export default {
                             },
                             buttonsStyling: false,
                         })
-                        this.$router.push('/invoice/cotization')
+                        this.$router.push('/invoice/showInvoice')
                     }
                     if (response.data.code == 500) {
                         this.$swal({
