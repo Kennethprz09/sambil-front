@@ -102,6 +102,12 @@
                     <b-col>
                         <b-form-input v-model="form.products[index].total" placeholder="0.00" disabled />
                     </b-col>
+                    <b-col>
+                        <b-button disabled v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
+                            @click="removeItem(index)">
+                            <feather-icon icon="XIcon" class="mr-25" />
+                        </b-button>
+                    </b-col>
                 </b-row>
             </b-form>
         </b-card>
@@ -523,6 +529,12 @@ export default {
     cursor: pointer;
     margin-left: 118px;
     position: absolute;
+}
+
+.repeater-form {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 500px;
 }
 </style>
 
