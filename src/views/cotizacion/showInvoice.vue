@@ -167,7 +167,7 @@
             <b-row>
                 <b-col md="12" class="mt-0 mb-3 pl-3 pr-3 pt-1">
                     <label for="textarea-default">Notas</label>
-                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" />
+                    <b-form-textarea v-model="form.note" placeholder="Visible en la impresión del documento" rows="3" disabled />
                 </b-col>
             </b-row>
         </b-card>

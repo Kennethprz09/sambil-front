@@ -93,8 +93,8 @@
                                 </option>
                             </template>
                         </select> -->
-                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="form.products[index].taxselect" v-if="form.products[index].taxselect.length > 0" />
-                        <v-select @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" v-else />
+                        <v-select @option:deselected='deleteTax(index)' @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="form.products[index].taxselect" v-if="form.products[index].taxselect.length > 0" />
+                        <v-select @option:deselected='deleteTax(index)' @input="changeTax(index)" v-model="form.products[index].tax" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="text" multiple :options="tax" v-else />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
@@ -146,7 +146,7 @@
                                 <p class="ml-3 d-flex">Subtotal</p>
                             </strong>
                         </b-col>
-                        <template v-for="(item, index) in MostrarTax">
+                        <template v-for="(item, index) in form.totals.MostrarTax">
                             <b-col :key="index" md="12">
                                 <strong>
                                     <p class="ml-3">{{ item.text }}</p>
@@ -171,7 +171,7 @@
                         <b-col md="12">
                             <p>RD${{ CalcularSubtotal() }}</p>
                         </b-col>
-                        <template v-for="(item, index) in MostrarTax">
+                        <template v-for="(item, index) in form.totals.MostrarTax">
                             <b-col :key="index" md="12">
                                 <p>RD${{ CalcularImpuesto((item.discount * item.quantity)) }}</p>
                             </b-col>
@@ -221,6 +221,7 @@ export default {
                 total: 0,
                 tax: 0,
                 taxMostrar: [],
+                MostrarTax: []
             };
 
             var selfs = this;
@@ -272,6 +273,25 @@ export default {
         }
     },
     methods: {
+        deleteTax(index) {
+            this.form.totals.taxMostrar = this.form.products[index].tax;
+            const array = this.form.totals.taxMostrar;
+            const arreglo = [];
+            for (let index = 0; index < array.length; index++) {
+                const item = array[index];
+                const existe = arreglo.find(i => i.value == item.value);
+                if (existe) {
+                    var indexExiste = arreglo.indexOf(existe);
+                    arreglo[indexExiste].quantity = arreglo[indexExiste].quantity + 1;
+                    arreglo.splice(indexExiste, 1, arreglo[indexExiste]);
+                } else {
+                    item.quantity = 1;
+                    arreglo.push(item);
+                }
+            }
+
+            this.form.totals.MostrarTax = arreglo;
+        },
         storeInvoice() {
             this.$http
                 .post('/invoice/updateCotization', this.form)
@@ -347,7 +367,6 @@ export default {
             this.totalProduct(index)
         },
         changeTax(index) {
-            // alert('ava');
             let sum = 0
             this.form.totals.taxMostrar = []
             for (let index = 0; index < this.form.products.length; index++) {
@@ -384,7 +403,7 @@ export default {
         },
         discounts() {
             this.$http.get('identification/listDiscounts').then(response => {
-                this.tax = response.data.discounts
+                this.tax = response.data.discounts;
             })
         },
         change(val) {
@@ -474,26 +493,6 @@ export default {
             return this.formatPrice(subtotal)
         },
     },
-    computed: {
-        MostrarTax() {
-            const array = this.form.totals.taxMostrar;
-            const arreglo = [];
-            for (let index = 0; index < array.length; index++) {
-                const item = array[index];
-                const existe = arreglo.find(i => i.value == item.value);
-                if (existe) {
-                    var indexExiste = arreglo.indexOf(existe);
-                    arreglo[indexExiste].quantity = arreglo[indexExiste].quantity + 1;
-                    arreglo.splice(indexExiste, 1, arreglo[indexExiste]);
-                } else {
-                    item.quantity = 1;
-                    arreglo.push(item);
-                }
-            }
-
-            return arreglo;
-        }
-    },
     watch: {
         'form.contact': function (val) {
             if (val) {
@@ -551,6 +550,11 @@ export default {
     cursor: pointer;
     margin-left: 118px;
     position: absolute;
+}
+.repeater-form {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 500px;
 }
 </style>
 
