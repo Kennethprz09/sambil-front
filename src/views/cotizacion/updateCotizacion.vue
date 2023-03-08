@@ -60,7 +60,7 @@
                         <h6>Total</h6>
                     </b-col>
                     <b-col>
-                        <h6 />
+                      
                     </b-col>
                 </b-row>
                 <hr class="line">
@@ -285,7 +285,7 @@ export default {
                             },
                             buttonsStyling: false,
                         })
-                        this.$router.push('/invoice')
+                        this.$router.push('/invoice/cotization')
                     }
                     if (response.data.code == 500) {
                         this.$swal({
