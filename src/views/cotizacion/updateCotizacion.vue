@@ -285,7 +285,7 @@ export default {
                             },
                             buttonsStyling: false,
                         })
-                        this.$router.push('/invoice')
+                        this.$router.push('/invoice/showInvoice')
                     }
                     if (response.data.code == 500) {
                         this.$swal({
