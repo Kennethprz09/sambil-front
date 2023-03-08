@@ -183,7 +183,7 @@ import moment from 'moment'
 import { BCard, BRow, BCol, BImg, BForm, BButton, BFormGroup, BFormInput, BFormTextarea, BFormDatepicker, BFormSelect } from 'bootstrap-vue'
 
 export default {
-    name: 'CrearCotizacion',
+    name: 'VerCotizacion',
     mounted() {
         this.$http.get("invoice/showCotization/" + this.id).then((response) => {
             this.listprice();

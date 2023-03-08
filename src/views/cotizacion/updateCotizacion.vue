@@ -206,7 +206,7 @@ import moment from 'moment'
 import { BCard, BRow, BCol, BImg, BForm, BButton, BFormGroup, BFormInput, BFormTextarea, BFormDatepicker, BFormSelect } from 'bootstrap-vue'
 
 export default {
-    name: 'CrearCotizacion',
+    name: 'EditarCotizacion',
     mounted() {
         this.$http.get("invoice/showCotization/" + this.id).then((response) => {
             this.listprice();
@@ -274,7 +274,12 @@ export default {
     },
     methods: {
         deleteTax(index) {
-            this.form.totals.taxMostrar = this.form.products[index].tax;
+            this.form.totals.taxMostrar = [];
+            this.form.products.forEach(item => {
+                item.tax.forEach(element => {
+                    this.form.totals.taxMostrar.push(element);
+                });
+            });
             const array = this.form.totals.taxMostrar;
             const arreglo = [];
             for (let index = 0; index < array.length; index++) {
@@ -305,7 +310,7 @@ export default {
                             },
                             buttonsStyling: false,
                         })
-                        this.$router.push('/invoice/showInvoice')
+                        this.$router.push('/invoice/cotization')
                     }
                     if (response.data.code == 500) {
                         this.$swal({
@@ -378,9 +383,9 @@ export default {
                     }
                     this.form.totals.taxMostrar.push(this.form.products[index].tax[index2])
                 }
-                this.deleteTax(index);
             }
             this.form.totals.tax = sum
+            this.deleteTax(index);
         },
         changeQuantity(index) {
             if (this.form.products[index].quantity == '' || this.form.products[index].quantity > 0) {
