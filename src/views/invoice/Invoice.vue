@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <!-- Table Container Card -->
         <b-card no-body class="mb-0">
@@ -25,9 +24,9 @@
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="invoices" responsive
-                :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
-                empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
+            <b-table ref="refContactListTable" class="position-relative" :items="invoices" responsive :fields="tableColumns"
+                primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty empty-text="No se encontraron datos"
+                :sort-desc.sync="tableSettings.sortDesc">
 
                 <template #cell(expiration)="data">
                     <b-badge variant="danger" v-if="(data.item.status == 'Por cobrar')">
@@ -46,7 +45,7 @@
                         {{ data.item.status }}
                     </b-badge>
                 </template>
-                
+
                 <!-- Column: Actions -->
                 <template #cell(actions)="data">
                     <div class="d-flex">
@@ -54,10 +53,12 @@
                             title="Ver">
                             <feather-icon icon="EyeIcon" />
                         </b-button>
-                        <b-button variant="success" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Imprimir">
+                        <b-button variant="success" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
+                            title="Imprimir">
                             <feather-icon icon="PrinterIcon" />
                         </b-button>
-                        <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Editar">
+                        <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
+                            title="Editar">
                             <feather-icon icon="EditIcon" />
                         </b-button>
                         <b-button variant="danger" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
@@ -78,12 +79,11 @@
                             registros</span>
                     </b-col>
                     <!-- Pagination -->
-                    <b-col cols="12" sm="6"
-                        class="d-flex align-items-center justify-content-center justify-content-sm-end">
+                    <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">
 
-                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows"
-                            :per-page="tableSettings.perPage" first-number last-number class="mb-0 mt-1 mt-sm-0"
-                            prev-class="prev-item" next-class="next-item">
+                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows" :per-page="tableSettings.perPage"
+                            first-number last-number class="mb-0 mt-1 mt-sm-0" prev-class="prev-item"
+                            next-class="next-item">
                             <template #prev-text>
                                 <feather-icon icon="ChevronLeftIcon" size="18" />
                             </template>

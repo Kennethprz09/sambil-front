@@ -128,6 +128,54 @@ export default [
     },
   },
   {
+    path: '/invoice/newcotization',
+    name: 'newCotization',
+    component: () => import('@/views/cotizacion/crearCotizacion.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Nueva cotización',
+      breadcrumb: [
+        {
+          text: 'Nueva cotización',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/invoice/showInvoice',
+    name: 'invoice-show-invoice',
+    component: () => import('@/views/cotizacion/showInvoice.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Ver Cotización',
+      breadcrumb: [
+        {
+          text: 'Ver Cotización',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/invoice/updateInvoice',
+    name: 'invoice-update',
+    component: () => import('@/views/cotizacion/updateCotizacion.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Editar Cotización',
+      breadcrumb: [
+        {
+          text: 'Editar Cotización',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
     path: '/invoice/newReceived',
     name: 'invoice-newReceived',
     component: () => import('@/views/invoice/NewReceivedInvoice.vue'),

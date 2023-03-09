@@ -105,5 +105,48 @@ export default [
       },
     ],
   },
-
+  {
+    title: 'Inventario',
+    icon: 'BoxIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Productos y servicios',
+        route: 'inventoryProductsServicesIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Valor de inventario',
+        route: 'inventoryValueIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Ajustes de inventario',
+        route: 'inventoryTweaksIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Listas de precios',
+        route: 'inventoryPriceListIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Almacenes',
+        route: 'inventoryWarehousesIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Categorías',
+        route: 'inventoryCategoriesIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+    ],
+  },
 ]

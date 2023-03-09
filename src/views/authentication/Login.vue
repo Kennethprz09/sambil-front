@@ -28,14 +28,13 @@
           lg="12"
           class="px-xl-2 mx-auto"
         >
-        <div class="w-100 d-lg-flex align-items-center justify-content-center mb-5">
-          <b-img
-            fluid
-            :src="imgUrl"
-            alt="Login V2"
-          />
-        </div>
-          
+          <div class="w-100 d-lg-flex align-items-center justify-content-center mb-5">
+            <b-img
+              fluid
+              :src="imgUrl"
+              alt="Login V2"
+            />
+          </div>
           <b-card-text class="mb-2">
             Iniciar sesión
           </b-card-text>
@@ -132,7 +131,7 @@
 
           <!-- divider -->
           <div class="divider my-2">
-            <div class="divider-text"></div>
+            <div class="divider-text" />
           </div>
 
         </b-col>
@@ -147,22 +146,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
-  BRow, 
-  BCol, 
-  BLink, 
-  BFormGroup, 
-  BFormInput, 
-  BInputGroupAppend, 
-  BInputGroup, 
-  BFormCheckbox, 
-  BCardText, 
-  BCardTitle, 
-  BImg, 
-  BForm, 
-  BButton, 
-  BAlert, 
-  VBTooltip,
-  BSpinner,
+  BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton, BAlert, VBTooltip, BSpinner,
 } from 'bootstrap-vue'
 import useJwt from '@/auth/jwt/useJwt'
 import { required, email } from '@validations'
@@ -234,23 +218,23 @@ export default {
             .then(response => {
               useJwt.setToken(response.data.access_token)
               useJwt.setRefreshToken(response.data.expires_at)
-              this.$http.get('auth/user').then((response) => {
+              this.$http.get('auth/user').then(response => {
                 const { userData } = response.data
                 localStorage.setItem('userData', JSON.stringify(userData))
                 this.$ability.update(userData.ability)
                 this.$router.replace(getHomeRouteForLoggedInUser(userData.role[0]))
-                .then(() => {
-                  this.$toast({
-                    component: ToastificationContent,
-                    position: 'top-right',
-                    props: {
-                      title: `Bienvenido ${userData.fullName || userData.username}`,
-                      icon: 'CoffeeIcon',
-                      variant: 'success',
-                      text: `Has iniciado sesión correctamente como ${userData.role}. Ahora puedes empezar a trabajar!`,
-                    },
-                  })  
-                })
+                  .then(() => {
+                    this.$toast({
+                      component: ToastificationContent,
+                      position: 'top-right',
+                      props: {
+                        title: `Bienvenido ${userData.fullName || userData.username}`,
+                        icon: 'CoffeeIcon',
+                        variant: 'success',
+                        text: `Has iniciado sesión correctamente como ${userData.role}. Ahora puedes empezar a trabajar!`,
+                      },
+                    })
+                  })
               })
             })
             .catch(error => {

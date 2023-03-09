@@ -10,6 +10,7 @@ import roles from './routes/roles'
 import contacts from './routes/contacts'
 import invoice from './routes/invoice'
 import pay from './routes/pays'
+import inventory from './routes/inventory'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,7 @@ const router = new VueRouter({
     ...contacts,
     ...invoice,
     ...pay,
+    ...inventory,
     {
       path: '/',
       name: 'home',
