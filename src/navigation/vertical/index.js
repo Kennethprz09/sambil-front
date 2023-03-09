@@ -91,21 +91,6 @@ export default [
     ],
   },
   {
-    title: 'Compras',
-    icon: 'CreditCardIcon',
-    action: 'read',
-    resource: 'Ver pagos',
-    children: [
-
-      {
-        title: 'Pagos / Gastos',
-        route: 'pay',
-        action: 'read',
-        resource: 'Ver pagos',
-      },
-    ],
-  },
-  {
     title: 'Inventario',
     icon: 'BoxIcon',
     action: 'read',
@@ -146,6 +131,26 @@ export default [
         route: 'inventoryCategoriesIndex',
         action: 'read',
         resource: 'Ver roles',
+      },
+    ],
+  },
+  {
+    title: 'Compras',
+    icon: 'ShoppingCartIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Facturas de proveedores',
+        route: 'invoice-provider',
+        action: 'read',
+        resource: 'Ver roles'
+      },
+      {
+        title: 'Pagos / Gastos',
+        route: 'pay',
+        action: 'read',
+        resource: 'Ver pagos',
       },
     ],
   },

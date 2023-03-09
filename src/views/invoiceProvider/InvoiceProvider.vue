@@ -37,17 +37,17 @@
                     <!-- Search -->
                     <b-col cols="12" md="1">
                         <div class="d-flex align-items-center justify-content-end">
-                            <b-button variant="primary" @click="fetchInvoices" class="btn-icon rounded-circle mr-1">
+                            <b-button variant="primary" @click="fetchInvoiceProvider" class="btn-icon rounded-circle mr-1">
                                 <feather-icon icon="SearchIcon" />
                             </b-button>
-                            <b-button variant="primary" class="btn-icon rounded-circle mr-1" @click="newInvoice()">
+                            <b-button variant="primary" class="btn-icon rounded-circle mr-1" @click="newInvoiceProvider()">
                                 <feather-icon icon="PlusIcon" />
                             </b-button>
                         </div>
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="invoices" responsive
+            <b-table ref="refContactListTable" class="position-relative" :items="invoicesProvider" responsive
                 :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
                 empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
                 <template #cell(total)="data">
@@ -67,10 +67,10 @@
                 <template #cell(actions)="data">
                     <div class="d-flex">
                         <b-button variant="primary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
-                            title="Ver" @click="viewInvoice(data.item.id)">
+                            title="Ver" @click="viewInvoiceProvider(data.item.id)">
                             <feather-icon icon="EyeIcon" />
                         </b-button>
-                        <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Editar" @click="editInvoice(data.item.id)">
+                        <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary title="Editar" @click="editInvoiceProvider(data.item.id)">
                             <feather-icon icon="EditIcon" />
                         </b-button>
                         <b-button variant="danger" class="btn-icon rounded-circle ml-2" :id="`form-item-settings-icon-${data.item.id}`">
@@ -190,8 +190,8 @@ export default {
             searchQuery: '',
             tableColumns: [
                 { key: 'id', label: 'Id', sortable: true },
-                { key: 'identification', label: 'NCF/Número', sortable: true },
-                { key: 'client', label: 'Cliente' },
+                { key: 'nfc_number', label: 'NCF/Número', sortable: true },
+                { key: 'contacts', label: 'Proveedor' },
                 { key: 'created', label: 'Creación' },
                 { key: 'expiration', label: 'Vencimiento' },
                 { key: 'total', label: 'Total' },
@@ -218,13 +218,13 @@ export default {
                 sortBy: 'id',
                 sortDesc: true,
             },
-            invoices: [],
+            invoicesProvider: [],
             inputs: [
-                { value: 'invoices.id', title: 'Id' },
-                { value: 'number_identification', title: 'Ncf/Número' },
-                { value: 'reason', title: 'Cliente' },
-                { value: 'invoices.created', title: 'Creación' },
-                { value: 'invoices.expiration', title: 'Vencimiento' },
+                { value: 'invoice_providers.id', title: 'Id' },
+                { value: 'reason', title: 'Proveedor' },
+                { value: 'nfc_number', title: 'Ncf/Número' },
+                { value: 'invoice_providers.created', title: 'Creación' },
+                { value: 'invoice_providers.expiration', title: 'Vencimiento' },
                 { value: 'total', title: 'Total' },
             ],
             typeSearch: [
@@ -242,22 +242,22 @@ export default {
     watch: {
         "tableSettings.sortBy": {
             handler(val) {
-                this.fetchInvoices()
+                this.fetchInvoiceProvider()
             },
         },
         "tableSettings.sortDesc": {
             handler(val) {
-                this.fetchInvoices()
+                this.fetchInvoiceProvider()
             },
         },
         "tableSettings.perPage": {
             handler(val) {
-                this.fetchInvoices()
+                this.fetchInvoiceProvider()
             },
         },
         "tableSettings.page": {
             handler(val) {
-                this.fetchInvoices()
+                this.fetchInvoiceProvider()
             },
         },
         "tableSettings.input": {
@@ -272,37 +272,32 @@ export default {
         },
     },
     created() {
-        this.fetchInvoices();
+        this.fetchInvoiceProvider();
     },
     methods: {
-    fetchInvoices() {
-        this.$http.get('invoice/list', { params: this.tableSettings }).then((response) => {
-        this.invoices = response.data.invoices
-        this.totalRows = response.data.total;
-        this.dataMetaCounter(response.data.invoices.length);
-        this.dateFormat = this.date.getFullYear()+"-"+this.padTo2Digits(this.date.getMonth() + 1)+"-"+this.padTo2Digits(this.date.getDate())
-        })
-    },
-    newInvoice() {
-        this.$router.push('/invoice/store');
-    },
-    dataMetaCounter(dataTable) {
-        const localItemsCount = dataTable
-        this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0);
-        this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount;
-        this.dataMeta.of = this.totalRows;
-    },
-    padTo2Digits(num) {
-    return num.toString().padStart(2, '0');
-    },
-    viewInvoice(id){
-    this.$router.push({name:'invoice-view',params: {id}});
-    },
-    editInvoice(id){
-    this.$router.push({name:'invoice-edit',params: {id}});
-    },
-    deleteContact(id) {
-      this.$http.get('invoice/delete/' + id)
+        fetchInvoiceProvider() {
+            this.$http.get('invoiceProvider/list', { params: this.tableSettings }).then((response) => {
+                this.invoicesProvider = response.data.invoice_provider;
+                this.totalRows = response.data.total;
+                this.dataMetaCounter(response.data.invoice_provider.length);
+                this.dateFormat = this.date.getFullYear()+"-"+this.padTo2Digits(this.date.getMonth() + 1)+"-"+this.padTo2Digits(this.date.getDate())
+
+            })
+        },
+        newInvoiceProvider(){
+            this.$router.push('invoice-provider/create');
+        },
+        dataMetaCounter(dataTable) {
+            const localItemsCount = dataTable
+            this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
+            this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
+            this.dataMeta.of = this.totalRows;
+        },
+        padTo2Digits(num) {
+        return num.toString().padStart(2, '0');
+        },
+        deleteContact(id) {
+      this.$http.get('invoiceProvider/delete/' + id)
         .then(response => {
           if (response.data.code == 200) {
             this.$swal({
@@ -313,7 +308,7 @@ export default {
               },
               buttonsStyling: false,
             });
-            this.fetchInvoices();
+            this.fetchInvoiceProvider();
           }
           if (response.data.code == 500) {
             this.$swal({
@@ -330,6 +325,12 @@ export default {
           this.errors = error.response.data.errors;
         });
     },
+    viewInvoiceProvider(id){
+        this.$router.push({name:'invoice-provider-view',params: {id}});
+    },
+    editInvoiceProvider(id){
+        this.$router.push({name:'invoice-provider-edit',params: {id}});
+    },
     resetFilter(val){
         if(val === '' || val== null){
             this.tableSettings = {
@@ -344,7 +345,7 @@ export default {
             this.fetchInvoiceProvider();
         }
     }
-    }
+    },
 }
 </script>
 

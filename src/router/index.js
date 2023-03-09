@@ -9,6 +9,7 @@ import users from './routes/users'
 import roles from './routes/roles'
 import contacts from './routes/contacts'
 import invoice from './routes/invoice'
+import invoiceProvider from './routes/invoiceProvider'
 import pay from './routes/pays'
 import inventory from './routes/inventory'
 
@@ -26,6 +27,7 @@ const router = new VueRouter({
     ...roles,
     ...contacts,
     ...invoice,
+    ...invoiceProvider,
     ...pay,
     ...inventory,
     {
