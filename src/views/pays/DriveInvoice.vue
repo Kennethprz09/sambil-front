@@ -1,4 +1,5 @@
 <template>
+
     <div>
         <!-- Table Container Card -->
         <b-card no-body class="mb-0">
@@ -16,39 +17,47 @@
                     <b-col class="mb-2" md="6">
                         <div class="d-flex align-items-center justify-content-end">
 
-                            <b-button variant="primary" @click="newCotizacion()">
-                                <span class="text-nowrap">Nueva Cotización</span>
+                            <b-button variant="primary" @click="newContact()">
+                                <span class="text-nowrap">Nuevo Conduce</span>
                             </b-button>
                         </div>
                     </b-col>
 
-                    <b-col md="4">
+                    <b-col md="2">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.numero" class="d-inline-block mr-1"
+                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
                                 placeholder="Número" />
                         </b-form-group>
                     </b-col>
-                    <b-col md="4">
+                    <b-col md="2">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.cliente" class="d-inline-block mr-1" placeholder="Cliente" />
+                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
+                                placeholder="Cliente" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="2">
+                        <b-form-group>
+                            <b-form-datepicker class="mb-1" placeholder="Creacion" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="2">
+                        <b-form-group>
+                            <b-form-datepicker class="mb-1" placeholder="Vencimiento" />
                         </b-form-group>
                     </b-col>
                     <b-col md="3">
                         <b-form-group>
-                            <b-form-datepicker class="mb-1" v-model="tableSettings.creacion" placeholder="Creacion" />
+                            <v-select :options="Contacts" placeholder="Estado" class="d-block" />
                         </b-form-group>
                     </b-col>
                     <b-col md="1" class="text-left">
                         <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle">
                             <feather-icon icon="SearchIcon" />
                         </b-button>
-                        <b-button variant="secondary" @click="cleanData" class=" ml-2 btn-icon rounded-circle">
-                            <feather-icon icon="XIcon" />
-                        </b-button>
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="cotizations" responsive
+            <b-table ref="refContactListTable" class="position-relative" :items="drivers" responsive
                 :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
                 empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
 
@@ -98,11 +107,12 @@
                             registros</span>
                     </b-col>
                     <!-- Pagination -->
-                    <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">
+                    <b-col cols="12" sm="6"
+                        class="d-flex align-items-center justify-content-center justify-content-sm-end">
 
-                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows" :per-page="tableSettings.perPage"
-                            first-number last-number class="mb-0 mt-1 mt-sm-0" prev-class="prev-item"
-                            next-class="next-item">
+                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows"
+                            :per-page="tableSettings.perPage" first-number last-number class="mb-0 mt-1 mt-sm-0"
+                            prev-class="prev-item" next-class="next-item">
                             <template #prev-text>
                                 <feather-icon icon="ChevronLeftIcon" size="18" />
                             </template>
@@ -179,11 +189,12 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'id', label: 'Número', sortable: true },
-                { key: 'contact', label: 'Cliente', sortable: true },
-                { key: 'created_at', label: 'Creación' },
-                { key: 'status', label: 'Estado' },
-                { key: 'total', label: 'Total' },
+                { key: 'Número', label: 'Número', sortable: true },
+                { key: 'Cliente', label: 'Cliente', sortable: true },
+                { key: 'Creación', label: 'Creación' },
+                { key: 'Vencimiento', label: 'Vencimiento' },
+                { key: 'Estado', label: 'Estado' },
+                { key: 'Total', label: 'Total' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -207,7 +218,7 @@ export default {
                 sortDesc: true,
             },
             formDataEdit: {},
-            cotizations: [],
+            drivers: [],
             edit: true
         }
     },
@@ -247,8 +258,8 @@ export default {
     },
     methods: {
         fetchList() {
-            this.$http.get('identification/listCotizations', { params: this.tableSettings }).then((response) => {
-                this.cotizations = response.data.cotizations
+            this.$http.get('identification/listDrives', { params: this.tableSettings }).then((response) => {
+                this.drivers = response.data.drivers
                 this.totalRows = response.data.total
                 this.dataMetaCounter()
             })
@@ -259,24 +270,24 @@ export default {
             this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
             this.dataMeta.of = this.totalRows
         },
-        newCotizacion() {
-            this.$router.push('/invoice/newcotization');
+        newContact() {
+            this.$router.push('/contacts/new-contact');
         },
         showContact(id) {
             var showContacts = true;
             this.$router.push({
-                name: 'invoice-show-invoice',
+                name: 'contacts/new-contact',
                 params: { id: id, showContacts: showContacts }
             });
         },
         editContact(id) {
             this.$router.push({
-                name: 'invoice-update',
+                name: 'contacts/new-contact',
                 params: { id: id, edit: this.edit }
             });
         },
         deleteContact(id) {
-            this.$http.post('/invoice/deleteCotizatio/' + id)
+            this.$http.post('/contact/delete/' + id)
                 .then(response => {
                     if (response.data.code == 200) {
                         this.$swal({
@@ -305,12 +316,6 @@ export default {
                 });
         },
         searchData() {
-            this.fetchList()
-        },
-        cleanData() {
-            this.tableSettings.numero = null;
-            this.tableSettings.cliente = null;
-            this.tableSettings.creacion = null;
             this.fetchList()
         },
     },
