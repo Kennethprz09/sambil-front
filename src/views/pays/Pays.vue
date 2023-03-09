@@ -1,3 +1,5 @@
+<!-- eslint-disable no-unused-vars -->
+<!-- eslint-disable no-unused-vars -->
 <template>
 
   <div>
@@ -6,7 +8,7 @@
       no-body
       class="mb-0"
     >
-
+      <!-- Filter -->
       <div class="m-2">
 
         <!-- Table Top -->
@@ -71,14 +73,14 @@
               <b-button
                 variant="primary"
                 class="btn-icon rounded-circle mr-1"
-                @click="searchData"
               >
                 <feather-icon icon="SearchIcon" />
               </b-button>
+
               <b-button
                 variant="primary"
                 class="btn-icon rounded-circle mr-1"
-                @click="newContact()"
+                @click="newPay()"
               >
                 <feather-icon icon="PlusIcon" />
               </b-button>
@@ -86,10 +88,11 @@
           </b-col>
         </b-row>
       </div>
+      <!-- table -->
       <b-table
         ref="refContactListTable"
         class="position-relative"
-        :items="contact"
+        :items="pays"
         responsive
         :fields="tableColumns"
         primary-key="id"
@@ -99,67 +102,65 @@
         :sort-desc.sync="tableSettings.sortDesc"
       >
 
+        <template #cell(expiration)="data">
+          <b-badge
+            v-if="(data.item.status == 'payable')"
+            variant="danger"
+          >
+            {{ data.item.expiration }}
+          </b-badge>
+          <b-badge
+            v-else-if="(data.item.status == 'paid')"
+            variant="success"
+          >
+            {{ data.item.expiration }}
+          </b-badge>
+        </template>
+
         <!-- Column: Actions -->
         <template #cell(actions)="data">
-          <b-button
-            v-b-tooltip.hover.v-primary
-            variant="primary"
-            class="btn-icon rounded-circle ml-2"
-            title="Ver"
-            @click="showContact(data.item.id)"
-          >
-            <feather-icon icon="EyeIcon" />
-          </b-button>
-          <b-button
-            v-b-tooltip.hover.v-primary
-            class="btn-icon rounded-circle ml-2"
-            title="Editar"
-            @click="editContact(data.item.id)"
-          >
-            <feather-icon icon="EditIcon" />
-          </b-button>
-          <b-button
-            :id="`form-item-settings-icon-${data.item.id}`"
-            variant="danger"
-            class="btn-icon rounded-circle ml-2"
-          >
-            <feather-icon
-              size="16"
-              icon="TrashIcon"
-              class="cursor-pointer"
-            />
-            <b-popover
-              :ref="`form-item-settings-popover-${data.item.id}`"
-              :target="`form-item-settings-icon-${data.item.id}`"
-              triggers="click"
-              placement="lefttop"
+          <div class="d-flex">
+            <b-button
+              v-b-tooltip.hover.v-primary
+              variant="info"
+              class="btn-icon rounded-circle ml-2"
+              title="Ver"
+              @click="showPay(data)"
             >
-              <b-form @submit.prevent>
-                <b-row>
-                  <b-col cols="12">
-                    <p>¡Esta a punto de eliminar este contacto!</p>
-                  </b-col>
-                  <b-col
-                    cols="12"
-                    class="d-flex justify-content-between mt-1"
-                  >
-                    <b-button
-                      variant="outline-danger"
-                      @click="deleteContact(data.item.id)"
-                    >
-                      Eliminar
-                    </b-button>
-                    <b-button
-                      variant="outline-secondary"
-                      @click="() => {$refs[`form-item-settings-popover-${data.item.id}`].$emit('close')}"
-                    >
-                      Cancelar
-                    </b-button>
-                  </b-col>
-                </b-row>
-              </b-form>
-            </b-popover>
-          </b-button>
+              <feather-icon
+                icon="EyeIcon"
+              />
+
+            </b-button>
+
+            <b-button
+              v-b-tooltip.hover.v-primary
+              variant="success"
+              class="btn-icon rounded-circle ml-2"
+              title="Editar"
+              @click="editPay(data)"
+            >
+              <feather-icon icon="EditIcon" />
+            </b-button>
+            <b-button
+              v-b-tooltip.hover.v-primary
+              variant="warning"
+              class="btn-icon rounded-circle ml-2"
+              title="anular"
+              @click="cancelPay(data)"
+            >
+              <feather-icon icon="XIcon" />
+            </b-button>
+            <b-button
+              v-b-tooltip.hover.v-primary
+              variant="danger"
+              class="btn-icon rounded-circle ml-2"
+              title="Eliminar"
+              @click="deletePay(data)"
+            >
+              <feather-icon icon="Trash2Icon" />
+            </b-button>
+          </div>
         </template>
       </b-table>
       <div class="mx-2 mb-2">
@@ -170,7 +171,9 @@
             sm="6"
             class="d-flex align-items-center justify-content-center justify-content-sm-start"
           >
-            <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{ dataMeta.of }}
+            <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{
+              dataMeta.of
+            }}
               registros</span>
           </b-col>
           <!-- Pagination -->
@@ -212,12 +215,12 @@
 
 <script>
 import {
-  extend, ValidationProvider, ValidationObserver, localize,
+  extend,
 } from 'vee-validate'
 import { required } from '@validations'
 import {
-  BCard, BRow, BCol, BFormInput, BButton, BTable, BMedia, BAvatar, BLink,
-  BBadge, BDropdown, BDropdownItem, BPagination, BFormGroup, BForm, VBTooltip, BPopover,
+  BCard, BRow, BCol, BFormInput, BButton, BTable,
+  BBadge, BPagination, BFormGroup, VBTooltip,
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
@@ -228,7 +231,7 @@ extend('required', {
 })
 
 export default {
-  name: 'Contacts',
+  name: 'Facturas',
   components: {
     BCard,
     BRow,
@@ -236,20 +239,13 @@ export default {
     BFormInput,
     BButton,
     BTable,
-    BMedia,
-    BAvatar,
-    BLink,
+
     BBadge,
-    BDropdown,
-    BDropdownItem,
+
     BPagination,
     vSelect,
     BFormGroup,
-    BForm,
-    ValidationProvider,
-    ValidationObserver,
-    VBTooltip,
-    BPopover,
+
   },
   directives: {
     Ripple,
@@ -257,18 +253,17 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params && this.$route.params.id,
-      update: false,
-      modal_password: false,
-      formDisabled: false,
       refContactListTable: null,
       perPageOptions: [10, 25, 50, 100],
       searchQuery: '',
       inputs: [
         { value: 'id', title: 'Id' },
-        { value: 'reason', title: 'Nombre' },
-        { value: 'number_identification', title: 'Identificación' },
-        { value: 'mobil', title: 'Télefono' },
+        { value: 'client', title: 'Cliente' },
+        { value: 'detail', title: 'Detalle' },
+        { value: 'created', title: 'Creacion' },
+        { value: 'account', title: 'Cuenta' },
+        { value: 'status', title: 'Estado' },
+        { value: 'amount', title: 'Monto' },
       ],
       typeSearch: [
         { value: 'LIKE', title: 'Igual' },
@@ -277,12 +272,16 @@ export default {
         { value: '<', title: 'Menor que' },
       ],
       tableColumns: [
-        { key: 'id', label: 'Id', sortable: true },
-        { key: 'fullname', label: 'Nombre', sortable: true },
-        { key: 'number_identification', label: 'Identificación' },
-        { key: 'phone', label: 'Télefono' },
+        { key: 'id', label: 'Numero', sortable: true },
+        { key: 'client_name', label: 'Cliente' },
+        { key: 'detail', label: 'Detalle', sortable: true },
+        { key: 'created', label: 'Creación' },
+        { key: 'account_name', label: 'Cuenta' },
+        { key: 'status', label: 'Estado' },
+        { key: 'amount', label: 'Monto' },
         { key: 'actions', label: 'Acciones' },
       ],
+
       sortBy: 'id',
       isSortDirDesc: true,
       totalRows: 0,
@@ -303,75 +302,70 @@ export default {
         sortBy: 'id',
         sortDesc: true,
       },
-      formDataEdit: {},
-      contact: [],
-      edit: true,
+
+      pays: [],
     }
   },
   watch: {
     'tableSettings.sortBy': {
-      handler(val) {
-        this.fetchList()
+
+      handler() {
+        this.fetchPays()
       },
     },
     'tableSettings.sortDesc': {
-      handler(val) {
-        this.fetchList()
+      handler() {
+        this.fetchPays()
       },
     },
     'tableSettings.perPage': {
-      handler(val) {
-        this.fetchList()
+      handler() {
+        this.fetchPays()
+      },
+    },
+    'tableSettings.searchQuery': {
+      handler() {
+        this.fetchPays()
       },
     },
     'tableSettings.page': {
-      handler(val) {
-        this.fetchList()
+      handler() {
+        this.fetchPays()
       },
     },
-    'tableSettings.filter': {
-      handler(val) {
-        this.fetchList()
-      },
-    },
+
   },
   created() {
-    this.fetchList()
+    this.fetchPays()
   },
   methods: {
-    fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then(response => {
-        this.contact = response.data.contacts
-        this.totalRows = response.data.total
-        this.dataMetaCounter()
-      })
+
+    async fetchPays() {
+      try {
+        const payList = await this.$http.get('pays/list', { params: this.tableSettings })
+        const objRes = payList.data
+        this.totalRows = objRes.total
+        this.pays = objRes.pays
+      } catch (error) {
+        console.error(error)
+      }
     },
-    dataMetaCounter() {
-      const localItemsCount = this.dataTable.length
-      this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
-      this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
-      this.dataMeta.of = this.totalRows
+    newPay() {
+      this.$router.push('/pay/store')
     },
-    newContact() {
-      this.$router.push('/contacts/new-contact')
+    showPay(data) {
+      this.$router.push(`/pay/show/${data.item.id}`)
     },
-    showContact(id) {
-      const showContacts = true
-      this.$router.push({
-        name: 'contacts/new-contact',
-        params: { id, showContacts },
-      })
+    editPay(data) {
+      this.$router.push(`/pay/edit/${data.item.id}`)
     },
-    editContact(id) {
-      this.$router.push({
-        name: 'contacts/new-contact',
-        params: { id, edit: this.edit },
-      })
+    cancelPay(data) {
+      this.$router.push(`/pay/edit/${data.item.id}?anular=si`)
     },
-    deleteContact(id) {
-      this.$http.post(`/contact/delete/${id}`)
+    deletePay(data) {
+      this.$http.put(`/pays/delete/${data.item.id}`)
         .then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code === 200) {
             this.$swal({
               title: response.data.message,
               icon: 'success',
@@ -380,9 +374,10 @@ export default {
               },
               buttonsStyling: false,
             })
-            this.fetchList()
+            // console.log(response)
+            window.location.reload()
           }
-          if (response.data.code == 500) {
+          if (response.data.code === 500) {
             this.$swal({
               title: response.data.message,
               icon: 'warning',
@@ -397,8 +392,11 @@ export default {
           this.errors = error.response.data.errors
         })
     },
-    searchData() {
-      this.fetchList()
+    dataMetaCounter() {
+      const localItemsCount = this.dataTable.length
+      this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
+      this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
+      this.dataMeta.of = this.totalRows
     },
   },
 }
@@ -406,7 +404,7 @@ export default {
 
 <style lang="scss" scoped>
 .per-page-selector {
-  width: 90px;
+    width: 90px;
 }
 </style>
 

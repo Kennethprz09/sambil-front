@@ -97,7 +97,8 @@
                             </b-row>
                             <hr class="line">
                             <!-- Row Loop -->
-                            <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index" ref="row">
+                            <b-row class="mb-2" v-for="(item, index) in form.products" :id="item.id" :key="index"
+                                ref="row">
                                 <b-col>
                                     <b-form-select v-model="form.products[index].name" :options="products"
                                         @change="searchProduct(index, form.products[index].name)"
@@ -111,14 +112,15 @@
                                         placeholder="Precio unitario" @keyup="changePrice(index)" />
                                 </b-col>
                                 <b-col>
-                                    <b-form-input v-model="form.products[index].percentage" type="number" placeholder="%"
-                                        @keyup="changePercentage(index)" />
+                                    <b-form-input v-model="form.products[index].percentage" type="number"
+                                        placeholder="%" @keyup="changePercentage(index)" />
                                 </b-col>
                                 <b-col>
                                     <b-form-select v-model="form.products[index].tax" :options="tax" />
                                 </b-col>
                                 <b-col>
-                                    <b-form-input v-model="form.products[index].description" placeholder="Descripción" />
+                                    <b-form-input v-model="form.products[index].description"
+                                        placeholder="Descripción" />
                                 </b-col>
                                 <b-col>
                                     <b-form-input v-model="form.products[index].quantity" type="number"

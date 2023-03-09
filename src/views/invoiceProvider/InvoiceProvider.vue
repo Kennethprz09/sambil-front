@@ -9,17 +9,39 @@
                 <!-- Table Top -->
                 <b-row>
                     <!-- Per Page -->
-                    <b-col cols="12" md="6" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
+                    <b-col cols="12" md="3" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
                         <label>Mostrar</label>
                         <v-select v-model="tableSettings.perPage" :options="perPageOptions" :clearable="false"
                             class="per-page-selector d-inline-block mx-50" />
                         <label>registros</label>
                     </b-col>
+
+                    <b-col md="2">
+                        <b-form-group>
+                            <v-select class="d-inline" v-model="tableSettings.input"
+                            label="title" :options="inputs" :reduce="val => val.value" placeholder="Título" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="3">
+                        <b-form-group>
+                            <v-select class="d-inline" v-model="tableSettings.typeSearch"
+                            label="title" :options="typeSearch" :reduce="val => val.value" placeholder="Tipo de búsqueda"
+                            />
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="3">
+                        <b-form-group>  
+                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline" style="width: 90%" placeholder="Buscar..." />
+                        </b-form-group>
+                    </b-col>
                     <!-- Search -->
-                    <b-col cols="12" md="6">
+                    <b-col cols="12" md="1">
                         <div class="d-flex align-items-center justify-content-end">
-                            <b-button variant="primary" @click="newInvoiceProvider()">
-                                <span class="text-nowrap">Nueva factura</span>
+                            <b-button variant="primary" @click="fetchInvoiceProvider" class="btn-icon rounded-circle mr-1">
+                                <feather-icon icon="SearchIcon" />
+                            </b-button>
+                            <b-button variant="primary" class="btn-icon rounded-circle mr-1" @click="newInvoiceProvider()">
+                                <feather-icon icon="PlusIcon" />
                             </b-button>
                         </div>
                     </b-col>
@@ -189,12 +211,28 @@ export default {
             showLoadingTable: false,
             tableSettings: {
                 searchQuery: '',
+                input: '',
+                typeSearch: '',
                 perPage: 10,
                 page: 1,
                 sortBy: 'id',
                 sortDesc: true,
             },
             invoicesProvider: [],
+            inputs: [
+                { value: 'invoice_providers.id', title: 'Id' },
+                { value: 'reason', title: 'Proveedor' },
+                { value: 'nfc_number', title: 'Ncf/Número' },
+                { value: 'invoice_providers.created', title: 'Creación' },
+                { value: 'invoice_providers.expiration', title: 'Vencimiento' },
+                { value: 'total', title: 'Total' },
+            ],
+            typeSearch: [
+                { value: 'LIKE', title: 'Igual' },
+                { value: 'NOT LIKE', title: 'No es igual' },
+                { value: '>', title: 'Mayor que' },
+                { value: '<', title: 'Menor que' }
+            ],
         }
     },
     directives: {
@@ -217,14 +255,19 @@ export default {
                 this.fetchInvoiceProvider()
             },
         },
-        "tableSettings.searchQuery": {
+        "tableSettings.page": {
             handler(val) {
                 this.fetchInvoiceProvider()
             },
         },
-        "tableSettings.page": {
+        "tableSettings.input": {
             handler(val) {
-                this.fetchInvoiceProvider()
+                 this.resetFilter(val)
+            },
+        },
+        "tableSettings.typeSearch": {
+            handler(val) {
+                 this.resetFilter(val)
             },
         },
     },
@@ -233,7 +276,7 @@ export default {
     },
     methods: {
         fetchInvoiceProvider() {
-            this.$http.get('invoiceProvider/list').then((response) => {
+            this.$http.get('invoiceProvider/list', { params: this.tableSettings }).then((response) => {
                 this.invoicesProvider = response.data.invoice_provider;
                 this.totalRows = response.data.total;
                 this.dataMetaCounter(response.data.invoice_provider.length);
@@ -287,6 +330,20 @@ export default {
     },
     editInvoiceProvider(id){
         this.$router.push({name:'invoice-provider-edit',params: {id}});
+    },
+    resetFilter(val){
+        if(val === '' || val== null){
+            this.tableSettings = {
+                searchQuery: '',
+                input: '',
+                typeSearch: '',
+                perPage: 10,
+                page: 1,
+                sortBy: 'id',
+                sortDesc: true,
+            }
+            this.fetchInvoiceProvider();
+        }
     }
     },
 }

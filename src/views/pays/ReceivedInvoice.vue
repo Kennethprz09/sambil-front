@@ -13,8 +13,7 @@
         <b-row>
           <!-- Per Page -->
           <b-col
-            cols="12"
-            md="3"
+            md="6"
             class=""
           >
             <label>Mostrar</label>
@@ -24,72 +23,108 @@
               :clearable="false"
               class="per-page-selector d-inline-block mx-50"
             />
-            <label>registros</label>
+          </b-col>
+          <b-col
+            class="mb-2"
+            md="6"
+          >
+            <div class="d-flex align-items-center justify-content-end">
+
+              <b-button
+                variant="primary"
+                @click="newReceived()"
+              >
+                <span class="text-nowrap">Nuevo Ingreso</span>
+              </b-button>
+            </div>
           </b-col>
 
-          <b-col md="2">
-            <b-form-group>
-              <v-select
-                v-model="tableSettings.input"
-                class="d-inline"
-                label="title"
-                :options="inputs"
-                :reduce="val => val.value"
-                placeholder="Título"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col md="3">
-            <b-form-group>
-              <v-select
-                v-model="tableSettings.typeSearch"
-                class="d-inline"
-                label="title"
-                :options="typeSearch"
-                :reduce="val => val.value"
-                placeholder="Tipo de búsqueda"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col md="3">
+          <b-col>
             <b-form-group>
               <b-form-input
                 v-model="tableSettings.searchQuery"
-                class="d-inline"
-                style="width: 90%"
-                placeholder="Buscar..."
+                class="d-inline-block mr-1"
+                placeholder="Número"
               />
             </b-form-group>
           </b-col>
-
-          <!-- Search -->
-          <b-col
-            cols="12"
-            md="1"
-          >
+          <b-col>
+            <b-form-group>
+              <b-form-input
+                v-model="tableSettings.searchQuery"
+                class="d-inline-block mr-1"
+                placeholder="Cliente"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group>
+              <b-form-input
+                v-model="tableSettings.searchQuery"
+                class="d-inline-block mr-1"
+                placeholder="Detalle"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col>
             <div class="d-flex align-items-center justify-content-end">
-              <b-button
-                variant="primary"
-                class="btn-icon rounded-circle mr-1"
-                @click="searchData"
-              >
-                <feather-icon icon="SearchIcon" />
-              </b-button>
-              <b-button
-                variant="primary"
-                class="btn-icon rounded-circle mr-1"
-                @click="newContact()"
-              >
-                <feather-icon icon="PlusIcon" />
-              </b-button>
+              <b-form-datepicker class="mb-1" />
             </div>
+          </b-col>
+          <b-col>
+            <div class="d-flex align-items-center justify-content-end">
+              <v-select
+                :options="perPageOptions"
+                :clearable="false"
+                class="per-page-selector d-inline-block mx-50"
+                placeholder="Cuenta"
+              />
+            </div>
+          </b-col>
+          <b-col>
+            <div class="d-flex align-items-center justify-content-end">
+              <v-select
+                :options="perPageOptions"
+                :clearable="false"
+                class="per-page-selector d-inline-block mx-50"
+                placeholder="Conciliado"
+              />
+            </div>
+          </b-col>
+          <b-col>
+            <div class="d-flex align-items-center justify-content-end">
+              <v-select
+                :options="perPageOptions"
+                :clearable="false"
+                class="per-page-selector d-inline-block mx-50"
+                placeholder="Estado"
+              />
+            </div>
+          </b-col>
+          <b-col class="d-flex">
+            <b-form-group>
+              <b-form-input
+                v-model="tableSettings.searchQuery"
+                class="d-inline-block mr-1"
+                placeholder="Monto"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-button
+              variant="primary"
+              class="btn-icon rounded-circle mr-1"
+              @click="searchData"
+            >
+              <feather-icon icon="SearchIcon" />
+            </b-button>
           </b-col>
         </b-row>
       </div>
       <b-table
         ref="refContactListTable"
         class="position-relative"
-        :items="contact"
+        :items="receiveds"
         responsive
         :fields="tableColumns"
         primary-key="id"
@@ -151,7 +186,7 @@
                     </b-button>
                     <b-button
                       variant="outline-secondary"
-                      @click="() => {$refs[`form-item-settings-popover-${data.item.id}`].$emit('close')}"
+                      @click="() => { $refs[`form-item-settings-popover-${data.item.id}`].$emit('close') }"
                     >
                       Cancelar
                     </b-button>
@@ -170,7 +205,9 @@
             sm="6"
             class="d-flex align-items-center justify-content-center justify-content-sm-start"
           >
-            <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{ dataMeta.of }}
+            <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{
+              dataMeta.of
+            }}
               registros</span>
           </b-col>
           <!-- Pagination -->
@@ -217,7 +254,7 @@ import {
 import { required } from '@validations'
 import {
   BCard, BRow, BCol, BFormInput, BButton, BTable, BMedia, BAvatar, BLink,
-  BBadge, BDropdown, BDropdownItem, BPagination, BFormGroup, BForm, VBTooltip, BPopover,
+  BBadge, BDropdown, BDropdownItem, BPagination, BFormGroup, BForm, VBTooltip, BPopover, BFormDatepicker,
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Ripple from 'vue-ripple-directive'
@@ -250,6 +287,7 @@ export default {
     ValidationObserver,
     VBTooltip,
     BPopover,
+    BFormDatepicker,
   },
   directives: {
     Ripple,
@@ -272,15 +310,20 @@ export default {
       ],
       typeSearch: [
         { value: 'LIKE', title: 'Igual' },
+        { value: 'LIKE', title: 'Contiene' },
         { value: 'NOT LIKE', title: 'No es igual' },
         { value: '>', title: 'Mayor que' },
         { value: '<', title: 'Menor que' },
       ],
       tableColumns: [
-        { key: 'id', label: 'Id', sortable: true },
-        { key: 'fullname', label: 'Nombre', sortable: true },
-        { key: 'number_identification', label: 'Identificación' },
-        { key: 'phone', label: 'Télefono' },
+        { key: 'Número', label: 'Número', sortable: true },
+        { key: 'Cliente', label: 'Cliente', sortable: true },
+        { key: 'Detalle', label: 'Detalle' },
+        { key: 'Creación', label: 'Creación' },
+        { key: 'Cuenta', label: 'Cuenta' },
+        { key: 'Conciliado', label: 'Conciliado' },
+        { key: 'Estado', label: 'Estado' },
+        { key: 'Monto', label: 'Monto' },
         { key: 'actions', label: 'Acciones' },
       ],
       sortBy: 'id',
@@ -304,7 +347,7 @@ export default {
         sortDesc: true,
       },
       formDataEdit: {},
-      contact: [],
+      receiveds: [],
       edit: true,
     }
   },
@@ -340,8 +383,8 @@ export default {
   },
   methods: {
     fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then(response => {
-        this.contact = response.data.contacts
+      this.$http.get('identification/listReceived', { params: this.tableSettings }).then(response => {
+        this.receiveds = response.data.receiveds
         this.totalRows = response.data.total
         this.dataMetaCounter()
       })
@@ -352,8 +395,8 @@ export default {
       this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
       this.dataMeta.of = this.totalRows
     },
-    newContact() {
-      this.$router.push('/contacts/new-contact')
+    newReceived() {
+      this.$router.push('/invoice/newReceived')
     },
     showContact(id) {
       const showContacts = true
@@ -406,7 +449,7 @@ export default {
 
 <style lang="scss" scoped>
 .per-page-selector {
-  width: 90px;
+    width: 90px;
 }
 </style>
 

@@ -28,22 +28,22 @@ export default [
     children: [
       {
         title: 'Todos',
-        route: { name: 'contactsAll'},
+        route: { name: 'contactsAll' },
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Clientes',
         route: { name: 'contactsClient' },
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Proveedores',
         route: { name: 'contactsProvider' },
         action: 'read',
-        resource: 'Ver roles'
-      }
+        resource: 'Ver roles',
+      },
     ],
   },
   {
@@ -56,37 +56,81 @@ export default [
         title: 'Facturas de venta',
         route: 'invoice',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Facturas de venta recurrentes',
         route: 'invoice-sale',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Pagos recibidos',
         route: 'invoice-received',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Notas de Crédito',
         route: 'invoice-credit',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Cotizaciones',
         route: 'invoice-cotization',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
       },
       {
         title: 'Conduces',
         route: 'invoice-drive',
         action: 'read',
-        resource: 'Ver roles'
+        resource: 'Ver roles',
+      },
+    ],
+  },
+  {
+    title: 'Inventario',
+    icon: 'BoxIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Productos y servicios',
+        route: 'inventoryProductsServicesIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Valor de inventario',
+        route: 'inventoryValueIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Ajustes de inventario',
+        route: 'inventoryTweaksIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Listas de precios',
+        route: 'inventoryPriceListIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Almacenes',
+        route: 'inventoryWarehousesIndex',
+        action: 'read',
+        resource: 'Ver roles',
+      },
+      {
+        title: 'Categorías',
+        route: 'inventoryCategoriesIndex',
+        action: 'read',
+        resource: 'Ver roles',
       },
     ],
   },
@@ -101,7 +145,13 @@ export default [
         route: 'invoice-provider',
         action: 'read',
         resource: 'Ver roles'
-      }
+      },
+      {
+        title: 'Pagos / Gastos',
+        route: 'pay',
+        action: 'read',
+        resource: 'Ver pagos',
+      },
     ],
   },
 ]

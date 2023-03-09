@@ -1,21 +1,17 @@
 <template>
-
   <div>
     <!-- Table Container Card -->
     <b-card
       no-body
       class="mb-0"
     >
-
       <div class="m-2">
-
         <!-- Table Top -->
         <b-row>
           <!-- Per Page -->
           <b-col
             cols="12"
             md="3"
-            class=""
           >
             <label>Mostrar</label>
             <v-select
@@ -34,7 +30,7 @@
                 class="d-inline"
                 label="title"
                 :options="inputs"
-                :reduce="val => val.value"
+                :reduce="(val) => val.value"
                 placeholder="Título"
               />
             </b-form-group>
@@ -46,7 +42,7 @@
                 class="d-inline"
                 label="title"
                 :options="typeSearch"
-                :reduce="val => val.value"
+                :reduce="(val) => val.value"
                 placeholder="Tipo de búsqueda"
               />
             </b-form-group>
@@ -98,14 +94,13 @@
         empty-text="No se encontraron datos"
         :sort-desc.sync="tableSettings.sortDesc"
       >
-
         <!-- Column: Actions -->
         <template #cell(actions)="data">
           <b-button
             v-b-tooltip.hover.v-primary
-            variant="primary"
             class="btn-icon rounded-circle ml-2"
             title="Ver"
+            variant="primary"
             @click="showContact(data.item.id)"
           >
             <feather-icon icon="EyeIcon" />
@@ -139,10 +134,7 @@
                   <b-col cols="12">
                     <p>¡Esta a punto de eliminar este contacto!</p>
                   </b-col>
-                  <b-col
-                    cols="12"
-                    class="d-flex justify-content-between mt-1"
-                  >
+                  <b-col cols="12" class="d-flex justify-content-between mt-1">
                     <b-button
                       variant="outline-danger"
                       @click="deleteContact(data.item.id)"
@@ -151,7 +143,13 @@
                     </b-button>
                     <b-button
                       variant="outline-secondary"
-                      @click="() => {$refs[`form-item-settings-popover-${data.item.id}`].$emit('close')}"
+                      @click="
+                        () => {
+                          $refs[
+                            `form-item-settings-popover-${data.item.id}`
+                          ].$emit('close');
+                        }
+                      "
                     >
                       Cancelar
                     </b-button>
@@ -164,14 +162,15 @@
       </b-table>
       <div class="mx-2 mb-2">
         <b-row>
-
           <b-col
             cols="12"
             sm="6"
             class="d-flex align-items-center justify-content-center justify-content-sm-start"
           >
-            <span class="text-muted">Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de {{ dataMeta.of }}
-              registros</span>
+            <span class="text-muted"
+              >Viendo del {{ dataMeta.from }} al {{ dataMeta.to }} de
+              {{ dataMeta.of }} registros</span
+            >
           </b-col>
           <!-- Pagination -->
           <b-col
@@ -179,7 +178,6 @@
             sm="6"
             class="d-flex align-items-center justify-content-center justify-content-sm-end"
           >
-
             <b-pagination
               v-model="tableSettings.page"
               :total-rows="totalRows"
@@ -191,16 +189,10 @@
               next-class="next-item"
             >
               <template #prev-text>
-                <feather-icon
-                  icon="ChevronLeftIcon"
-                  size="18"
-                />
+                <feather-icon icon="ChevronLeftIcon" size="18" />
               </template>
               <template #next-text>
-                <feather-icon
-                  icon="ChevronRightIcon"
-                  size="18"
-                />
+                <feather-icon icon="ChevronRightIcon" size="18" />
               </template>
             </b-pagination>
           </b-col>
@@ -211,24 +203,36 @@
 </template>
 
 <script>
-import {
-  extend, ValidationProvider, ValidationObserver, localize,
-} from 'vee-validate'
-import { required } from '@validations'
-import {
-  BCard, BRow, BCol, BFormInput, BButton, BTable, BMedia, BAvatar, BLink,
-  BBadge, BDropdown, BDropdownItem, BPagination, BFormGroup, BForm, VBTooltip, BPopover,
-} from 'bootstrap-vue'
-import vSelect from 'vue-select'
-import Ripple from 'vue-ripple-directive'
-
-extend('required', {
+extend("required", {
   ...required,
-  message: 'El campo {_field_} es obligatorio',
-})
-
+  message: "El campo {_field_} es obligatorio",
+});
+import { extend } from "vee-validate";
+import { ValidationProvider, ValidationObserver, localize } from "vee-validate";
+import { required } from "@validations";
+import {
+  BCard,
+  BRow,
+  BCol,
+  BFormInput,
+  BButton,
+  BTable,
+  BMedia,
+  BAvatar,
+  BLink,
+  BBadge,
+  BDropdown,
+  BDropdownItem,
+  BPagination,
+  BFormGroup,
+  BForm,
+  VBTooltip,
+  BPopover,
+} from "bootstrap-vue";
+import vSelect from "vue-select";
+import Ripple from "vue-ripple-directive";
 export default {
-  name: 'Contacts',
+  name: "Contacts",
   components: {
     BCard,
     BRow,
@@ -251,10 +255,6 @@ export default {
     VBTooltip,
     BPopover,
   },
-  directives: {
-    Ripple,
-    'b-tooltip': VBTooltip,
-  },
   data() {
     return {
       id: this.$route.params && this.$route.params.id,
@@ -263,27 +263,25 @@ export default {
       formDisabled: false,
       refContactListTable: null,
       perPageOptions: [10, 25, 50, 100],
-      searchQuery: '',
+      searchQuery: "",
       inputs: [
-        { value: 'id', title: 'Id' },
-        { value: 'reason', title: 'Nombre' },
-        { value: 'number_identification', title: 'Identificación' },
-        { value: 'mobil', title: 'Télefono' },
+        { value: "id", title: "General" },
+        { value: "reason", title: "Si" },
+        { value: "number_identification", title: "Valores" },
       ],
       typeSearch: [
-        { value: 'LIKE', title: 'Igual' },
-        { value: 'NOT LIKE', title: 'No es igual' },
-        { value: '>', title: 'Mayor que' },
-        { value: '<', title: 'Menor que' },
+        { value: "LIKE", title: "Igual" },
+        { value: "NOT LIKE", title: "No es igual" },
+        { value: ">", title: "Mayor que" },
+        { value: "<", title: "Menor que" },
       ],
       tableColumns: [
-        { key: 'id', label: 'Id', sortable: true },
-        { key: 'fullname', label: 'Nombre', sortable: true },
-        { key: 'number_identification', label: 'Identificación' },
-        { key: 'phone', label: 'Télefono' },
-        { key: 'actions', label: 'Acciones' },
+        { key: "id", label: "General", sortable: true },
+        { key: "fullname", label: "Si", sortable: true },
+        { key: "number_identification", label: "Valores" },
+        { key: "actions", label: "Acciones" },
       ],
-      sortBy: 'id',
+      sortBy: "id",
       isSortDirDesc: true,
       totalRows: 0,
       dataMeta: {
@@ -295,113 +293,124 @@ export default {
       showLoadingTable: false,
       tableSettings: {
         filter: this.$route.params && this.$route.params.id,
-        searchQuery: '',
-        input: '',
-        typeSearch: '',
+        searchQuery: "",
+        input: "",
+        typeSearch: "",
         perPage: 10,
         page: 1,
-        sortBy: 'id',
+        sortBy: "id",
         sortDesc: true,
       },
       formDataEdit: {},
       contact: [],
       edit: true,
-    }
+    };
+  },
+  directives: {
+    Ripple,
+    "b-tooltip": VBTooltip,
   },
   watch: {
-    'tableSettings.sortBy': {
+    "tableSettings.sortBy": {
       handler(val) {
-        this.fetchList()
+        this.fetchList();
       },
     },
-    'tableSettings.sortDesc': {
+    "tableSettings.sortDesc": {
       handler(val) {
-        this.fetchList()
+        this.fetchList();
       },
     },
-    'tableSettings.perPage': {
+    "tableSettings.perPage": {
       handler(val) {
-        this.fetchList()
+        this.fetchList();
       },
     },
-    'tableSettings.page': {
+    "tableSettings.page": {
       handler(val) {
-        this.fetchList()
+        this.fetchList();
       },
     },
-    'tableSettings.filter': {
+    "tableSettings.filter": {
       handler(val) {
-        this.fetchList()
+        this.fetchList();
       },
     },
   },
   created() {
-    this.fetchList()
+    this.fetchList();
   },
   methods: {
     fetchList() {
-      this.$http.get('contact/list', { params: this.tableSettings }).then(response => {
-        this.contact = response.data.contacts
-        this.totalRows = response.data.total
-        this.dataMetaCounter()
-      })
+      this.$http
+        .get("contact/list", { params: this.tableSettings })
+        .then((response) => {
+          this.contact = response.data.contacts;
+          this.totalRows = response.data.total;
+          this.dataMetaCounter();
+        });
     },
     dataMetaCounter() {
-      const localItemsCount = this.dataTable.length
-      this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
-      this.dataMeta.to = this.tableSettings.perPage * (this.tableSettings.page - 1) + localItemsCount
-      this.dataMeta.of = this.totalRows
+      const localItemsCount = this.dataTable.length;
+      this.dataMeta.from =
+        this.tableSettings.perPage * (this.tableSettings.page - 1) +
+        (localItemsCount ? 1 : 0);
+      this.dataMeta.to =
+        this.tableSettings.perPage * (this.tableSettings.page - 1) +
+        localItemsCount;
+      this.dataMeta.of = this.totalRows;
     },
     newContact() {
-      this.$router.push('/contacts/new-contact')
+      this.$router.push("/contacts/new-contact");
     },
     showContact(id) {
-      const showContacts = true
+      var showContacts = true;
       this.$router.push({
-        name: 'contacts/new-contact',
-        params: { id, showContacts },
-      })
+        name: "contacts/new-contact",
+        params: { id: id, showContacts: showContacts },
+      });
     },
     editContact(id) {
       this.$router.push({
-        name: 'contacts/new-contact',
-        params: { id, edit: this.edit },
-      })
+        name: "contacts/new-contact",
+        params: { id: id, edit: this.edit },
+      });
     },
     deleteContact(id) {
-      this.$http.post(`/contact/delete/${id}`)
-        .then(response => {
+      this.$http
+        .post("/contact/delete/" + id)
+        .then((response) => {
           if (response.data.code == 200) {
             this.$swal({
               title: response.data.message,
-              icon: 'success',
+              icon: "success",
               customClass: {
-                confirmButton: 'btn btn-success',
+                confirmButton: "btn btn-success",
               },
               buttonsStyling: false,
-            })
-            this.fetchList()
+            });
+            this.fetchList();
           }
           if (response.data.code == 500) {
             this.$swal({
               title: response.data.message,
-              icon: 'warning',
+              icon: "warning",
               customClass: {
-                confirmButton: 'btn btn-warning',
+                confirmButton: "btn btn-warning",
               },
               buttonsStyling: false,
-            })
+            });
           }
         })
-        .catch(error => {
-          this.errors = error.response.data.errors
-        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
+        });
     },
     searchData() {
-      this.fetchList()
+      this.fetchList();
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -411,6 +420,6 @@ export default {
 </style>
 
 <style lang="scss">
-@import '@core/scss/vue/libs/vue-select.scss';
-@import '@core/scss/vue/libs/vue-sweetalert.scss';
+@import "@core/scss/vue/libs/vue-select.scss";
+@import "@core/scss/vue/libs/vue-sweetalert.scss";
 </style>
