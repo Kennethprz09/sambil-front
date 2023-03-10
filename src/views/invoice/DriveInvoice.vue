@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <!-- Table Container Card -->
         <b-card no-body class="mb-0">
@@ -25,41 +24,44 @@
 
                     <b-col md="2">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
-                                placeholder="Número" />
+                            <b-form-input v-model="tableSettings.numero" class="d-inline-block mr-1" placeholder="Número" />
                         </b-form-group>
                     </b-col>
                     <b-col md="2">
                         <b-form-group>
-                            <b-form-input v-model="tableSettings.searchQuery" class="d-inline-block mr-1"
+                            <b-form-input v-model="tableSettings.cliente" class="d-inline-block mr-1"
                                 placeholder="Cliente" />
                         </b-form-group>
                     </b-col>
                     <b-col md="2">
                         <b-form-group>
-                            <b-form-datepicker class="mb-1" placeholder="Creacion" />
+                            <b-form-datepicker v-model="tableSettings.creacion" class="mb-1" placeholder="Creacion" />
                         </b-form-group>
                     </b-col>
                     <b-col md="2">
                         <b-form-group>
-                            <b-form-datepicker class="mb-1" placeholder="Vencimiento" />
+                            <b-form-datepicker v-model="tableSettings.expiration" class="mb-1" placeholder="Vencimiento" />
                         </b-form-group>
                     </b-col>
                     <b-col md="3">
                         <b-form-group>
-                            <v-select :options="Contacts" placeholder="Estado" class="d-block" />
+                            <v-select v-model="tableSettings.status" :options="status" label="title" placeholder="Estado"
+                                class="d-block" :reduce="(val) => val.value" />
                         </b-form-group>
                     </b-col>
                     <b-col md="1" class="text-left">
                         <b-button variant="primary" @click="searchData" class="btn-icon rounded-circle">
                             <feather-icon icon="SearchIcon" />
                         </b-button>
+                        <b-button variant="secondary" @click="cleanData" class=" ml-2 btn-icon rounded-circle">
+                            <feather-icon icon="XIcon" />
+                        </b-button>
                     </b-col>
                 </b-row>
             </div>
-            <b-table ref="refContactListTable" class="position-relative" :items="drivers" responsive
-                :fields="tableColumns" primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty
-                empty-text="No se encontraron datos" :sort-desc.sync="tableSettings.sortDesc">
+            <b-table ref="refContactListTable" class="position-relative" :items="drivers" responsive :fields="tableColumns"
+                primary-key="id" :sort-by.sync="tableSettings.sortBy" show-empty empty-text="No se encontraron datos"
+                :sort-desc.sync="tableSettings.sortDesc">
 
                 <!-- Column: Actions -->
                 <template #cell(actions)="data">
@@ -67,9 +69,16 @@
                         v-b-tooltip.hover.v-primary title="Ver">
                         <feather-icon icon="EyeIcon" />
                     </b-button>
+                    <b-button class="btn-icon rounded-circle ml-2" :disabled="anulates = true ? true : false" @click="DesbloquearConduce(data.item)">
+                        <feather-icon icon="UnlockIcon" />
+                    </b-button>
                     <b-button class="btn-icon rounded-circle ml-2" @click="editContact(data.item.id)"
                         v-b-tooltip.hover.v-primary title="Editar">
                         <feather-icon icon="EditIcon" />
+                    </b-button>
+                    <b-button class="btn-icon rounded-circle ml-2" :disabled="anulates = true ? false : true" @click="AnularConduce(data.item)"
+                        v-b-tooltip.hover.v-primary title="Anular">
+                        <feather-icon icon="MinusIcon" />
                     </b-button>
                     <b-button variant="danger" class="btn-icon rounded-circle ml-2"
                         :id="`form-item-settings-icon-${data.item.id}`">
@@ -107,12 +116,11 @@
                             registros</span>
                     </b-col>
                     <!-- Pagination -->
-                    <b-col cols="12" sm="6"
-                        class="d-flex align-items-center justify-content-center justify-content-sm-end">
+                    <b-col cols="12" sm="6" class="d-flex align-items-center justify-content-center justify-content-sm-end">
 
-                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows"
-                            :per-page="tableSettings.perPage" first-number last-number class="mb-0 mt-1 mt-sm-0"
-                            prev-class="prev-item" next-class="next-item">
+                        <b-pagination v-model="tableSettings.page" :total-rows="totalRows" :per-page="tableSettings.perPage"
+                            first-number last-number class="mb-0 mt-1 mt-sm-0" prev-class="prev-item"
+                            next-class="next-item">
                             <template #prev-text>
                                 <feather-icon icon="ChevronLeftIcon" size="18" />
                             </template>
@@ -189,12 +197,12 @@ export default {
                 { value: '<', title: 'Menor que' }
             ],
             tableColumns: [
-                { key: 'Número', label: 'Número', sortable: true },
-                { key: 'Cliente', label: 'Cliente', sortable: true },
-                { key: 'Creación', label: 'Creación' },
-                { key: 'Vencimiento', label: 'Vencimiento' },
-                { key: 'Estado', label: 'Estado' },
-                { key: 'Total', label: 'Total' },
+                { key: 'id', label: 'Número', sortable: true },
+                { key: 'contact', label: 'Cliente', sortable: true },
+                { key: 'created', label: 'Creación' },
+                { key: 'expiration', label: 'Vencimiento' },
+                { key: 'status', label: 'Estado' },
+                { key: 'total', label: 'Total' },
                 { key: 'actions', label: 'Acciones' },
             ],
             sortBy: 'id',
@@ -216,10 +224,20 @@ export default {
                 page: 1,
                 sortBy: 'id',
                 sortDesc: true,
+                numero: null,
+                cliente: null,
+                creacion: null,
+                expiration: null,
+                status: null
             },
             formDataEdit: {},
             drivers: [],
-            edit: true
+            edit: true,
+            status: [
+                { value: '1', title: 'Sin estado' },
+                { value: '2', title: 'Facturada' },
+                { value: '3', title: 'Anulada' },
+            ],
         }
     },
     directives: {
@@ -264,6 +282,42 @@ export default {
                 this.dataMetaCounter()
             })
         },
+        AnularConduce(item) {
+            this.$http.post('invoiceDriver/updateStatusDriver', {
+                id: item.id,
+                status: 'Anulado',
+            }).then((response) => {
+                if (response.data.code == 200) {
+                    this.$swal({
+                        title: response.data.message,
+                        icon: 'success',
+                        customClass: {
+                            confirmButton: 'btn btn-success',
+                        },
+                        buttonsStyling: false,
+                    });
+                    this.fetchList();
+                }
+            })
+        },
+        DesbloquearConduce(item) {
+            this.$http.post('invoiceDriver/updateStatusDriver', {
+                id: item.id,
+                status: 'Creado',
+            }).then((response) => {
+                if (response.data.code == 200) {
+                    this.$swal({
+                        title: response.data.message,
+                        icon: 'success',
+                        customClass: {
+                            confirmButton: 'btn btn-success',
+                        },
+                        buttonsStyling: false,
+                    });
+                    this.fetchList();
+                }
+            })
+        },
         dataMetaCounter() {
             const localItemsCount = this.dataTable.length
             this.dataMeta.from = this.tableSettings.perPage * (this.tableSettings.page - 1) + (localItemsCount ? 1 : 0)
@@ -271,23 +325,22 @@ export default {
             this.dataMeta.of = this.totalRows
         },
         newContact() {
-            this.$router.push('/contacts/new-contact');
+            this.$router.push('/invoice/drive/newconduces');
         },
         showContact(id) {
-            var showContacts = true;
             this.$router.push({
-                name: 'contacts/new-contact',
-                params: { id: id, showContacts: showContacts }
+                name: 'invoice-showConduces',
+                params: { id: id }
             });
         },
         editContact(id) {
             this.$router.push({
-                name: 'contacts/new-contact',
-                params: { id: id, edit: this.edit }
+                name: 'invoice-updateConduces',
+                params: { id: id }
             });
         },
         deleteContact(id) {
-            this.$http.post('/contact/delete/' + id)
+            this.$http.post('/invoiceDriver/deleteDriver/' + id)
                 .then(response => {
                     if (response.data.code == 200) {
                         this.$swal({
@@ -316,6 +369,14 @@ export default {
                 });
         },
         searchData() {
+            this.fetchList()
+        },
+        cleanData() {
+            this.tableSettings.numero = null;
+            this.tableSettings.cliente = null;
+            this.tableSettings.creacion = null;
+            this.tableSettings.expiration = null;
+            this.tableSettings.status = null;
             this.fetchList()
         },
     },

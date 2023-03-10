@@ -147,6 +147,54 @@ export default [
     },
   },
   {
+    path: '/invoice/drive/newconduces',
+    name: 'invoice-newConduces',
+    component: () => import('@/views/conduces/createConduce.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Nuevo Conduces',
+      breadcrumb: [
+        {
+          text: 'Nuevo Conduces',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/invoice/drive/showconduces',
+    name: 'invoice-showConduces',
+    component: () => import('@/views/conduces/showConduce.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Ver Conduces',
+      breadcrumb: [
+        {
+          text: 'Ver Conduces',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/invoice/drive/updateconduces',
+    name: 'invoice-updateConduces',
+    component: () => import('@/views/conduces/updateConduce.vue'),
+    meta: {
+      resource: 'Ver roles',
+      action: 'read',
+      pageTitle: 'Editar Conduces',
+      breadcrumb: [
+        {
+          text: 'Editar Conduces',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
     path: '/invoice/sales',
     name: 'invoice-sales',
     component: () => import('@/views/invoice/NewSalesInvoice.vue'),
