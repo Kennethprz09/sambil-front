@@ -12,6 +12,7 @@ import invoice from './routes/invoice'
 import invoiceProvider from './routes/invoiceProvider'
 import pay from './routes/pays'
 import inventory from './routes/inventory'
+import settingsNumbers from './routes/settings/settingsNumbers'
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,7 @@ const router = new VueRouter({
     ...invoiceProvider,
     ...pay,
     ...inventory,
+    ...settingsNumbers,
     {
       path: '/',
       name: 'home',

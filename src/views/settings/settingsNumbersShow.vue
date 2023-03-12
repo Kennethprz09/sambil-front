@@ -1,0 +1,182 @@
+<template>
+    <div>
+        <b-card title="Nueva numeración">
+            <b-row>
+                <b-col sm="6">
+                    <b-form-group>
+                        <v-select v-model="form.typeDocument" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                            label="title" :options="typeDocuments" placeholder="Tipo de documento" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6"
+                v-if="form.typeDocument.value == 1 || form.typeDocument.value == 2 || form.typeDocument.value == 3 || form.typeDocument.value == 4 || form.typeDocument.value == 5 || form.typeDocument.value == null">
+                    <b-form-group>
+                        <v-select v-model="form.type" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title"
+                            :options="types" placeholder="Tipo" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6">
+                    <b-form-group>
+                        <b-form-input v-model="form.name" placeholder="Nombre" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6">
+                    <b-form-group>
+                        <b-form-input v-model="form.number" placeholder="Numero Inicial" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6">
+                    <b-form-group>
+                        <b-form-input v-model="form.prefix" placeholder="Prefijo" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6">
+                    <b-form-group>
+                        <b-form-input v-model="form.branch" placeholder="Sucursal" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="6"
+                v-if="form.typeDocument.value == 1 || form.typeDocument.value == 2 || form.typeDocument.value == 3 || form.typeDocument.value == 4 || form.typeDocument.value == 5 || form.typeDocument.value == null">
+                    <b-form-group>
+                        <flat-pickr v-model="form.date_expired" class="form-control" disabled/>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="12" class="text-center">
+                    <b-form-group class="text-center">
+                        <h5>Preferida</h5>
+                        <div class="demo-inline-spacing justify-content-center">
+                            <b-form-radio v-model="form.favorite" :value="true" disabled>
+                                Si
+                            </b-form-radio>
+                            <b-form-radio v-model="form.favorite" :value="false" disabled>
+                                No
+                            </b-form-radio>
+                        </div>
+                    </b-form-group>
+                </b-col>
+                <b-col sm="12" class="text-center">
+                    <div class="demo-inline-spacing justify-content-center">
+                        <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" @click="cancelNumber()">
+                            Regresar
+                        </b-button>
+                    </div>
+                </b-col>
+            </b-row>
+        </b-card>
+    </div>
+</template>
+  
+<script>
+import { BCard, BFormGroup, BCol, BRow, BFormInput, BFormRadio, BButton } from 'bootstrap-vue'
+import vSelect from 'vue-select'
+import flatPickr from 'vue-flatpickr-component'
+import Ripple from 'vue-ripple-directive'
+export default {
+    components: {
+        BCard,
+        BFormGroup,
+        vSelect,
+        BCol,
+        BRow,
+        BFormInput,
+        flatPickr,
+        BFormRadio,
+        BButton
+    },
+    data() {
+        return {
+            id:this.$route.params.id,
+            form: {
+                typeDocument: '',
+                type: '',
+                name: '',
+                number: '',
+                prefix: '',
+                branch: '',
+                date_expired: '',
+                favorite: ''
+            },
+            typeDocuments: [],
+            types: []
+        }
+    },
+    created() {
+        this.fetchTypedocumentId();
+        this.fetchTypeDocuments();
+    },
+    watch: {
+        'form.typeDocument.value'(val) {
+            this.fetchType(val);
+        }
+    },
+    methods: {
+        fetchTypedocumentId() {
+            this.$http.get('/typeDocuments/show/' + this.id).then(response => {
+                this.form.typeDocument = response.data.settingNumber.type_document_id;
+                this.form.type = response.data.settingNumber.type_id;
+                this.form.name = response.data.settingNumber.name;
+                this.form.number = response.data.settingNumber.number_initial;
+                this.form.prefix = response.data.settingNumber.prefix;
+                this.form.branch = response.data.settingNumber.branch;
+                this.form.date_expired = response.data.settingNumber.expited_at;
+                if (response.data.settingNumber.favorite == 1) {
+                    this.form.favorite = true;
+                }
+                if (response.data.settingNumber.favorite == 0) {
+                    this.form.favorite = false;
+                }
+            });
+        },
+        fetchTypeDocuments() {
+            this.$http.get('/typeDocuments/list').then(response => {
+                this.typeDocuments = response.data.typeDocuments;
+            });
+        },
+        fetchType(id) {
+            this.$http.get('/typeDocuments/listType/' + id).then(response => {
+                this.types = response.data.types;
+            });
+        },
+        cancelNumber() {
+            this.$router.push('/settings-numbers');
+        },
+        storeNumber() {
+            this.$http.post('/typeDocuments/store', this.form)
+                .then(response => {
+                    if (response.data.code == 200) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                            },
+                            buttonsStyling: false,
+                        });
+                        this.$router.push('/settings-numbers');
+                    }
+                    if (response.data.code == 500) {
+                        this.$swal({
+                            title: response.data.message,
+                            icon: 'warning',
+                            customClass: {
+                                confirmButton: 'btn btn-warning',
+                            },
+                            buttonsStyling: false,
+                        })
+                    }
+                })
+                .catch((error) => {
+                    this.errors = error.response.data.errors;
+                });
+        }
+    },
+    directives: {
+        Ripple,
+    },
+}
+</script>
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-select.scss';
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
+</style>
+  

@@ -154,4 +154,18 @@ export default [
       },
     ],
   },
+  {
+    title: 'Configuracion',
+    icon: 'SettingsIcon',
+    action: 'read',
+    resource: 'Ver roles',
+    children: [
+      {
+        title: 'Numeraciones',
+        route: 'settings-numbers',
+        action: 'read',
+        resource: 'Ver roles'
+      }
+    ],
+  },
 ]
