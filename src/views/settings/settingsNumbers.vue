@@ -7,34 +7,47 @@
 
                 <!-- Table Top -->
                 <b-row>
-                    <!-- Per Page -->
-                    <b-col cols="12" md="3" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
+                    <b-col cols="12" md="12" class="d-flex align-items-center justify-content-start mb-5 mb-md-0 ">
                         <label>Mostrar</label>
                         <v-select v-model="tableSettings.perPage" :options="perPageOptions" :clearable="false"
                             class="per-page-selector d-inline-block mx-50" />
                         <label>registros</label>
                     </b-col>
-
-                    <b-col md="2">
+                    <!-- Per Page -->
+                    
+                    <b-col md="2" class="mt-2">
                         <b-form-group>
                             <v-select class="d-inline" v-model="tableSettings.input" label="title" :options="inputs"
                                 :reduce="val => val.value" placeholder="Título" />
                         </b-form-group>
                     </b-col>
-                    <b-col md="3">
+                    <b-col md="3" class="mt-2">
                         <b-form-group>
                             <v-select class="d-inline" v-model="tableSettings.typeSearch" label="title"
                                 :options="typeSearch" :reduce="val => val.value" placeholder="Tipo de búsqueda" />
                         </b-form-group>
                     </b-col>
-                    <b-col md="3">
+                    <b-col md="3" class="mt-2" v-if="tableSettings.input == 'type_document_id'">
+                        <b-form-group>
+                            <v-select v-model="tableSettings.typeDocument" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                            label="title" :options="typeDocuments" placeholder="Tipo de documento" :reduce="val => val.value"/>
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="3" class="mt-2" v-if="tableSettings.input == 'type_document_id'">
+                        <b-form-group>
+                            <v-select v-model="tableSettings.searchQuery"
+                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'" label="title" :options="types"
+                                placeholder="Tipo" :reduce="val => val.value" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="3" class="mt-2" v-else>
                         <b-form-group>
                             <b-form-input v-model="tableSettings.searchQuery" class="d-inline" style="width: 90%"
                                 placeholder="Buscar..." />
                         </b-form-group>
                     </b-col>
                     <!-- Search -->
-                    <b-col cols="12" md="1">
+                    <b-col cols="12" md="1" class="mt-2">
                         <div class="d-flex align-items-center justify-content-end">
                             <b-button variant="primary" @click="fetchNumbers" class="btn-icon rounded-circle mr-1">
                                 <feather-icon icon="SearchIcon" />
@@ -81,8 +94,8 @@
                             title="Editar" @click="editNumber(data.item.id)" v-if="data.item.status == 'Active'">
                             <feather-icon icon="EditIcon" />
                         </b-button>
-                         <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary disabled
-                            title="Editar" @click="editNumber(data.item.id)" v-if="data.item.status == 'Inactive'">
+                        <b-button variant="warning" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
+                            disabled title="Editar" @click="editNumber(data.item.id)" v-if="data.item.status == 'Inactive'">
                             <feather-icon icon="EditIcon" />
                         </b-button>
                         <b-button variant="danger" class="btn-icon rounded-circle ml-2"
@@ -133,7 +146,8 @@
                         </b-button>
                         <div v-if="data.item.favorite == 0">
                             <b-button variant="secondary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
-                                title="Desactivar" @click="activateNumber(data.item.id, 1)" v-if="data.item.status == 'Active'">
+                                title="Desactivar" @click="activateNumber(data.item.id, 1)"
+                                v-if="data.item.status == 'Active'">
                                 <feather-icon icon="CheckIcon" />
                             </b-button>
                             <b-button variant="secondary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
@@ -144,7 +158,8 @@
                         </div>
                         <div v-if="data.item.favorite == 1">
                             <b-button variant="secondary" class="btn-icon rounded-circle ml-2" v-b-tooltip.hover.v-primary
-                                title="Desactivar" @click="desactivateNumber(data.item.id, 1)" v-if="data.item.status == 'Active'">
+                                title="Desactivar" @click="desactivateNumber(data.item.id, 1)"
+                                v-if="data.item.status == 'Active'">
                                 <feather-icon icon="CheckIcon" />
                             </b-button>
                         </div>
@@ -221,6 +236,7 @@ export default {
     },
     data() {
         return {
+            types: [],
             refContactListTable: null,
             perPageOptions: [10, 25, 50, 100],
             searchQuery: '',
@@ -252,7 +268,7 @@ export default {
                 perPage: 10,
                 page: 1,
                 sortBy: 'id',
-                sortDesc: true,
+                sortDesc: true
             },
             numbers: [],
             inputs: [
@@ -306,11 +322,30 @@ export default {
                 this.resetFilter(val)
             },
         },
+        'tableSettings.input'(val) {
+            if (val == 'type_document_id') {
+                this.fetchTypeDocuments();
+            }
+        },
+        'tableSettings.typeDocument'(val) {
+            this.fetchType(val);
+        }
     },
     created() {
         this.fetchNumbers();
+        this.fetchTypeDocuments();
     },
     methods: {
+        fetchTypeDocuments() {
+            this.$http.get('/typeDocuments/list').then(response => {
+                this.typeDocuments = response.data.typeDocuments;
+            });
+        },
+        fetchType(id) {
+            this.$http.get('/typeDocuments/listType/' + id).then(response => {
+                this.types = response.data.types;
+            });
+        },
         fetchNumbers() {
             this.$http.get('typeDocuments/listNumbers', { params: this.tableSettings }).then((response) => {
                 this.numbers = response.data.numbers;
