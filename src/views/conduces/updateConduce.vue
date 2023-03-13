@@ -11,7 +11,7 @@
                 </b-col>
                 <b-col md="2" xl="2" offset="2" class="mb-3 p-3">
                     <b-form-group label-cols="4" label-cols-lg="2" label="No.">
-                        <b-form-input value="5" disabled />
+                        <b-form-input :value="form.number_driver" disabled />
                     </b-form-group>
                 </b-col>
             </b-row>

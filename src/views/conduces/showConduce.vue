@@ -11,13 +11,16 @@
                 </b-col>
                 <b-col md="2" xl="2" offset="2" class="mb-3 p-3">
                     <b-form-group label-cols="4" label-cols-lg="2" label="No.">
-                        <b-form-input value="5" disabled />
+                        <b-form-input :value="form.number_driver" disabled />
                     </b-form-group>
                 </b-col>
             </b-row>
             <hr>
             <b-row>
                 <b-col md="6" xl="6" class="mb-3 p-3">
+                    <label for="">Tipo de documento</label>
+                    <v-select v-model="form.type_id" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                        label="title" :options="type_ids" placeholder="Seleccionar" :reduce="(val) => val.value" disabled />
                     <label for="">Contacto</label>
                     <v-select v-model="form.contact" class="mb-1" :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                         label="title" :options="contacts" placeholder="Seleccionar" :reduce="(val) => val.value" disabled />
@@ -253,6 +256,10 @@ export default {
                 },
                 note: '',
             },
+            type_ids: [
+                { value: 1, title: 'Conduce' },
+                { value: 2, title: 'Orden de servicio' },
+            ],
         }
     },
     methods: {

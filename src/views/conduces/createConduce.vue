@@ -11,7 +11,7 @@
                 </b-col>
                 <b-col md="2" xl="2" offset="2" class="mb-3 p-3">
                     <b-form-group label-cols="4" label-cols-lg="2" label="No.">
-                        <b-form-input value="5" disabled />
+                        <b-form-input :value="numberConduce" disabled />
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -209,9 +209,11 @@ export default {
         this.showContacts()
         this.fetchProducts()
         this.discounts()
+        this.searchNumber()
     },
     data() {
         return {
+            numberConduce: null,
             listPrice: [],
             contacts: [],
             products: [],
@@ -253,6 +255,11 @@ export default {
         }
     },
     methods: {
+        searchNumber() {
+            this.$http.get('invoiceDriver/numberDriver').then(response => {
+                this.numberConduce = response.data.numberDriver
+            })
+        },
         storeInvoice() {
             this.$http
                 .post('/invoiceDriver/storeDriver', this.form)
