@@ -69,33 +69,49 @@
                         v-b-tooltip.hover.v-primary title="Ver">
                         <feather-icon icon="EyeIcon" />
                     </b-button>
-                    <b-button class="btn-icon rounded-circle ml-2" :disabled="anulates = true ? true : false" @click="DesbloquearConduce(data.item)">
+                    <b-button class="btn-icon rounded-circle ml-2" :disabled="data.item.anulates == true ? false : true" @click="DesbloquearConduce(data.item)">
                         <feather-icon icon="UnlockIcon" />
                     </b-button>
-                    <b-button class="btn-icon rounded-circle ml-2" @click="editContact(data.item.id)"
+                    <b-button class="btn-icon rounded-circle ml-2" :disabled="data.item.anulates == true ? true : false" @click="editContact(data.item.id)"
                         v-b-tooltip.hover.v-primary title="Editar">
                         <feather-icon icon="EditIcon" />
                     </b-button>
-                    <b-button class="btn-icon rounded-circle ml-2" :disabled="anulates = true ? false : true" @click="AnularConduce(data.item)"
-                        v-b-tooltip.hover.v-primary title="Anular">
+                    <!-- <b-button class="btn-icon rounded-circle ml-2" :disabled="data.item.anulates == true ? true : false" v-b-tooltip.hover.v-primary title="Anular">
                         <feather-icon icon="MinusIcon" />
-                    </b-button>
-                    <b-button variant="danger" class="btn-icon rounded-circle ml-2"
-                        :id="`form-item-settings-icon-${data.item.id}`">
-                        <feather-icon size="16" icon="TrashIcon" class="cursor-pointer" />
-                        <b-popover :ref="`form-item-settings-popover-${data.item.id}`"
-                            :target="`form-item-settings-icon-${data.item.id}`" triggers="click" placement="lefttop">
+                    </b-button> -->
+                    <b-button variant="warning" class="btn-icon rounded-circle ml-2" :disabled="data.item.anulates == true ? true : false" :id="`form-item-settings-icon-anular-${data.item.id}`">
+                        <feather-icon size="16" icon="MinusIcon" class="cursor-pointer" />
+                        <b-popover :ref="`form-item-settings-popover-anular-${data.item.id}`" :target="`form-item-settings-icon-anular-${data.item.id}`" triggers="click" placement="lefttop">
                             <b-form @submit.prevent>
                                 <b-row>
                                     <b-col cols="12">
-                                        <p>¡Esta a punto de eliminar este contacto!</p>
+                                        <p>¡Esta a punto de anular este conduce!</p>
+                                    </b-col>
+                                    <b-col cols="12" class="d-flex justify-content-between mt-1">
+                                        <b-button variant="outline-warning" @click="AnularConduce(data.item)">
+                                            Anular
+                                        </b-button>
+                                        <b-button variant="outline-secondary" @click="() => { $refs[`form-item-settings-popover-anular-${data.item.id}`].$emit('close') }">
+                                            Cancelar
+                                        </b-button>
+                                    </b-col>
+                                </b-row>
+                            </b-form>
+                        </b-popover>
+                    </b-button>
+                    <b-button variant="danger" class="btn-icon rounded-circle ml-2" :disabled="data.item.anulates == true ? true : false" :id="`form-item-settings-icon-${data.item.id}`">
+                        <feather-icon size="16" icon="TrashIcon" class="cursor-pointer" />
+                        <b-popover :ref="`form-item-settings-popover-${data.item.id}`" :target="`form-item-settings-icon-${data.item.id}`" triggers="click" placement="lefttop">
+                            <b-form @submit.prevent>
+                                <b-row>
+                                    <b-col cols="12">
+                                        <p>¡Esta a punto de eliminar este conduce!</p>
                                     </b-col>
                                     <b-col cols="12" class="d-flex justify-content-between mt-1">
                                         <b-button variant="outline-danger" @click="deleteContact(data.item.id)">
                                             Eliminar
                                         </b-button>
-                                        <b-button variant="outline-secondary"
-                                            @click="() => { $refs[`form-item-settings-popover-${data.item.id}`].$emit('close') }">
+                                        <b-button variant="outline-secondary" @click="() => { $refs[`form-item-settings-popover-${data.item.id}`].$emit('close') }">
                                             Cancelar
                                         </b-button>
                                     </b-col>
