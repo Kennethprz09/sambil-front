@@ -116,19 +116,24 @@
 
             <!-- Conduces -->
             <b-form ref="form" class="repeater-form ml-2" v-for="(itemC, indexC) in form.conducesDate" :key="indexC">
-                <b-row class="justify-content-between">
+                <b-row>
                     <b-col md="3" class="mb-2">
                         <b-form-select v-model="itemC.id" :options="conduces_show" :reduce="val => val.value"
                             @change="searchConduce(itemC.id, indexC)" :disabled="action !== 'view' ? false : true" />
                     </b-col>
-                    <b-col md="3" class="mb-2">
+                    <b-col md="1" class="mb-2">
                         <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
                             @click="removeConduce(indexC)" :disabled="action !== 'view' ? false : true">
                             <feather-icon icon="XIcon" class="mr-25" />
                         </b-button>
                     </b-col>
+                    <b-col md="3" class="mb-2 mt-1">
+                        <span class="text-danger">
+                            {{ itemC.message }}
+                        </span>
+                    </b-col>
                 </b-row>
-                <b-row>
+                <b-row v-if="itemC.conduces.length > 0">
                     <b-col>
                         <h6>Producto/servicio</h6>
                     </b-col>
@@ -157,7 +162,7 @@
                         <h6></h6>
                     </b-col>
                 </b-row>
-                <hr class="line">
+                <hr class="line" v-if="itemC.conduces.length > 0">
                 <!-- Row Loop -->
                 <b-row class="mb-2" v-for="(item, index) in itemC.conduces" :id="item.id" :key="index" ref="row">
                     <b-col>
@@ -552,15 +557,30 @@ export default {
             })
         },
         searchConduce(id, index) {
-            this.$http.get('invoiceDriver/showDriver/' + id).then((response) => {
-                var conduce = response.data.Conduces;
-                this.form.conducesDate[index].conduces = conduce.products;
-                for (let index = 0; index < this.form.conducesDate.length; index++) {
-                    for (let indexC = 0; indexC < this.form.conducesDate[index].conduces.length; indexC++) {
-                        this.changePriceConduce(index, indexC);
-                    }
+            var error = false;
+            this.form.conducesDate[index].id = null;
+            this.form.conducesDate.forEach(selected => {
+                if (id == selected.id) {
+                    error = true;
                 }
-            })
+            });
+            if (!error) {
+                this.form.conducesDate[index].id = id;
+                this.form.conducesDate[index].message = null;
+                this.$http.get('invoiceDriver/showDriver/' + id).then((response) => {
+                    var conduce = response.data.Conduces;
+                    this.form.conducesDate[index].conduces = conduce.products;
+                    for (let index = 0; index < this.form.conducesDate.length; index++) {
+                        for (let indexC = 0; indexC < this.form.conducesDate[index].conduces.length; indexC++) {
+                            this.changePriceConduce(index, indexC);
+                        }
+                    }
+                })
+            } else {
+                this.form.conducesDate[index].id = null;
+                this.form.conducesDate[index].message = 'El conduce ya ha sido seleccionada.';
+                this.form.conducesDate[index].conduces = [];
+            }
         },
         discounts() {
             this.$http.get('identification/listDiscounts').then((response) => {
@@ -638,6 +658,7 @@ export default {
             this.form.conducesDate.push({
                 id: null,
                 conduces: [],
+                message: null
             })
 
             this.$nextTick(() => {
