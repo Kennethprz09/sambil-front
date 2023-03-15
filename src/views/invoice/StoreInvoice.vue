@@ -116,9 +116,16 @@
 
             <!-- Conduces -->
             <b-form ref="form" class="repeater-form ml-2" v-for="(itemC, indexC) in form.conducesDate" :key="indexC">
-                <b-row>
+                <b-row class="justify-content-between">
                     <b-col md="3" class="mb-2">
-                        <b-form-select v-model="itemC.id" :options="conduces_show" :reduce="val => val.value" @change="searchConduce(itemC.id, indexC)" :disabled="action !== 'view' ? false : true" />
+                        <b-form-select v-model="itemC.id" :options="conduces_show" :reduce="val => val.value"
+                            @change="searchConduce(itemC.id, indexC)" :disabled="action !== 'view' ? false : true" />
+                    </b-col>
+                    <b-col md="3" class="mb-2">
+                        <b-button v-ripple.400="'rgba(234, 84, 85, 0.15)'" variant="outline-danger"
+                            @click="removeConduce(indexC)" :disabled="action !== 'view' ? false : true">
+                            <feather-icon icon="XIcon" class="mr-25" />
+                        </b-button>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -643,6 +650,11 @@ export default {
             this.changeTax();
             this.trTrimHeight(this.$refs.row[0].offsetHeight)
         },
+        removeConduce(index) {
+            this.form.conducesDate.splice(index, 1);
+            this.changeTax();
+            this.trTrimHeight(this.$refs.row[0].offsetHeight)
+        },
         removeItemConduce(indexC, index) {
             this.form.conducesDate[indexC].conduces.splice(index, 1);
             this.changeTax();
@@ -784,6 +796,19 @@ export default {
         editInvoice() {
             this.$router.push({ name: 'invoice-edit', params: { id: this.$route.params.id } });
         }
+    },
+    computed: {
+        conduces_NoRepeat() {
+            var array1 = [];
+            this.conduces_show.forEach(options => {
+                this.form.conducesDate.forEach(selected => {
+                    if (options.value != selected.id) {
+                        array1.push(options);
+                    }
+                });
+            });
+            return array1;
+        },
     },
 }
 </script>
