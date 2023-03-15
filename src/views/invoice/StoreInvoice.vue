@@ -118,8 +118,7 @@
             <b-form ref="form" class="repeater-form ml-2" v-for="(itemC, indexC) in form.conducesDate" :key="indexC">
                 <b-row>
                     <b-col md="3" class="mb-2">
-                        <b-form-select v-model="form.conduceSelect" :options="conduces_show" :reduce="val => val.value"
-                            @change="searchConduce(form.conduceSelect, indexC)" />
+                        <b-form-select v-model="itemC.id" :options="conduces_show" :reduce="val => val.value" @change="searchConduce(itemC.id, indexC)" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                 </b-row>
                 <b-row>
@@ -373,7 +372,6 @@ export default {
                 footer: '',
                 conduces: [],
                 conducesDate: [],
-                conduceSelect: null
             },
             contacts: [],
             payment_deadline: [],
@@ -551,8 +549,6 @@ export default {
             this.$http.get('invoiceDriver/showDriver/' + id).then((response) => {
                 var conduce = response.data.Conduces;
                 this.form.conducesDate[index].conduces = conduce.products;
-                conduce.products.forEach(element => {
-                });
                 for (let index = 0; index < this.form.conducesDate.length; index++) {
                     this.form.conducesDate[index].id = id;
                     for (let indexC = 0; indexC < this.form.conducesDate[index].conduces.length; indexC++) {
@@ -634,11 +630,9 @@ export default {
             })
         },
         repeateAgainConduce() {
-            var count = parseInt(this.form.conducesDate.length) + parseInt(1);
             this.form.conducesDate.push({
-                iteraciones: count,
-                conduces: [],
                 id: null,
+                conduces: [],
             })
 
             this.$nextTick(() => {
@@ -724,6 +718,14 @@ export default {
                         for (let index = 0; index < response.data.invoiceProduct.length; index++) {
                             let product = response.data.invoiceProduct;
                             this.form.products.push({ id: product[index].id, name: product[index].product_id, price: product[index].price, percentage: product[index].percentage, tax: [], description: product[index].description, quantity: product[index].quantity, total: product[index].total, discount: product[index].discount, ref: product[index].ref });
+                        }
+
+                        var conduce = response.data.Conduces;
+                        this.form.conducesDate = conduce;
+                        for (let index = 0; index < this.form.conducesDate.length; index++) {
+                            for (let indexC = 0; indexC < this.form.conducesDate[index].conduces.length; indexC++) {
+                                this.changePriceConduce(index, indexC);
+                            }
                         }
                     })
             }
@@ -814,5 +816,8 @@ export default {
     cursor: pointer;
     margin-left: 118px;
     position: absolute;
-}</style>
-<style lang="scss">@import '@core/scss/vue/libs/vue-select.scss';</style>
+}
+</style>
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-select.scss';
+</style>
