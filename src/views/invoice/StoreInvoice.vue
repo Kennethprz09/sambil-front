@@ -556,7 +556,6 @@ export default {
                 var conduce = response.data.Conduces;
                 this.form.conducesDate[index].conduces = conduce.products;
                 for (let index = 0; index < this.form.conducesDate.length; index++) {
-                    this.form.conducesDate[index].id = id;
                     for (let indexC = 0; indexC < this.form.conducesDate[index].conduces.length; indexC++) {
                         this.changePriceConduce(index, indexC);
                     }
