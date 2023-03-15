@@ -178,7 +178,7 @@
                     </b-col>
                     <b-col>
                         <b-form-input v-model="item.quantity" type="number" placeholder="Cantidad"
-                            @keyup="changeQuantity(indexC, index)" :disabled="action !== 'view' ? false : true" />
+                            @keyup="changeQuantityConduce(indexC, index)" :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="item.total" placeholder="0.00" disabled />
@@ -370,7 +370,6 @@ export default {
                 terms: '',
                 note: '',
                 footer: '',
-                conduces: [],
                 conducesDate: [],
             },
             contacts: [],
@@ -645,9 +644,7 @@ export default {
             this.trTrimHeight(this.$refs.row[0].offsetHeight)
         },
         removeItemConduce(indexC, index) {
-            alert('Error aca - Arreglar');
-            this.form.conduces.splice(index, 1);
-            this.form.conducesDate[index].splice(indexC, 1);
+            this.form.conducesDate[indexC].conduces.splice(index, 1);
             this.changeTax();
             this.trTrimHeight(this.$refs.row[0].offsetHeight)
         },
