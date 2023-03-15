@@ -607,7 +607,9 @@ export default {
                 this.form.rnc = response.data.contact.number_identification;
                 this.form.phone = response.data.contact.mobil;
                 this.form.date = moment().format('YYYY-MM-DD');
-                this.form.payment_deadline = response.data.contact.payment_deadline;
+                if (this.action == 'create') {
+                    this.form.payment_deadline = response.data.contact.payment_deadline;
+                }
                 this.fecthConduces(id);
             })
         },
