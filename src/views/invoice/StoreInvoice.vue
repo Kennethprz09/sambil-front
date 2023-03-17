@@ -189,8 +189,9 @@
                             :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
-                        <b-form-input v-model="item.quantity" type="number" placeholder="Cantidad"
-                            @keyup="changeQuantityConduce(indexC, index)" :disabled="action !== 'view' ? false : true" />
+                        <b-form-input v-model="item.quantity" type="number" placeholder="Cantidad" :min="1"
+                            :max="item.quantitydefault" @keyup="changeQuantityConduce(indexC, index, item.quantitydefault)"
+                            :disabled="action !== 'view' ? false : true" />
                     </b-col>
                     <b-col>
                         <b-form-input v-model="item.total" placeholder="0.00" disabled />
@@ -516,13 +517,25 @@ export default {
             }
             this.changeTax();
         },
-        changeQuantityConduce(indexC, index) {
-            if (this.form.conducesDate[indexC].conduces[index].quantity == '') {
-                this.form.conducesDate[indexC].conduces[index].total = 0;
+        changeQuantityConduce(indexC, index, quantitydefault) {
+            if (this.form.conducesDate[indexC].conduces[index].quantity > quantitydefault) {
+                this.$swal({
+                    title: 'La cantidad vendida es mayor a la disponible en el inventario.',
+                    icon: 'warning',
+                    customClass: {
+                        confirmButton: 'btn btn-warning',
+                    },
+                    buttonsStyling: false,
+                })
+                this.form.conducesDate[indexC].conduces[index].quantity = quantitydefault;
             } else {
-                this.changePercentageConduce(indexC, index);
-                this.changeTax();
-                this.calculateTotals();
+                if (this.form.conducesDate[indexC].conduces[index].quantity == '') {
+                    this.form.conducesDate[indexC].conduces[index].total = 0;
+                } else {
+                    this.changePercentageConduce(indexC, index);
+                    this.changeTax();
+                    this.calculateTotals();
+                }
             }
         },
         changePercentage(index) {
